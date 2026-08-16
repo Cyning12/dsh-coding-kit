@@ -1,4 +1,5 @@
 # dsh bundle patch — 无此文件则 dsh plugin add 不会挂层
+# IDE 若按 RFC6902 报缺字段，属误报；本文件必须保持 - insert（勿改成 JSON Patch）
 - insert:
     - id: coding-kit
       name: dsh-coding-kit

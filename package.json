@@ -1,7 +1,7 @@
 {
   "name": "dsh-coding-kit",
-  "version": "1.0.0",
-  "description": "DSH plugin: ICVO coding standards and context wiki (Inform · Constrain · Verify · Orchestrate). Does not auto-inject; call apply_coding_standards.",
+  "version": "1.1.0",
+  "description": "DSH plugin + P0 CLI: ICVO coding standards (Inform · Constrain · Verify · Orchestrate). Plugin does not auto-inject; call apply_coding_standards. CLI: npx dsh-coding-kit.",
   "license": "MIT",
   "author": "Cyning",
   "type": "module",
@@ -16,7 +16,11 @@
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json"
   },
+  "bin": {
+    "dsh-coding-kit": "bin/dsh-coding-kit.js"
+  },
   "files": [
+    "bin",
     "lib",
     "assets",
     "cordis.patch.yml",
