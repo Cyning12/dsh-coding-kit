@@ -1,0 +1,113 @@
+# cyning-harness 产品设计本体 · 机器可读抽取（草案 v1.0.0）
+# 人类真值：docs/methodology/product/DESIGN_ONTOLOGY_v1_zh.md
+# 冲突时以 Markdown 为准 · 供未来 harness ontology-check 使用
+
+version: "1.3"
+product_semver: "2.0.4"
+license: MIT
+
+classes:
+  - id: Track
+    domain: Package
+    subclasses: [GraphTrack, WikiTrack, StandardsTrack, ProcessTrack, VerifyTrack, IDETrack]
+  - id: Template
+    domain: Package
+  - id: Preset
+    domain: Package
+  - id: WizardTool
+    domain: Package
+  - id: IDEFragment
+    domain: Package
+  - id: AdoptedProfile
+    domain: Instance
+  - id: VersionManifest
+    domain: Instance
+  - id: Task
+    domain: Instance
+  - id: Hat
+    domain: Instance
+  - id: HumanGate
+    domain: Instance
+  - id: InvokeSnapshot
+    domain: Instance
+  - id: AuditReview
+    domain: Instance
+  - id: InformArtifact
+    domain: Instance
+  - id: ConstrainArtifact
+    domain: Instance
+  - id: VerifyArtifact
+    domain: Instance
+
+relations:
+  - id: embedsInto
+    subject: DisciplinePackage
+    object: BusinessRepository
+    cardinality: "1..*"
+  - id: blocks
+    subject: HumanGate
+    object: Hat
+    cardinality: "1..*"
+  - id: governedBy
+    subject: Task
+    object: Hat
+    cardinality: "1..*"
+  - id: produces
+    subject: Hat
+    object: TraceArtifact
+    cardinality: "0..*"
+
+axioms:
+  - id: P1
+    text: "纪律包不含业务代码与 LLM Runtime"
+  - id: S2
+    text: "禁止 sync 覆盖 docs/tasks、reviews、invokes/by-task"
+  - id: S5
+    text: "harness-sync apply 前须 git-clean（可 --force 跳过）"
+  - id: D1
+    text: "每次 20-task-audit 必须产出 AuditReview（零阻塞须写明）"
+  - id: D2
+    text: "HG-AUDIT-R1 pending 时 20-task-audit 不得附 30 Prompt（别名 22-task-audit）"
+  - id: D7
+    text: "public push 须 HG-RELEASE 人闸 checklist 全勾"
+
+# V2 hat_id · Starter 闭包 + Extended POINTER（见 DESIGN_ONTOLOGY §3.2）
+starter_hats:
+  - hat_id: "10-task"
+    role: TaskRequirementsHat
+    alias: "10-requirements"
+  - hat_id: "20-task-audit"
+    role: TaskAuditHat
+    alias: "22-task-audit"
+  - hat_id: "30-execute-code"
+    role: ExecuteHat
+  - hat_id: "40-self-check"
+    role: SelfCheckHat
+
+extended_hats:
+  - hat_id: "10-spec"
+    role: SpecRequirementsHat
+    pointer: "工作区 docs/harness/prompts/10-spec-requirements.md"
+  - hat_id: "20-spec-audit"
+    role: SpecAuditHat
+    pointer: "工作区 docs/harness/prompts/20-spec-audit.md"
+  - hat_id: "00-orchestrator"
+    role: OrchestratorHat
+  - hat_id: "50-independent-reinspect"
+    role: ReinspectHat
+
+human_gates:
+  - id: HG-TASK-DRAFT
+    blocks_hats: ["20-task-audit", "30-execute-code"]
+  - id: HG-SPEC-SIGNOFF
+    blocks_hats: ["30-execute-code"]
+    note: "Epic 级 · SPEC approved 后 00 方可派实现链至 30"
+  - id: HG-AUDIT-R1
+    blocks_hats: ["30-execute-code"]
+  - id: HG-RELEASE
+    blocks_hats: []
+    note: "维护者 CLOSE · npm/GitHub public · 非 Agent 自动签"
+
+schemas:
+  manifest: "./schema/manifest.v1.schema.json"
+  task_sidecar: "./schema/task.harness.v1.schema.json"

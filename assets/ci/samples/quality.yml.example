@@ -1,0 +1,56 @@
+# Harness Verify · 前端 quality 样例（Node/TS · Next 等）
+#
+# 用途：复制为 .github/workflows/quality.yml 并按仓裁剪。
+# 金样 POINTER（Ink）：Cyning12/ai-ink-brain · .github/workflows/quality.yml
+# 本地路径（工作区对照）：ai-ink-brain/.github/workflows/quality.yml
+#
+# 合并前三门禁：pnpm install --frozen-lockfile → pnpm lint → pnpm test → pnpm build
+# npm/yarn 用户：替换 install/lint/test/build 命令与 cache 配置。
+
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      # - production   # 按需启用
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # 版本以 package.json 的 packageManager 为真源（pnpm）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"          # 改为你的 LTS
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # --- 可选：图谱 / 契约检查（有 docs/_tech_graph/ 时启用）---
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: "3.11"
+      # - name: Tech graph check
+      #   run: python3 tools/tech_graph_check.py --input docs/_tech_graph
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build

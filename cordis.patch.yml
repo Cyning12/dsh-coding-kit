@@ -1,0 +1,4 @@
+# dsh bundle patch — 无此文件则 dsh plugin add 不会挂层
+- insert:
+    - id: coding-kit
+      name: dsh-coding-kit

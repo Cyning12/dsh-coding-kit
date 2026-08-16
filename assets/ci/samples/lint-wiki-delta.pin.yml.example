@@ -1,0 +1,45 @@
+# Optional · wiki_delta 扫描 · 读 harness.pin.json（消费者自管 pin · v2.21+）
+#
+# 适用：仓根有 harness.pin.json（或等价单源版本文件，须改 jq/node 取值）。
+# 对比：lint-wiki-delta.yml.example 写死 @cyning/harness@2.21。
+# 获取：同 RUNBOOK §5.1（clone / npm pack / raw）。
+#
+# Python / npx-only：package-manager-cache: false（见 ci/samples/README）
+
+name: lint-wiki-delta
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint-wiki-delta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Resolve pin
+        id: pin
+        run: echo "version=$(node -p "require('./harness.pin.json').version")" >> "$GITHUB_OUTPUT"
+
+      # 可选：本仓若有 check-harness-pin 脚本，在此先跑
+      # - name: check-harness-pin
+      #   run: node scripts/check-harness-pin.mjs
+
+      - name: task lint-wiki-delta
+        run: npx --yes "@cyning/harness@${{ steps.pin.outputs.version }}" task lint-wiki-delta --target .
+
+      # 可选 · 迁完后关账预检（半迁勿开）
+      # - name: task lint-wiki-delta --strict
+      #   run: npx --yes "@cyning/harness@${{ steps.pin.outputs.version }}" task lint-wiki-delta --target . --strict

@@ -1,0 +1,39 @@
+---
+description: Harness Starter — 读序、task、人工闸与 Verify 纪律（嵌入业务仓 · Cursor）
+alwaysApply: true
+globs:
+  - "**/*"
+---
+
+# Harness Starter（业务仓 · Cursor）
+
+> **单源真值**：`docs/coding_wiki/` 读序 + `docs/standards/` + `AGENTS.md`。  
+> **本规则**：摘要 + **POINTER**；条文真值在 `docs/harness/prompts/`。  
+> **仓内定制（v2.22+）**：勿改本文件作仓特异词（upgrade 全量 `cp`）；关键词放 `AGENTS.md` 的 local 块或仓内非 sync 文档。
+
+## 执行 task 前
+
+1. Open Folder = **本仓根**
+2. 读 `docs/tasks/active/task_*.md`：`test_strategy` · `failure_paths` · **人工闸**表
+3. **30 改码前** GATE_VERIFY（真值在 task **人工闸表**，**非** invoke 字面 `approved`）：
+   - 运行 `npx @cyning/harness verify --target . --task docs/tasks/active/task_*.md`
+   - 首输出闸扫描 · `FRAGMENT_30_gate_verify_v1_zh.md`
+   - **`HG-AUDIT-R1` pending** → **30 拒改码**
+   - 声称与 task 表冲突 → **STOP**
+4. 过程 invoke：`docs/harness/invokes/by-task/<task_slug>/`
+
+## Verify（合并前）
+
+| 栈 | 命令（与 `.github/workflows/` 一致） |
+|----|--------------------------------------|
+| 前端 | `pnpm lint` → `pnpm test` → `pnpm build` |
+| 后端 | `pytest tests`（按仓 marker 裁剪） |
+| iOS | `xcodebuild`（见 task `test_strategy_note`） |
+
+## 关键词
+
+`Harness`、`task`、`invoke`、`HG-AUDIT-R1`、`HG-GRAPH-MODULES`、`human_gate`、`拒开工`
+
+## 完整库 POINTER
+
+工作区：`docs/harness/prompts/`（22/30/TEMPLATE_30_gate_stop 等）

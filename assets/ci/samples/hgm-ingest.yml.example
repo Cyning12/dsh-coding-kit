@@ -1,0 +1,42 @@
+# Optional · HGM graph ingest（过程可观测 · 非默认必绿）
+#
+# 用途：复制为 .github/workflows/hgm-ingest.yml（或并入既有 workflow 的一步）。
+# 失败策略：continue-on-error: true（样例默认）· 需要硬闸时改为 false。
+#
+# 与 status --check / timeline 配合：保证 events JSONL 较新，便于过程投影。
+
+name: hgm-ingest
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # npx-only：关闭 setup-node@v5 默认 packageManager 缓存
+      # （package.json 若声明 packageManager=pnpm 且未装 pnpm → Unable to locate executable file: pnpm）
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: graph ingest（幂等）
+        continue-on-error: true
+        run: npx --yes @cyning/harness graph ingest --target .
+
+      # 可选：过程闸（须业务仓有 active task 路径）
+      # - name: status --check
+      #   continue-on-error: true
+      #   run: |
+      #     npx --yes @cyning/harness status --target . \
+      #       --task docs/harness/tasks/active/task_xxx.md --check

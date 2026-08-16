@@ -1,0 +1,49 @@
+# Harness Verify · 后端 pytest 样例（Python · FastAPI 等）
+#
+# 用途：复制为 .github/workflows/pytest.yml 并按仓裁剪。
+# 金样 POINTER（Ink）：Cyning12/ai-ink-brain-api-python · .github/workflows/pytest.yml
+# 本地路径（工作区对照）：ai-ink-brain-api-python/.github/workflows/pytest.yml
+#
+# 合并前必绿：pytest tests -m "not intent_eval and not intent_benchmark"（按仓调整 marker）
+
+name: pytest
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      # - production   # 按需启用
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # CI dummy 环境变量 — 替换为你的 .env.example 文档化变量名
+      # 禁止在 workflow 中写入真实密钥
+      EXAMPLE_API_KEY: "dummy-ci-key"
+      DATABASE_URL: "postgresql://u:p@localhost:5432/test"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"      # 改为你的版本
+          cache: "pip"
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest tests -q --tb=short
+        # 有 slow/intent marker 时示例：
+        # run: pytest tests -m "not intent_eval and not intent_benchmark" -q --tb=short
+
+      # --- 可选：Ruff / mypy（L2 落地后启用）---
+      # - name: Ruff
+      #   run: ruff check .

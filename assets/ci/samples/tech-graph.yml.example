@@ -1,0 +1,55 @@
+# Harness Verify · tech-graph 样例（docs/_tech_graph + graph-compile）
+#
+# 用途：复制为 .github/workflows/tech-graph.yml 并按仓裁剪。
+# 适用：已接入 docs/_tech_graph/，且业务仓自备 scripts/graph-compile.sh。
+#
+# 摩擦（必读）：
+#   本 job 只用 npm/npx 跑 harness（或不装包管理器、只跑 compile 脚本）。
+#   若 package.json 声明 packageManager=pnpm，切勿开启 setup-node 的
+#   packageManager 自动缓存，否则会报：
+#     Unable to locate executable file: pnpm
+#   → 必须设 package-manager-cache: false
+#   对照：quality.yml.example 先 pnpm/action-setup，再 cache: pnpm。
+#
+# 业务仓须自备 ./scripts/graph-compile.sh（本产品仓不随包提供该业务脚本）。
+# 递归分层仓：compile 产物写 shared/graph.json（或仓内约定路径）。
+
+name: tech-graph
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      # - production   # 按仓裁剪
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # npx-only / 无 pnpm 安装：关闭 setup-node@v5 默认 packageManager 缓存
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install graph compile deps
+        run: pip install pyyaml
+
+      # 可选：npx harness 辅助步骤（仍须 package-manager-cache: false）
+      # - name: harness graph check（示例）
+      #   run: npx --yes @cyning/harness graph --help
+
+      - name: Graph compile
+        run: ./scripts/graph-compile.sh
+        # 业务仓须自备该脚本；递归分层仓写 shared/graph.json

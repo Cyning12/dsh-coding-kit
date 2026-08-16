@@ -1,0 +1,112 @@
+# Task lifecycle · 最小真值（方向二 · v1）
+#
+# 登记真值：状态 / 转移 / 守卫。yaml 本身不是引擎。
+# 由 `lifecycle dry-run` 引擎消费（v2.10+ · 资格判定旁路报告 · 不写盘）。
+# v2.11+ to_30 已接线：HG-AUDIT-R1 · HG-TASK-DRAFT · reviews_retention · audit_D5 · task_lint
+# v2.13+ close 已接线：close_invoke · close_self_check · close_acceptance · close_slug · close_status · close_review
+# v2.17+ close 增补：close_graph_delta · close_kpi · close_experience
+# v2.18+ close 增补：close_wiki_delta · close_wiki_promotion
+#   （to_00 / spec_reviews_retention 仍可 unevaluated）
+# 只读展示：npx @cyning/harness lifecycle show [--json]
+# Schema：schema/lifecycle.v1.schema.json
+
+version: "1"
+
+states:
+  - id: draft
+    note: "含 pending / active 等词表别名 · 见 KNOWN_STATUS_TOKENS；SPEC 侧亦用 draft"
+  - id: signed
+    note: "SPEC 人签 HG-SPEC-SIGNOFF 后 · 可起草 task"
+  - id: in_progress
+  - id: done
+    note: "close 可接受 completed 别名"
+  - id: archived
+    note: "task close 归档后 · 物理上在 done/ 目录"
+
+transitions:
+  - id: to_00
+    from: ["draft", "signed"]
+    to: signed
+    hat: "00"
+    description: "SPEC 签收后起草 task（verify --spec 聚合 · v2.8+）"
+    guards:
+      - id: spec_reviews_retention
+        command_or_check: "verify --spec · findSpecReview（v2.8+）"
+        severity: block
+        allow_flag: "--allow-no-spec-review"
+        note: "bugfix / skip_spec_audit 元信息豁免 · 不挂 verify --task"
+
+  - id: to_30
+    from: ["draft", "in_progress"]
+    to: in_progress
+    hat: "30"
+    description: "执行帽开工（verify --task 与全量模式聚合 · v2.9+）"
+    guards:
+      - id: HG-AUDIT-R1
+        command_or_check: "gate-check · human_gate HG-AUDIT-R1=approved"
+        severity: block
+      - id: HG-TASK-DRAFT
+        command_or_check: "gate-check · HG-TASK-DRAFT=approved（blocks 22,30）"
+        severity: block
+      - id: audit_D5
+        command_or_check: "verify/audit · test_strategy vs 测试文件存在"
+        severity: block
+      - id: reviews_retention
+        command_or_check: "verify --task 与全量 · findReview R<n> 存在性（v2.5+ · 全量 v2.9+）"
+        severity: block
+        allow_flag: "--allow-no-review"
+        note: "全量模式扫描双路径 active；不跑 lint / D5"
+      - id: task_lint
+        command_or_check: "verify --task · lintTaskFile（v2.7+）"
+        severity: warn
+        allow_flag: "--allow-lint-fail"
+        note: "升 block 前置：active lint FAIL 率下降或另立「仅新流转」SPEC（N2-C）"
+
+  - id: close
+    from: ["done"]
+    to: archived
+    hat: "close"
+    description: "task close · active→done 归档"
+    guards:
+      - id: close_invoke
+        command_or_check: "task close 检查1 · invoke hats 集合覆盖（required_invoke_hats / profile · v2.12+）"
+        severity: block
+        allow_flag: "--allow-invoke-gap"
+        note: "缺省 default=10,30,40；minimal=30；full 含 CLOSE；40 可与 30 合并文件名；v2.12.1 去掉 invoke_hats_retention 别名"
+      - id: close_self_check
+        command_or_check: "task close 检查2 · 自检结论已回填"
+        severity: block
+      - id: close_acceptance
+        command_or_check: "task close 检查3 · 验收勾选"
+        severity: block
+        allow_flag: "--allow-unchecked"
+      - id: close_slug
+        command_or_check: "task close 检查4 · slug 一致"
+        severity: block
+      - id: close_status
+        command_or_check: "task close 检查5 · 状态 done/completed"
+        severity: block
+      - id: close_review
+        command_or_check: "task close 检查6 · R<n> 审查文（v2.5+）"
+        severity: block
+        allow_flag: "--allow-no-review"
+      - id: close_graph_delta
+        command_or_check: "task close · graph_delta（缺字段 WARN；none 无 note / 路径不存在 BLOCK · v2.17+）"
+        severity: block
+        note: "缺字段由 adapter 返回 warn · 不挡 dry-run；fail 级与 close 同语义"
+      - id: close_kpi
+        command_or_check: "task close · KPI 可解析分数（kpi_aggregator=CLOSE · v2.17+）"
+        severity: block
+        allow_flag: "--allow-kpi-gap"
+      - id: close_experience
+        command_or_check: "task close · experience_capture（required 硬闸 · v2.17+）"
+        severity: block
+        allow_flag: "--allow-experience-gap"
+      - id: close_wiki_delta
+        command_or_check: "task close · wiki_delta（缺字段 BLOCK；none|n/a 无 note / 路径不存在 BLOCK · v2.18+）"
+        severity: block
+        allow_flag: "--allow-wiki-gap"
+      - id: close_wiki_promotion
+        command_or_check: "task close · wiki 晋升指针（experience=required 且 wiki_delta=path · v2.18+）"
+        severity: block
+        allow_flag: "--allow-wiki-gap"

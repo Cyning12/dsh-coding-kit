@@ -1,0 +1,38 @@
+# Optional · Agent Skills 校验（skills check + skills-ref validate · v2.23+）
+#
+# 用途：复制为 .github/workflows/skills-validate.yml（或并入既有 workflow 的一步）。
+# 真闸：包内 `npm test` 含 test/skills.test.js（drift/隔离/链接重写）；本样例面向
+#       接入仓或本包仓库的 GitHub Actions，提供官方规范校验器兜底。
+# 锁版本：skills-ref 的分发形态（npm 包名/版本）以官方仓库为准 · 接线时核实替换下方示例：
+#         github.com/agentskills/agentskills/tree/main/skills-ref
+
+name: skills-validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # npx-only：关闭 setup-node 默认 packageManager 缓存
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: skills check（drift + frontmatter 约束）
+        run: npx --yes @cyning/harness@2.23.0 skills check
+
+      # 官方规范校验器兜底（包名/版本为占位 · 接线时按官方仓库实际分发替换并锁版本）
+      - name: skills-ref validate（官方规范校验）
+        run: npx --yes @agentskills/skills-ref@<pin-version> validate ./skills
