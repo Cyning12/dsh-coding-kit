@@ -108,13 +108,13 @@ function taskMd(opts: {
 }
 
 describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
-  it('C-bin / version: package.json 为 1.1.0 且有 bin.dsh-coding-kit', async () => {
+  it('C-bin / version: package.json 为 1.2.0 且有 bin.dsh-coding-kit', async () => {
     const pkgRaw = await readFile(path.join(KIT, 'package.json'), 'utf8')
     const pkg = JSON.parse(pkgRaw) as {
       version: string
       bin?: Record<string, string>
     }
-    assert.equal(pkg.version, '1.1.0')
+    assert.equal(pkg.version, '1.2.0')
     assert.notEqual(pkg.version, '1.0.0')
     assert.notEqual(pkg.version, '0.1.0')
     assert.ok(pkg.bin && pkg.bin['dsh-coding-kit'], 'missing bin.dsh-coding-kit')
@@ -122,9 +122,10 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     assert.equal(existsSync(binPath), true, `bin file missing: ${binPath}`)
   })
 
-  it('C9: --help 列出 §2.1；§2.2 标未交付', () => {
+  it('R-HELP: --help 列出 P0 与 G1–G7，无「未交付（1.2.0）」', () => {
     const r = runCli(['--help'])
     assert.equal(r.status, 0)
+    const help = r.combined
     for (const name of [
       'init',
       'upgrade',
@@ -134,16 +135,90 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       'audit',
       'task lint',
       'task close',
+      'status',
+      'timeline',
+      'lifecycle',
+      'discipline',
+      'graph',
+      'sync',
+      'skills',
+      'wiki',
+      'lint-done',
+      'lint-wiki-delta',
+      'task check',
     ]) {
-      assert.match(r.combined, new RegExp(name.replace(' ', '\\s+')))
+      assert.match(help, new RegExp(name.replace(' ', '\\s+')))
     }
-    assert.match(r.combined, /未交付|1\.2\.0/)
-    const help = r.combined
-    const p0Block = help.slice(0, help.search(/未交付|延期/) === -1 ? help.length : help.search(/未交付|延期/))
-    assert.equal(/\bstatus\b/.test(p0Block) && !/upgrade/.test(p0Block), false)
-    if (/\b(graph yaml|skills check|timeline|lifecycle)\b/.test(help)) {
-      assert.match(help, /未交付|1\.2\.0|@cyning\/harness/)
+    assert.match(help, /lifecycle(?:\s+dry-run|\s+show)/)
+    assert.equal(/未交付（1\.2\.0）/.test(help), false)
+    assert.equal(/未交付/.test(help), false)
+  })
+
+  it('R-HELP README: 完成态 1.2.0；双入口；加载≠注入；钉版后可去旧包', async () => {
+    const readme = await readFile(path.join(KIT, 'README.md'), 'utf8')
+    assert.match(readme, /dsh-coding-kit@1\.2\.0/)
+    assert.match(readme, /加载\s*≠\s*注入/)
+    assert.match(readme, /apply_coding_standards/)
+    assert.match(readme, /dsh plugin add/)
+    assert.match(readme, /npx dsh-coding-kit/)
+    assert.match(readme, /去掉 `@cyning\/harness`/)
+    assert.match(readme, /devDependency/)
+    assert.match(readme, /upgrade --yes/)
+    assert.equal(/dsh init --coding-kit/.test(readme), false)
+    assert.equal(/未交付（1\.2\.0）/.test(readme), false)
+    assert.equal(/1\.1\.0 未交付/.test(readme), false)
+    assert.equal(/当成 1\.1\.0 已可用/.test(readme), false)
+    assert.equal(/dsh-coding-kit@1\.1\.0/.test(readme), false)
+  })
+
+  it('D8: bin 仅 dsh-coding-kit；patch 为 insert；pack 不含 SPEC.md', async () => {
+    const pkgRaw = await readFile(path.join(KIT, 'package.json'), 'utf8')
+    const pkg = JSON.parse(pkgRaw) as {
+      version: string
+      bin?: Record<string, string>
+      files?: string[]
     }
+    assert.equal(pkg.version, '1.2.0')
+    assert.ok(pkg.bin)
+    assert.deepEqual(Object.keys(pkg.bin), ['dsh-coding-kit'])
+    assert.equal(Object.prototype.hasOwnProperty.call(pkg.bin, 'cyning-harness'), false)
+    assert.equal(Object.prototype.hasOwnProperty.call(pkg.bin, 'harness'), false)
+    assert.equal(Array.isArray(pkg.files) && pkg.files.includes('SPEC.md'), false)
+
+    const patch = await readFile(path.join(KIT, 'cordis.patch.yml'), 'utf8')
+    assert.match(patch, /^\s*- insert:/m)
+    assert.match(patch, /id:\s*coding-kit/)
+    assert.match(patch, /name:\s*dsh-coding-kit/)
+    assert.equal(/^\s*-?\s*op:/m.test(patch), false)
+    assert.equal(/^\s*path:/m.test(patch), false)
+    assert.equal(/^\s*value:/m.test(patch), false)
+
+    const pack = spawnSync('npm', ['pack', '--dry-run', '--json'], {
+      encoding: 'utf8',
+      cwd: KIT,
+      env: { ...process.env },
+    })
+    assert.equal(pack.status, 0, `${pack.stdout}\n${pack.stderr}`)
+    const parsed = JSON.parse(pack.stdout) as Array<{
+      id?: string
+      filename?: string
+      version?: string
+      files?: Array<{ path: string }>
+    }>
+    assert.ok(Array.isArray(parsed) && parsed[0])
+    const info = parsed[0]
+    assert.equal(info.version, '1.2.0')
+    assert.match(String(info.filename ?? info.id ?? ''), /dsh-coding-kit-1\.2\.0/)
+    const paths = (info.files ?? []).map((f) => f.path.replace(/\\/g, '/'))
+    const joined = paths.join('\n')
+    assert.equal(paths.includes('SPEC.md'), false, 'pack must not contain SPEC.md')
+    assert.match(joined, /(^|\n)cordis\.patch\.yml(\n|$)/)
+    assert.match(joined, /(^|\n)bin\/dsh-coding-kit\.js(\n|$)/)
+    assert.match(joined, /(^|\n)lib\/index\.js(\n|$)/)
+    assert.equal(paths.some((p) => p === 'assets/standards' || p.startsWith('assets/standards/')), true)
+    assert.equal(paths.some((p) => p.includes('docs/dsh_coding_kit_init')), false)
+    assert.equal(paths.some((p) => p === 'src' || p.startsWith('src/')), false)
+    assert.equal(paths.some((p) => p === 'node_modules' || p.startsWith('node_modules/')), false)
   })
 
   it('upgrade 已注册：--help 可见且调用不是 §2.2 失败口', async () => {
@@ -157,14 +232,14 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     })
   })
 
-  it('C1: init --preset harness-only --yes 写出 version=1.1.0 且不写 S2', async () => {
+  it('C1: init --preset harness-only --yes 写出 version=1.2.0 且不写 S2', async () => {
     await withTemp(async (dir) => {
       const r = runCli(['init', '--preset', 'harness-only', '--yes', '--target', dir])
       assert.equal(r.status, 0, r.combined)
       const mfPath = path.join(dir, '.cyning-harness', 'manifest.json')
       assert.equal(existsSync(mfPath), true)
       const mf = JSON.parse(await readFile(mfPath, 'utf8')) as { version: string }
-      assert.equal(mf.version, '1.1.0')
+      assert.equal(mf.version, '1.2.0')
       for (const rel of S2_RELS) {
         assert.equal(existsSync(path.join(dir, rel)), false, `S2 leaked: ${rel}`)
       }
@@ -307,13 +382,35 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     })
   })
 
-  it('C8: §2.2 命令非 0，文案含 1.2.0 或 @cyning/harness', () => {
-    const r = runCli(['graph', 'yaml', 'compile', '--graph-id', 'x'])
-    assert.notEqual(r.status, 0, r.combined)
-    assert.match(r.combined, /1\.2\.0|@cyning\/harness/)
+  it('C8 / R-C8: 合法 fixture 上 graph yaml compile 或 skills check → exit 0', async () => {
+    await withTemp(async (dir) => {
+      const input = path.join(dir, 'docs', '_tech_graph')
+      await writeRel(
+        dir,
+        'docs/_tech_graph/g1.graph.yaml',
+        `graph_id: "g1"
+title: "rc8"
+nodes:
+  - id: "A"
+    label: "A"
+  - id: "B"
+    label: "B"
+edges:
+  - from: "A"
+    to: "B"
+    label: "->"
+`,
+      )
+      const r = runCli(
+        ['graph', 'yaml', 'compile', '--graph-id', 'g1', '--input', input, '--target', dir],
+        dir,
+      )
+      assert.equal(r.status, 0, r.combined)
+      assert.equal(/未交付/.test(r.combined), false)
+    })
     const s = runCli(['skills', 'check'])
-    assert.notEqual(s.status, 0, s.combined)
-    assert.match(s.combined, /1\.2\.0|@cyning\/harness/)
+    assert.equal(s.status, 0, s.combined)
+    assert.equal(/未交付/.test(s.combined), false)
   })
 
   it('CLI 源码不把闸命令注册为 ctx.tools', async () => {

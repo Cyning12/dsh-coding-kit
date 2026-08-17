@@ -9,15 +9,29 @@ import {
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-
-class CliError extends Error {
-  readonly exitCode: number
-  constructor(message: string, exitCode = 1) {
-    super(message)
-    this.name = 'CliError'
-    this.exitCode = exitCode
-  }
-}
+import { cmdGraph } from './cli-graph.ts'
+import { cmdDiscipline, cmdLifecycle } from './cli-lifecycle.ts'
+import { cmdSkills } from './cli-skills.ts'
+import {
+  CliError,
+  evaluateMayStart30,
+  extractSection,
+  extractTaskSlug,
+  fail,
+  findGate,
+  normalizeSlug,
+  packageRoot,
+  parseHarnessMeta,
+  parseHumanGates,
+  resolveTarget,
+  resolveTaskPath,
+  STATUS_RE,
+  takeOption,
+} from './cli-shared.ts'
+import { cmdStatus, cmdTimeline } from './cli-status.ts'
+import { cmdSync } from './cli-sync.ts'
+import { cmdTaskCheck, cmdTaskLintDone, cmdTaskLintWikiDelta } from './cli-task-extra.ts'
+import { cmdWiki } from './cli-wiki.ts'
 
 type Manifest = {
   version: string
@@ -27,28 +41,8 @@ type Manifest = {
   upgraded_at: string
 }
 
-type HumanGate = {
-  id: string
-  status: string
-  blocksHats: string
-}
-
 type LintIssue = { rule: string; message: string; line?: number }
 
-type MayStart = { ok: boolean; reason: string | null }
-
-const DEFERRED_CMDS = new Set([
-  'status',
-  'timeline',
-  'lifecycle',
-  'discipline',
-  'graph',
-  'sync',
-  'skills',
-  'wiki',
-])
-const DEFERRED_TASK_SUBS = new Set(['check', 'lint-done', 'lint-wiki-delta'])
-const STATUS_RE = /\*\*状态\*\*：?\s*`?([a-z_]+)/i
 const CHECKBOX_RE = /^\s*- \[[ xX]\]/m
 const UNCHECKED_RE = /^\s*- \[ \]/
 const PLACEHOLDER_RE = /^（[^）]*(回填|待填)[^）]*）$/
@@ -63,39 +57,9 @@ const KNOWN_STATUS_TOKENS = new Set([
   'completed',
 ])
 const CLOSE_STATUSES = new Set(['done', 'completed'])
-const META_TICK_RE = /\|\s*\*\*([^*]+)\*\*\s*\|\s*`([^`]+)`/
-const META_PLAIN_RE = /\|\s*\*\*([^*]+)\*\*\s*\|\s*([^|\n]+)\|/
-const GATE_ROW_RE =
-  /^\|\s*(?:\*\*)?([^*|]+?)(?:\*\*)?\s*\|\s*([^|]+)\|\s*([^|]+)\|\s*([^|]*)\|/
-
-function packageRoot(): string {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-}
-
-function resolveTarget(cwd: string, targetArg?: string): string {
-  return path.resolve(targetArg || cwd)
-}
-
-function takeOption(
-  args: string[],
-  name: string,
-): { value: string | undefined; rest: string[] } {
-  const idx = args.indexOf(name)
-  if (idx === -1 || idx + 1 >= args.length) return { value: undefined, rest: args }
-  const value = args[idx + 1]
-  const rest = args.slice(0, idx).concat(args.slice(idx + 2))
-  return { value, rest }
-}
-
-function fail(message: string, exitCode = 1): never {
-  throw new CliError(message, exitCode)
-}
 
 function notDelivered(cmd: string): never {
-  fail(
-    `${cmd} 未交付（dsh-coding-kit@1.2.0）。1.1.0 仅含 P0 闸运行时。请继续使用 npx @cyning/harness 或等待 1.2.0。`,
-    2,
-  )
+  fail(`${cmd} 未交付（verify --spec 不在 1.2.0 范围）。`, 2)
 }
 
 async function readPkgVersion(): Promise<string> {
@@ -119,15 +83,19 @@ function usage(version: string): void {
   npx dsh-coding-kit audit [--target PATH] [--task FILE]
   npx dsh-coding-kit task lint --file PATH
   npx dsh-coding-kit task close --file PATH [--yes]
-
-P0（1.1.0 已交付）:
-  init / upgrade / check / verify / gate-check / audit / task lint / task close
-
-未交付（1.2.0 · 请继续 npx @cyning/harness）:
-  status / timeline / lifecycle / discipline
-  graph yaml * / graph ingest|snapshot|axioms
-  sync index / skills build|check / wiki export
-  task lint-done / task lint-wiki-delta / task check
+  npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
+  npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
+  npx dsh-coding-kit lifecycle show [--json]
+  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH]
+  npx dsh-coding-kit discipline show [--json]
+  npx dsh-coding-kit graph yaml compile|check|export …
+  npx dsh-coding-kit graph ingest|snapshot|axioms …
+  npx dsh-coding-kit sync index [--target PATH]
+  npx dsh-coding-kit skills build|check
+  npx dsh-coding-kit wiki export --json [--target PATH]
+  npx dsh-coding-kit task lint-done [--target PATH]
+  npx dsh-coding-kit task lint-wiki-delta [--target PATH]
+  npx dsh-coding-kit task check --file PATH
 `)
 }
 
@@ -229,102 +197,6 @@ async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
     console.log('状态: 可升级')
     console.log('建议: npx dsh-coding-kit upgrade --yes')
   }
-}
-
-function escapeRegExp(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
-
-function extractSection(content: string, startMarker: string, endMarker?: string): string | null {
-  const startRe = new RegExp(`^${escapeRegExp(startMarker)}`, 'm')
-  const startMatch = content.match(startRe)
-  if (!startMatch || startMatch.index === undefined) return null
-  const start = startMatch.index
-  let end = content.length
-  if (endMarker) {
-    const next = content.indexOf(endMarker, start + startMarker.length)
-    if (next !== -1) end = next
-  }
-  return content.slice(start, end)
-}
-
-function normalizeCell(raw: string): string {
-  return raw.replace(/[`*]/g, '').trim()
-}
-
-function parseHarnessMeta(content: string): Record<string, string> {
-  const meta: Record<string, string> = {}
-  const section = extractSection(content, '## Harness 元信息', '###')
-  if (!section) return meta
-  for (const line of section.split('\n')) {
-    const tick = line.match(META_TICK_RE)
-    if (tick) {
-      meta[tick[1].trim()] = tick[2].trim()
-      continue
-    }
-    const plain = line.match(META_PLAIN_RE)
-    if (!plain) continue
-    const key = plain[1].trim()
-    const val = plain[2].trim()
-    if (!key || key === '字段') continue
-    if (/^[-:\s]+$/.test(val)) continue
-    if (!(key in meta)) meta[key] = val
-  }
-  return meta
-}
-
-function parseHumanGates(content: string): HumanGate[] {
-  const section = extractSection(content, '### 人工闸', '\n##')
-  if (!section) return []
-  const gates: HumanGate[] = []
-  for (const line of section.split('\n')) {
-    const match = line.match(GATE_ROW_RE)
-    if (!match) continue
-    const id = match[1].trim()
-    if (!id.startsWith('HG-') || id.includes('human_gate')) continue
-    gates.push({
-      id,
-      status: normalizeCell(match[2]),
-      blocksHats: normalizeCell(match[3]),
-    })
-  }
-  return gates
-}
-
-function findGate(gates: HumanGate[], prefix: string): HumanGate | undefined {
-  return gates.find((g) => g.id === prefix || g.id.startsWith(`${prefix}（`) || g.id.startsWith(`${prefix}(`))
-}
-
-function evaluateMayStart30(gates: HumanGate[]): MayStart {
-  const audit = findGate(gates, 'HG-AUDIT-R1')
-  const draft = findGate(gates, 'HG-TASK-DRAFT')
-  const graph = findGate(gates, 'HG-GRAPH-MODULES')
-  if (audit?.status !== 'approved') {
-    return { ok: false, reason: 'HG-AUDIT-R1 pending' }
-  }
-  if (draft && draft.status !== 'approved' && draft.blocksHats.includes('30')) {
-    return { ok: false, reason: 'HG-TASK-DRAFT pending' }
-  }
-  if (graph?.status === 'pending') {
-    return { ok: false, reason: 'HG-GRAPH-MODULES pending' }
-  }
-  return { ok: true, reason: null }
-}
-
-function extractTaskSlug(fileName: string): string {
-  let base = path.basename(fileName).replace(/\.md$/, '')
-  base = base.replace(/^(task_|done_)/, '')
-  base = base.replace(/_(\d{8}|\d{4}-\d{2}-\d{2})$/, '')
-  base = base.replace(/_v\d+$/, '')
-  return base
-}
-
-function normalizeSlug(slug: string): string {
-  return String(slug).replace(/_/g, '-')
-}
-
-function resolveTaskPath(target: string, taskFile: string): string {
-  return path.isAbsolute(taskFile) ? taskFile : path.join(target, taskFile)
 }
 
 function formatGateCheck(taskFile: string, content: string): { text: string; blocked: boolean } {
@@ -735,8 +607,7 @@ async function cmdTaskClose(args: string[]): Promise<void> {
 
 async function cmdTask(args: string[]): Promise<void> {
   const [sub, ...rest] = args
-  if (!sub) fail('task 子命令未知: (空)\n用法: task lint --file PATH · task close --file PATH [--yes]')
-  if (DEFERRED_TASK_SUBS.has(sub)) notDelivered(`task ${sub}`)
+  if (!sub) fail('task 子命令未知: (空)\n用法: task lint --file PATH · task close --file PATH [--yes] · task lint-done · task lint-wiki-delta · task check --file PATH')
   if (sub === 'lint') {
     await cmdTaskLint(rest)
     return
@@ -745,7 +616,19 @@ async function cmdTask(args: string[]): Promise<void> {
     await cmdTaskClose(rest)
     return
   }
-  fail(`task 子命令未知: ${sub}\n用法: task lint --file PATH · task close --file PATH [--yes]`)
+  if (sub === 'lint-done') {
+    await cmdTaskLintDone(rest)
+    return
+  }
+  if (sub === 'lint-wiki-delta') {
+    await cmdTaskLintWikiDelta(rest)
+    return
+  }
+  if (sub === 'check') {
+    await cmdTaskCheck(rest)
+    return
+  }
+  fail(`task 子命令未知: ${sub}\n用法: task lint --file PATH · task close --file PATH [--yes] · task lint-done · task lint-wiki-delta · task check --file PATH`)
 }
 
 export async function runCli(argv: string[]): Promise<void> {
@@ -759,7 +642,6 @@ export async function runCli(argv: string[]): Promise<void> {
     return
   }
   const [cmd, ...rest] = argv
-  if (DEFERRED_CMDS.has(cmd)) notDelivered(cmd)
   if (cmd === 'init') {
     await cmdInit(rest, pkgVersion)
     return
@@ -786,6 +668,38 @@ export async function runCli(argv: string[]): Promise<void> {
   }
   if (cmd === 'task') {
     await cmdTask(rest)
+    return
+  }
+  if (cmd === 'status') {
+    await cmdStatus(rest)
+    return
+  }
+  if (cmd === 'timeline') {
+    await cmdTimeline(rest)
+    return
+  }
+  if (cmd === 'lifecycle') {
+    await cmdLifecycle(rest)
+    return
+  }
+  if (cmd === 'discipline') {
+    await cmdDiscipline(rest)
+    return
+  }
+  if (cmd === 'skills') {
+    await cmdSkills(rest)
+    return
+  }
+  if (cmd === 'sync') {
+    await cmdSync(rest)
+    return
+  }
+  if (cmd === 'graph') {
+    await cmdGraph(rest)
+    return
+  }
+  if (cmd === 'wiki') {
+    await cmdWiki(rest)
     return
   }
   fail(`未知命令: ${cmd}\n`)

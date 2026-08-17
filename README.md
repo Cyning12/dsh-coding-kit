@@ -1,6 +1,6 @@
 # dsh-coding-kit
 
-**dsh-coding-kit@1.1.0** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
+**dsh-coding-kit@1.2.0** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI** 与 **G1–G7 过程命令**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
 
 > **加载 ≠ 注入。** 安装或加载本插件 **不会** 自动改写 system prompt。`apply()` 只注册工具。必须由你或模型调用 `apply_coding_standards` 之后，后续回合的 runtime context 才会含 `# Coding Standards`。
 
@@ -9,9 +9,9 @@
 | 你是谁 | 入口 | 不要用 |
 |--------|------|--------|
 | DSH 会话 / 模型调工具 | `dsh plugin add dsh-coding-kit` | 不要只 `npm install`（缺 bundle 层则工具不出现） |
-| Cursor / CI / 存量仓日常闸 | `npx dsh-coding-kit` | 不要把 graph / skills / wiki / status 当成 1.1.0 已可用 |
+| Cursor / CI / 存量仓日常闸 | `npx dsh-coding-kit` | 不要把插件 `init_coding_kit` 与 CLI `init` 当成同一入口 |
 
-两条入口同一 npm 包 **`dsh-coding-kit@1.1.0`**。插件面与 CLI 面互不替代。
+两条入口同一 npm 包 **`dsh-coding-kit@1.2.0`**。插件面与 CLI 面互不替代。
 
 ## 入口 A · DSH 插件
 
@@ -55,7 +55,7 @@ dsh --profile web --dump-config
 
 ## 入口 B · CLI（Cursor / CI）
 
-P0 闸命令（**1.1.0 已交付**）：
+P0 闸与 G1–G7（**1.2.0 已交付**）：
 
 ```bash
 npx dsh-coding-kit init [--preset NAME] [--yes]
@@ -66,30 +66,32 @@ npx dsh-coding-kit gate-check --task <task.md>
 npx dsh-coding-kit audit --task <task.md>
 npx dsh-coding-kit task lint --file <task.md>
 npx dsh-coding-kit task close --file <task.md>
+npx dsh-coding-kit status [--target] [--task] [--json] [--check]
+npx dsh-coding-kit timeline --task FILE
+npx dsh-coding-kit lifecycle show [--json]
+npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE
+npx dsh-coding-kit discipline show [--json]
+npx dsh-coding-kit graph yaml compile|check|export
+npx dsh-coding-kit graph ingest|snapshot|axioms
+npx dsh-coding-kit sync index
+npx dsh-coding-kit skills build|check
+npx dsh-coding-kit wiki export --json
+npx dsh-coding-kit task lint-done
+npx dsh-coding-kit task lint-wiki-delta
+npx dsh-coding-kit task check --file PATH
 ```
 
-`init` / `upgrade` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
-
-## 1.1.0 未交付（§2.2 · 等到 1.2.0）
-
-下列命令 **不在 1.1.0 实现成功语义**。调用会非 0 退出。请继续 `npx @cyning/harness`，或等待 **dsh-coding-kit@1.2.0**：
-
-- `status` / `timeline` / `lifecycle` / `discipline`
-- `graph yaml *` / `graph ingest|snapshot|axioms`
-- `sync index` / `skills build|check` / `wiki export`
-- `task lint-done` / `task lint-wiki-delta` / `task check`
-
-使用这些命令的仓在 1.2.0 前 **允许双包并存**：P0 闸走本包，其余暂留 `@cyning/harness`。
+`init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
 
 ## 从 @cyning/harness 迁移
 
-只跑 P0 闸的存量仓，迁到 **dsh-coding-kit@1.1.0**：
+钉 **dsh-coding-kit@1.2.0** 后可去掉 `@cyning/harness`：
 
-1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.1.0`）。
-2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.1.0，`from_version` 记旧号）。
-3. CI / 脚本里把 `npx @cyning/harness` 换成 `npx dsh-coding-kit`（仅 P0 命令：init / upgrade / check / verify / gate-check / audit / task lint / task close）。
+1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.2.0`）。
+2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.2.0，`from_version` 记旧号）。
+3. CI / 脚本里把 `npx @cyning/harness` 换成 `npx dsh-coding-kit`。
 
-仍依赖 §2.2 命令的仓：P0 按上表切新包，graph / skills / wiki / status 等继续 `npx @cyning/harness`，直到 1.2.0。
+1.2.0 发布前仍允许双包并存；publish 并完成上表后即可卸载旧包。
 
 ## GitHub topic
 
