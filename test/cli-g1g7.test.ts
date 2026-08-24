@@ -501,4 +501,57 @@ describe('D1–D7 G1–G7 runtime', { concurrency: 1 }, () => {
       assert.match(checkFail.combined, /schema: FAIL/)
     })
   })
+
+  it('G7-strict: wiki_delta 非法值 / 悬空 path 仅 --strict 档报缺口（DEF-021 完成态 A）', async () => {
+    // 非法值（todo）：默认档 PASS（字段存在即过），--strict 档 exit 2 + wiki_delta_invalid
+    await withTemp(async (dir) => {
+      await writeRel(
+        dir,
+        'docs/tasks/active/task_wiki_bad_value_v1.md',
+        taskMd({ slug: 'wiki_bad_value', wikiDelta: 'todo' }),
+      )
+      const def = runCli(['task', 'lint-wiki-delta', '--target', dir])
+      assert.equal(def.status, 0, def.combined)
+      const strict = runCli(['task', 'lint-wiki-delta', '--target', dir, '--strict'])
+      assert.equal(strict.status, 2, strict.combined)
+      assert.match(strict.combined, /wiki_delta_invalid/)
+    })
+
+    // 悬空 path：默认档 PASS，--strict 档 exit 2 + wiki_delta_path_missing
+    await withTemp(async (dir) => {
+      await writeRel(
+        dir,
+        'docs/tasks/active/task_wiki_dangling_v1.md',
+        taskMd({ slug: 'wiki_dangling', wikiDelta: 'docs/coding_wiki/not_here.md' }),
+      )
+      const def = runCli(['task', 'lint-wiki-delta', '--target', dir])
+      assert.equal(def.status, 0, def.combined)
+      const strict = runCli(['task', 'lint-wiki-delta', '--target', dir, '--strict'])
+      assert.equal(strict.status, 2, strict.combined)
+      assert.match(strict.combined, /wiki_delta_path_missing/)
+    })
+
+    // 合法 path（文件存在）+ none/n/a：--strict 档不误伤，仍 PASS
+    await withTemp(async (dir) => {
+      await writeRel(dir, 'docs/coding_wiki/topics/ok.md', '# wiki\n')
+      await writeRel(
+        dir,
+        'docs/tasks/active/task_wiki_path_v1.md',
+        taskMd({ slug: 'wiki_path_ok', wikiDelta: 'docs/coding_wiki/topics/ok.md' }),
+      )
+      await writeRel(
+        dir,
+        'docs/tasks/active/task_wiki_none_v1.md',
+        taskMd({ slug: 'wiki_none_ok', wikiDelta: 'none' }),
+      )
+      await writeRel(
+        dir,
+        'docs/tasks/done/task_wiki_na_v1.md',
+        taskMd({ slug: 'wiki_na_ok', wikiDelta: 'n/a' }),
+      )
+      const strict = runCli(['task', 'lint-wiki-delta', '--target', dir, '--strict'])
+      assert.equal(strict.status, 0, strict.combined)
+      assert.match(strict.combined, /LINT-WIKI-DELTA: PASS/)
+    })
+  })
 })
