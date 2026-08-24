@@ -160,7 +160,23 @@ describe('C2 CLI upgrade compat', { concurrency: 1 }, () => {
 
   it('check: 已钉 1.2.4 → 已是最新 exit 0；旧 version → 可升级', async () => {
     await withTemp(async (dir) => {
-      await seedOldManifest(dir)
+      // DEF-013：OLD_VERSION=2.24.0 数值上高于包版本 1.2.4，三向判定后属高版本分支；
+      // 本用例钉「低版本 → 可升级」语义，fixture 改用真实低版本 1.2.0（断言不变）
+      await writeRel(
+        dir,
+        '.cyning-harness/manifest.json',
+        `${JSON.stringify(
+          {
+            version: '1.2.0',
+            preset: 'harness-only',
+            ide: ['cursor'],
+            from_version: null,
+            upgraded_at: '2026-01-01T00:00:00Z',
+          },
+          null,
+          2,
+        )}\n`,
+      )
       const before = runCli(['check'], dir)
       assert.equal(before.status, 0, before.combined)
       assert.match(before.combined, /可升级/)

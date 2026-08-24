@@ -57,6 +57,8 @@ const KNOWN_STATUS_TOKENS = new Set([
   'completed',
 ])
 const CLOSE_STATUSES = new Set(['done', 'completed'])
+// init --preset 合法词表（DEF-013 D1：当前唯一合法值；新增 preset 须先扩展此常量）
+const VALID_PRESETS = ['harness-only'] as const
 
 function notDelivered(cmd: string): never {
   fail(`${cmd} 本包未交付（不支持）。`)
@@ -75,7 +77,7 @@ function usage(version: string): void {
 用法:
   npx dsh-coding-kit --version | -V
   npx dsh-coding-kit --help | -h
-  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]
+  npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]  （NAME 词表: harness-only）
   npx dsh-coding-kit upgrade [--target PATH] [--yes]
   npx dsh-coding-kit check [--target PATH]
   npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json]
@@ -115,13 +117,24 @@ function nowUtc(): string {
   return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
 }
 
-function isPinnedVersion(current: string, pkgVersion: string): boolean {
-  return current === pkgVersion
+// 数值三元组比较（x.y.z）：-1 a<b · 0 相等 · 1 a>b。
+// 限制：不支持 pre-release 形态（如 1.2.2-beta.1）；遇非纯数字段按「不等且方向未知」归 -1（维持旧版可升级提示），版本历史均为纯 x.y.z，未来引入 pre-release 再升级比较器。
+function compareVersion(a: string, b: string): number {
+  if (a === b) return 0
+  const pa = a.split('.').map((p) => Number.parseInt(p, 10))
+  const pb = b.split('.').map((p) => Number.parseInt(p, 10))
+  for (let i = 0; i < 3; i++) {
+    const x = pa[i]
+    const y = pb[i]
+    if (x === undefined || y === undefined || Number.isNaN(x) || Number.isNaN(y)) return -1
+    if (x !== y) return x < y ? -1 : 1
+  }
+  return 0
 }
 
 async function cmdInit(args: string[], pkgVersion: string): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    console.log('用法: npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]')
+    console.log('用法: npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]  （NAME 词表: harness-only）')
     return
   }
   const yes = args.includes('--yes')
@@ -134,6 +147,9 @@ async function cmdInit(args: string[], pkgVersion: string): Promise<void> {
 
   const target = resolveTarget(process.cwd(), targetArg)
   const chosenPreset = preset || 'harness-only'
+  if (!(VALID_PRESETS as readonly string[]).includes(chosenPreset)) {
+    fail(`init --preset 取值非法: ${chosenPreset}（合法词表: ${VALID_PRESETS.join(' / ')}）`)
+  }
   const existing = await readManifest(target)
   if (existing) {
     console.log(`manifest 已存在，跳过写入: ${manifestPath(target)}`)
@@ -162,7 +178,7 @@ async function cmdUpgrade(args: string[], pkgVersion: string): Promise<void> {
     return
   }
   const yes = args.includes('--yes')
-  let rest = args.filter((a) => a !== '--yes' && a !== '--force')
+  let rest = args.filter((a) => a !== '--yes')
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
   rest = r1
   if (rest.length > 0) fail(`upgrade 未知参数: ${rest.join(' ')}`)
@@ -205,11 +221,15 @@ async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
   }
   console.log(`manifest.version: ${manifest.version}`)
   console.log(`manifest.preset: ${manifest.preset}`)
-  if (isPinnedVersion(manifest.version, pkgVersion)) {
+  const cmp = compareVersion(manifest.version, pkgVersion)
+  if (cmp === 0) {
     console.log('状态: 已是最新')
-  } else {
+  } else if (cmp < 0) {
     console.log('状态: 可升级')
     console.log('建议: npx dsh-coding-kit upgrade --yes')
+  } else {
+    console.log('状态: manifest 版本高于包版本（可能为降级安装）')
+    console.log('建议: 核对接入来源（manifest 由更高版本 CLI 写入）')
   }
 }
 

@@ -60,7 +60,7 @@ dsh --profile web --dump-config
 P0 闸与 G1–G7（**1.2.0 已交付**）：
 
 ```bash
-npx dsh-coding-kit init [--preset NAME] [--yes]
+npx dsh-coding-kit init [--preset NAME] [--yes]   # NAME 词表: harness-only（唯一合法值）
 npx dsh-coding-kit upgrade --yes
 npx dsh-coding-kit check
 npx dsh-coding-kit verify --task <task.md>
