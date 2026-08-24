@@ -31,8 +31,8 @@ profile 字段（历史）：`tracks.ide_cursor` · `tracks.ide_claude` · `trac
 - 块标记：`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`（**marker 字符串**，不是 npx 包名；可保留）
 - **不覆盖**用户仓已有 `CLAUDE.md` / `AGENTS.md` 全文；**产品块外**手写保持不变
 - **仓内定制（v2.22+）**：使用 `<!-- cyning-harness-local:begin -->` … `<!-- cyning-harness-local:end -->`，且须在产品 begin/end **之外**。sync **永不**改写 local 块；若误写在产品块内，apply 会尝试 **salvage** 到产品块外。
-- G-L / 图谱模块页路径：在 `.cyning-harness/profile.json` 设可选 `"graph_modules_path": "l1/01_modules"`（默认 `01_struct`），由 sync 写入 `FRAGMENT_30_gate_verify_v1_zh.md` 占位。
-- **首次迁入操作序（强制）**：先迁 profile/local 并 **git commit**，再 `npx dsh-coding-kit upgrade --yes`（脏树易撞 S5）。
+- G-L / 图谱模块页路径：`.cyning-harness/profile.json` 的可选 `"graph_modules_path"` 字段（旧包默认 `01_struct`）与 FRAGMENT 占位替换链 **当前不支持**（旧包 cyning-harness 史实机制，本包未接线；sync 仅生成 `invoke_index.json`，不读 profile.json、不写任何 FRAGMENT）。
+- **首次迁入操作序（推荐）**：先迁 profile/local 并 **git commit**，再 `npx dsh-coding-kit upgrade --yes`。`upgrade` 当前仅改写 `.cyning-harness/manifest.json`（src/cli.ts#155-178），**无 git-clean 前置检查**（脏树拦截本包未接线）；git commit 为推荐操作纪律，非本包强制。
 
 ## 手工嵌入（备查）
 

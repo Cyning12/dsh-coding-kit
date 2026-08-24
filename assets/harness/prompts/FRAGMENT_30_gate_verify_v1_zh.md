@@ -12,7 +12,6 @@
 |---------------|--------------|-----------------|--------|-----------|------------|
 | HG-TASK-DRAFT | {读表} | {若有} | {Y/N} | {Y/N} | … |
 | HG-AUDIT-R1 | {读表} | {若有} | {Y/N} | Y | … |
-| HG-GRAPH-MODULES | {__HARNESS_GRAPH_MODULES_PATH__或—} | — | — | … | … |
 
 reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（**v2.5+**：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review`；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
 
