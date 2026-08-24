@@ -103,7 +103,7 @@
 | `graph yaml compile --graph-id ID \| --all` | YAML → MD | 默认输入 `docs/_tech_graph`；`--all` 扫 `*.graph.yaml` |
 | `graph yaml check --graph-id ID \| --all` | 与 graph.json 切片比对 | 有 diff → 非 0 |
 | `graph yaml export [--input] [--out] [--no-recursive]` | 导出 graph.json | 不用 `--all` / `--graph-id` |
-| `graph ingest [--target] [--actor] [--dry-run]` | 扫描仓 → HGM 事件 | `--dry-run` 不写盘；幂等跳过已存在 |
+| `graph ingest [--target] [--actor] [--dry-run]` | 扫描仓 → HGM 事件 | `--dry-run` 不写盘；幂等跳过已存在；扫描 `docs/tasks/active` + `docs/harness/tasks/active` 双路径（同 slug 先扫目录优先） |
 | `graph snapshot [--target]` | 事件重放 → snapshot.json | 写出节点/边计数 |
 | `graph axioms check [--target] [--json]` | HGM 公理 | 违规 → exit 2 |
 

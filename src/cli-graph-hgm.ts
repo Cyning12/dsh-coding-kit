@@ -177,41 +177,49 @@ export function ingestRepo(
       source,
     })
   }
-  const activeDir = path.join(target, 'docs/tasks/active')
-  for (const tf of listMarkdownFiles(activeDir)) {
-    const parsed = parseTaskMarkdown(readFileSync(tf, 'utf8'), tf)
-    const taskSubject = `task:${parsed.task_slug}`
-    events.push({
-      event_id: eventId(new Date(occurredAt), seq++),
-      type: 'TaskCreated',
-      occurred_at: occurredAt,
-      actor,
-      subject: taskSubject,
-      data: {
-        task_slug: parsed.task_slug,
-        title: parsed.title,
-        status: parsed.status,
-        path: path.relative(target, tf),
-        must_read: parsed.must_read,
-      },
-      source,
-    })
-    for (const g of parsed.gates) {
+  // DEF-022：active task 扫描目录表与 status 对齐（cli-status.ts 双路径布局）；
+  // 目录不存在时静默跳过（listMarkdownFiles 的 existsSync 语义）。
+  // 同一次运行内两目录出现同 task_slug 时「先扫目录优先、后者跳过」（§7-D2 拍板口径）。
+  const ACTIVE_TASK_DIRS = ['docs/tasks/active', 'docs/harness/tasks/active']
+  const seenSlugs = new Set<string>()
+  for (const relDir of ACTIVE_TASK_DIRS) {
+    for (const tf of listMarkdownFiles(path.join(target, relDir))) {
+      const parsed = parseTaskMarkdown(readFileSync(tf, 'utf8'), tf)
+      if (seenSlugs.has(parsed.task_slug)) continue
+      seenSlugs.add(parsed.task_slug)
+      const taskSubject = `task:${parsed.task_slug}`
       events.push({
         event_id: eventId(new Date(occurredAt), seq++),
-        type: 'GateStatusChanged',
+        type: 'TaskCreated',
         occurred_at: occurredAt,
         actor,
-        subject: `gate:${parsed.task_slug}:${g.human_gate_id}`,
+        subject: taskSubject,
         data: {
-          old_status: priorGateStatus.get(`gate:${parsed.task_slug}:${g.human_gate_id}`) ?? 'pending',
-          new_status: g.status,
           task_slug: parsed.task_slug,
-          human_gate_id: g.human_gate_id,
-          blocks_hats: g.blocks_hats,
+          title: parsed.title,
+          status: parsed.status,
+          path: path.relative(target, tf),
+          must_read: parsed.must_read,
         },
         source,
       })
+      for (const g of parsed.gates) {
+        events.push({
+          event_id: eventId(new Date(occurredAt), seq++),
+          type: 'GateStatusChanged',
+          occurred_at: occurredAt,
+          actor,
+          subject: `gate:${parsed.task_slug}:${g.human_gate_id}`,
+          data: {
+            old_status: priorGateStatus.get(`gate:${parsed.task_slug}:${g.human_gate_id}`) ?? 'pending',
+            new_status: g.status,
+            task_slug: parsed.task_slug,
+            human_gate_id: g.human_gate_id,
+            blocks_hats: g.blocks_hats,
+          },
+          source,
+        })
+      }
     }
   }
   if (!dryRun) {

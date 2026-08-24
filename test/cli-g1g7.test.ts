@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { spawnSync } from 'node:child_process'
-import { existsSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -310,6 +310,60 @@ describe('D1–D7 G1–G7 runtime', { concurrency: 1 }, () => {
       const axFail = runCli(['graph', 'axioms', 'check', '--target', dir])
       assert.equal(axFail.status, 2, axFail.combined)
       assert.match(axFail.combined, /FAIL|violations|D2/)
+    })
+  })
+
+  it('DEF-022: graph ingest 扫 harness 布局（docs/harness/tasks/active）；幂等不回归；timeline --ingest 同口径', async () => {
+    // 布局一：仅 docs/harness/tasks/active 落 task（无 docs/tasks/active）
+    await withTemp(async (dir) => {
+      const rel = 'docs/harness/tasks/active/task_harness_ingest_v1.md'
+      await writeRel(dir, rel, taskMd({ slug: 'harness_ingest' }))
+      const run1 = runCli(['graph', 'ingest', '--target', dir])
+      assert.equal(run1.status, 0, run1.combined)
+      const eventsDir = path.join(dir, '.cyning-harness', 'events')
+      assert.equal(existsSync(eventsDir), true, 'ingest 应写出事件轨')
+      const jsonl = readdirSync(eventsDir)
+        .filter((n) => n.endsWith('.jsonl'))
+        .map((n) => readFileSync(path.join(eventsDir, n), 'utf8'))
+        .join('')
+      assert.ok(jsonl.includes('"type":"TaskCreated"'), 'jsonl 应含 TaskCreated')
+      assert.ok(jsonl.includes('"subject":"task:harness_ingest"'), 'TaskCreated subject 应为 task:harness_ingest')
+      assert.ok(jsonl.includes('"type":"GateStatusChanged"'), 'jsonl 应含 GateStatusChanged')
+      assert.ok(jsonl.includes('gate:harness_ingest:HG-AUDIT-R1'), 'GateStatusChanged subject 应含闸标识')
+      // 幂等回归（T4）：无变化重跑 → skipped 等于首次 count
+      const count1 = Number(/新事件: (\d+)/.exec(run1.combined)?.[1] ?? -1)
+      assert.ok(count1 >= 3, `首次应产生 TaskCreated + 2 道闸事件: ${run1.combined}`)
+      const run2 = runCli(['graph', 'ingest', '--target', dir])
+      assert.equal(run2.status, 0, run2.combined)
+      const skipped2 = Number(/跳过（已存在）: (\d+)/.exec(run2.combined)?.[1] ?? -1)
+      assert.equal(skipped2, count1, `第二次应全量跳过: ${run2.combined}`)
+      // 同 slug 撞名（§7-D2）：两目录同 task_slug → 先扫目录（docs/tasks/active）优先、后者跳过
+      await writeRel(dir, 'docs/tasks/active/task_dup_slug_v1.md', taskMd({ slug: 'dup_slug' }))
+      await writeRel(dir, 'docs/harness/tasks/active/task_dup_slug_v1.md', taskMd({ slug: 'dup_slug' }))
+      const run3 = runCli(['graph', 'ingest', '--target', dir])
+      assert.equal(run3.status, 0, run3.combined)
+      const jsonlAll = readdirSync(eventsDir)
+        .filter((n) => n.endsWith('.jsonl'))
+        .map((n) => readFileSync(path.join(eventsDir, n), 'utf8'))
+        .join('')
+      const dupCreated = jsonlAll
+        .split('\n')
+        .filter((l) => l.includes('"type":"TaskCreated"') && l.includes('"subject":"task:dup_slug"'))
+      assert.equal(dupCreated.length, 1, `同 slug 撞名应只记一条 TaskCreated: ${dupCreated.join('|')}`)
+      assert.ok(dupCreated[0].includes('docs/tasks/active'), '先扫目录（docs/tasks/active）优先')
+    })
+    // 布局二（独立 fixture）：timeline --ingest 自动获得同一双路径口径
+    await withTemp(async (dir) => {
+      const rel = 'docs/harness/tasks/active/task_harness_tl_v1.md'
+      await writeRel(dir, rel, taskMd({ slug: 'harness_tl' }))
+      const tl = runCli(['timeline', '--task', rel, '--target', dir, '--ingest', '--json'])
+      assert.equal(tl.status, 0, tl.combined)
+      const payload = JSON.parse(tl.stdout) as {
+        ingest: { count: number; skipped: number } | null
+        event_count: number
+      }
+      assert.ok((payload.ingest?.count ?? 0) >= 1, `timeline --ingest 应收录 harness 布局 task: ${tl.combined}`)
+      assert.ok(payload.event_count >= 1, '时间线应非空（不再命中「无 HGM 数据」警告路径）')
     })
   })
 
