@@ -4,6 +4,33 @@
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-08-24
+
+> 主题：**闸接线 + 债闭环** —— DEF-003 阶段二落地：verify / task close / lifecycle dry-run 的「恒过 / 恒 unevaluated」守卫全部改为真求值，并配真豁免旗标（豁免留痕）；R-08 实证钉死 DSH skills 扫描事实。
+
+### Changed（行为变更 · 升级必读）
+
+> **消费者迁移提示（置顶）**：存量仓中缺 R<n> 审查文、pre-30 invoke 帽制品或 KPI 制品的 task，`verify` / `task close` 将从 PASS 变 **BLOCKED**（exit 2）；过渡期请用下述 `--allow-*` 豁免旗标（真豁免 · 留痕，不免除补落义务）。
+
+- **`verify` 新增 R<n> 审查文硬闸**（DEF-003 T4）：task 缺对应 reviews 制品 → BLOCKED exit 2；`--allow-no-review` 为真豁免并留痕。
+- **`verify` 新增 pre-30 invoke hats 硬闸**（DEF-003 T5）：task 声明帽与 {10, 20, 00} 有交集但无 invoke 制品 → BLOCKED；`--allow-invoke-gap` 真豁免并留痕。
+- **`task close` 六守卫真求值**（DEF-003 T6）：close_invoke / close_review / close_graph_delta / close_kpi / close_experience / close_wiki_delta 全部真接线；豁免旗标 `--allow-invoke-gap` / `--allow-no-review` / `--allow-kpi-gap` / `--allow-experience-gap` / `--allow-wiki-gap`。
+- **`lifecycle` dry-run 守卫真求值**（DEF-003 T3）：由恒 unevaluated 改为真实评估；未接线守卫在输出中明示，不冒充已评估。
+- **`findReview` / `runTestCheck` / `lintTaskFile` 收敛** 至 `src/cli-checks.ts` 单一实现源。
+- **README skills 扫描免责 → 「已验证扫描」**（R-08 实证，对照 DSH 上游 deepseek-harness@141eb6f）：project `.dsh/skills` rank 100 · user `~/.dsh/skills` rank 400。
+
+### Added
+
+- **`src/cli-checks.ts`**：checks 单一实现源（review / invoke / lint / KPI / D5）。
+- **新增测试**：`test/cli-verify-review.test.ts`、`test/cli-verify-invoke-hats.test.ts`、`test/cli-lifecycle-guards.test.ts`、`test/cli-task-close-guards.test.ts`。
+- **豁免旗标**：`--allow-no-review`、`--allow-invoke-gap`（verify）；`--allow-kpi-gap` / `--allow-experience-gap` / `--allow-wiki-gap`（task close 新增）。
+
+### Known limitations
+
+- `close_wiki_promotion` 与 `spec_reviews_retention`（`verify --spec`）**仍未接线**，发布物保持明示，不冒充已接线。
+- KPI 四维评分为启发式解析（`Task_KPI%: N` / D1–D5 表 / 四维 1–5 文本约定）。
+- D5 WARN 过渡在 1.4.0 **未硬化**（1.3.0 README 所述「下一 minor 硬化为 FAIL」顺延，仍为 WARN 不阻塞）。
+
 ## [1.3.0] - 2026-08-24
 
 > 主题：**行为纠偏 · CLI 说真话做正事** —— 17 个 PRD/债项全面落地：help / 旗标 / --json / 幂等键 / --strict 等一律收紧为真实语义，155 项测试红线锁住，新上 CI。
