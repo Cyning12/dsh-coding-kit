@@ -151,7 +151,9 @@ describe('DEF-003 T3 · lifecycle dry-run 守卫真接线（to_30）', { concurr
     })
   })
 
-  it('未接线守卫（close_* / spec_reviews_retention）明示「未接线」· 不再是「本波未接线 adapter」', async () => {
+  it('未接线守卫（close_wiki_promotion / spec_reviews_retention）明示「未接线」· 不再是「本波未接线 adapter」', async () => {
+    // DEF-003 T6 后：close_invoke / close_review 等 close_* 守卫已真求值（cli-checks evalCloseGuard
+    // 与 task close 同一实现源 · 见 cli-task-close-guards.test.ts）；本用例钉「未接线残留」明示口径。
     await withTemp(async (dir) => {
       await seedOk(dir)
       const close = runCli([
@@ -159,9 +161,11 @@ describe('DEF-003 T3 · lifecycle dry-run 守卫真接线（to_30）', { concurr
         '--transition', 'close', '--from', 'done',
         '--task', OK_REL, '--target', dir,
       ])
-      assert.equal(close.status, 0, close.combined)
-      assert.match(close.combined, /close_review: unevaluated · 未接线/)
-      assert.match(close.combined, /close_invoke: unevaluated · 未接线/)
+      // fixture 缺 invoke/review/KPI/wiki_delta 制品 → 已接线守卫真 fail（blocked）；不再恒 unevaluated
+      assert.equal(close.status, 2, close.combined)
+      assert.match(close.combined, /close_review: fail · missing R<n> review/)
+      assert.match(close.combined, /close_invoke: fail · missing invoke hats/)
+      assert.match(close.combined, /close_wiki_promotion: unevaluated · 未接线/)
       assert.match(close.combined, /unevaluated ≠ pass/)
       const to00 = runCli([
         'lifecycle', 'dry-run',

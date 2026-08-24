@@ -3,9 +3,9 @@
 # 登记真值：状态 / 转移 / 守卫。yaml 本身不是引擎。
 # 由 `lifecycle dry-run` 引擎消费（v2.10+ · 资格判定旁路报告 · 不写盘）。
 # v2.11+ to_30：HG-AUDIT-R1 · HG-TASK-DRAFT 已接线（本包真接线）；reviews_retention · audit_D5 · task_lint 已接线（PRD_DEF-003 阶段二 T3 · src/cli-lifecycle.ts evalGuard · test/cli-lifecycle-guards.test.ts 钉死）
-# v2.13+ close：close_self_check · close_acceptance · close_slug · close_status 已接线；close_invoke · close_review 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
-# v2.17+ close 增补：close_graph_delta · close_kpi · close_experience —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
-# v2.18+ close 增补：close_wiki_delta · close_wiki_promotion —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
+# v2.13+ close：close_self_check · close_acceptance · close_slug · close_status 已接线；close_invoke · close_review 已接线（PRD_DEF-003 阶段二 T6 · src/cli-checks.ts evalCloseGuard · test/cli-task-close-guards.test.ts 钉死）；close_wiki_promotion 未接线（见 v2.18 行）
+# v2.17+ close 增补：close_graph_delta · close_kpi · close_experience —— 已接线（PRD_DEF-003 阶段二 T6 · 同 T6 锚点）；未接线残留仅 close_wiki_promotion
+# v2.18+ close 增补：close_wiki_delta 已接线（PRD_DEF-003 阶段二 T6）；close_wiki_promotion —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 后续棒）
 #   （to_00 / spec_reviews_retention 未接线 · verify --spec 本包未交付 · dry-run 明示「未接线」）
 # 只读展示：npx dsh-coding-kit lifecycle show [--json]
 # 本包未附带 JSON Schema（旧 schema 指针已移除 · DEF-009）
@@ -68,7 +68,7 @@ transitions:
     to: archived
     hat: "close"
     description: "task close · active→done 归档"
-    # 守卫接线真值（dsh-coding-kit@1.2.x）：close_self_check / close_acceptance / close_slug / close_status 已接线；其余 close_* 未接线（旧包 v2.x 史实 · dry-run 恒 unevaluated · 接线计划见 PRD_DEF-003 阶段二）
+    # 守卫接线真值（dsh-coding-kit）：close_* 十项已接线（src/cli-checks.ts evalCloseGuard · task close 与 lifecycle dry-run 同一实现源 · PRD_DEF-003 阶段二 T6 · test/cli-task-close-guards.test.ts 钉死）；close_wiki_promotion 未接线（dry-run 明示 unevaluated · 接线计划见 PRD_DEF-003 后续棒）
     guards:
       - id: close_invoke
         command_or_check: "task close 检查1 · invoke hats 集合覆盖（required_invoke_hats / profile · v2.12+）"
@@ -101,7 +101,7 @@ transitions:
         severity: block
         allow_flag: "--allow-kpi-gap"
       - id: close_experience
-        command_or_check: "task close · experience_capture（required 硬闸 · v2.17+ 旧包史实 · 本包未接线）"
+        command_or_check: "task close · experience_capture（required 硬闸 · v2.17+ · 本包已接线 PRD_DEF-003 阶段二 T6）"
         severity: block
         allow_flag: "--allow-experience-gap"
       - id: close_wiki_delta
@@ -112,3 +112,4 @@ transitions:
         command_or_check: "task close · wiki 晋升指针（experience=required 且 wiki_delta=path · v2.18+）"
         severity: block
         allow_flag: "--allow-wiki-gap"
+        note: "本包未接线（dry-run 明示 unevaluated · 接线计划见 PRD_DEF-003 后续棒）"

@@ -33,6 +33,33 @@ const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence
     lineIncludes: '本包已接线**（src/cli.ts cmdVerify',
     evidence: 'src/cli.ts cmdVerify findReview 硬闸 + --allow-no-review 豁免留痕 · test/cli-verify-review.test.ts',
   },
+  // DEF-003 阶段二 T5：verify pre-30 invoke hats 硬闸真接线（红→绿钉死）
+  {
+    file: 'assets/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md',
+    lineIncludes: '本包已接线**（src/cli.ts cmdVerify · checkPre30InvokeHats',
+    evidence: 'src/cli-checks.ts checkPre30InvokeHats + src/cli.ts cmdVerify --allow-invoke-gap 豁免留痕 · test/cli-verify-invoke-hats.test.ts',
+  },
+  {
+    file: 'assets/harness/prompts/TEMPLATE_30_gate_stop.md',
+    lineIncludes: 'pre-30 invoke（v2.14+ 硬闸 · 本包已接线）',
+    evidence: '同 T5（src/cli-checks.ts checkPre30InvokeHats · test/cli-verify-invoke-hats.test.ts）',
+  },
+  {
+    file: 'assets/skills/harness-20-task-audit/references/TEMPLATE_30_gate_stop.md',
+    lineIncludes: 'pre-30 invoke（v2.14+ 硬闸 · 本包已接线）',
+    evidence: '同 T5（prompts 源 + skills 生成物副本同源更新）',
+  },
+  // DEF-003 阶段二 T6：task close 七项守卫真接线（红→绿钉死 · cli-checks evalCloseGuard 单一实现源）
+  {
+    file: 'assets/harness/invokes/TEMPLATE_invoke.md',
+    lineIncludes: '本包已接线**（src/cli-checks.ts evalCloseGuard close_invoke',
+    evidence: 'src/cli-checks.ts evalCloseGuard + src/cli.ts cmdTaskClose · test/cli-task-close-guards.test.ts',
+  },
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'required 硬闸 · v2.17+ · 本包已接线',
+    evidence: 'src/cli-checks.ts evalCloseExperience · test/cli-task-close-guards.test.ts',
+  },
 ]
 
 function listAssets(dir: string): string[] {
@@ -90,13 +117,21 @@ describe('D-DOC 1.2.4 DEF-003 · 资产声称必须接线或明示未接线', { 
     assert.deepEqual(stale.map(({ a }) => a.file), [], 'allowlist 存在已不命中的腐化条目')
   })
 
-  it('DEF-003 六锚点「未接线」止血标注在位（阶段一 T1 钉死）', () => {
-    const frag = readFileSync(path.join(ASSETS, 'harness', 'prompts', 'FRAGMENT_30_gate_verify_v1_zh.md'), 'utf8')
-    // T4 后：#16 R<n> 审查文硬闸已接线（见 allowlist 锚点）；#18 pre-30 invoke hats 未接线标注保留（T5 范围）
-    assert.ok(frag.split(/\r?\n/).filter((l) => l.includes(UNWIRED_MARK)).length >= 1, 'FRAGMENT 须 ≥1 处未接线（pre-30 invoke hats · T5 接线前保留）')
+  it('DEF-003 六锚点「未接线」止血标注在位（阶段一 T1 钉死 · 阶段二逐项转已接线锚点）', () => {
+    // T4/T5/T6 后：FRAGMENT（#16 R<n> 审查文 · #18 pre-30 invoke hats）、TEMPLATE_30_gate_stop#17、
+    // TEMPLATE_invoke#47（close 帽集合）均已接线
+    // → 不得残留「未接线」陈旧标注（陈旧标注 = 声称与实现反向漂移，同属 R-TRUTH-1 拦截面）
     for (const rel of [
+      'assets/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md',
       'assets/harness/prompts/TEMPLATE_30_gate_stop.md',
+      'assets/skills/harness-20-task-audit/references/TEMPLATE_30_gate_stop.md',
       'assets/harness/invokes/TEMPLATE_invoke.md',
+    ]) {
+      const body = readFileSync(path.join(KIT, rel), 'utf8')
+      assert.equal(body.includes(UNWIRED_MARK), false, `${rel} 已全接线 · 不得残留未接线标注`)
+    }
+    // 仍未接线残留（close_wiki_promotion · to_00 spec_reviews_retention）：止血标注须在
+    for (const rel of [
       'assets/harness/lifecycle.yaml',
     ]) {
       const body = readFileSync(path.join(KIT, rel), 'utf8')

@@ -272,6 +272,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       )
       // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
       await writeRel(dir, 'docs/harness/reviews/task_approved_ok_audit_R1_2026-08-20.md', '# R1 fixture')
+      // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+      await writeRel(dir, 'docs/harness/invokes/by-task/approved_ok/invoke_20260801_10_approved_ok.md', '# invoke 10 fixture')
       const r = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(r.status, 0, r.combined)
       assert.match(r.combined, /VERIFY: PASS/)
@@ -329,6 +331,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       await writeRel(dir, 'pyproject.toml', '[project]\nname = "demo"\nversion = "0.1.0"\n')
       // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
       await writeRel(dir, 'docs/harness/reviews/task_d5_pyproject_audit_R1_2026-08-20.md', '# R1 fixture')
+      // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+      await writeRel(dir, 'docs/harness/invokes/by-task/d5_pyproject/invoke_20260801_10_d5_pyproject.md', '# invoke 10 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.match(v.combined, /WARN/, v.combined)
@@ -370,6 +374,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       )
       // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
       await writeRel(dir, 'docs/harness/reviews/task_d5_lintci_audit_R1_2026-08-20.md', '# R1 fixture')
+      // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+      await writeRel(dir, 'docs/harness/invokes/by-task/d5_lintci/invoke_20260801_10_d5_lintci.md', '# invoke 10 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.match(v.combined, /WARN/, v.combined)
@@ -408,6 +414,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       )
       // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
       await writeRel(dir, 'docs/harness/reviews/task_d5_pytestci_audit_R1_2026-08-20.md', '# R1 fixture')
+      // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+      await writeRel(dir, 'docs/harness/invokes/by-task/d5_pytestci/invoke_20260801_10_d5_pytestci.md', '# invoke 10 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.doesNotMatch(v.combined, /WARN/, v.combined)
@@ -431,6 +439,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       await writeRel(dir, 'test_smoke.py', 'def test_ok():\n    assert True\n')
       // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
       await writeRel(dir, 'docs/harness/reviews/task_d5_pyfile_audit_R1_2026-08-20.md', '# R1 fixture')
+      // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+      await writeRel(dir, 'docs/harness/invokes/by-task/d5_pyfile/invoke_20260801_10_d5_pyfile.md', '# invoke 10 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.doesNotMatch(v.combined, /WARN/, v.combined)
@@ -502,7 +512,12 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
           selfCheckBody: '自检已回填：fixture close ok。',
         }),
       )
-      const pass = runCli(['task', 'close', '--file', okAbs, '--yes'])
+      // DEF-003 T6：close 守卫接线后，legacy fixture（无 invoke/review/wiki_delta/KPI 制品）
+      // 须显式豁免旗标才过；graph_delta 缺字段为 warn 不挡（lifecycle.yaml 口径）
+      const pass = runCli([
+        'task', 'close', '--file', okAbs, '--yes',
+        '--allow-invoke-gap', '--allow-no-review', '--allow-kpi-gap', '--allow-wiki-gap',
+      ])
       assert.equal(pass.status, 0, pass.combined)
       assert.equal(existsSync(okAbs), false)
       assert.equal(existsSync(path.join(dir, 'docs/tasks/done/task_close_ok_v1.md')), true)
