@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, appendFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import { parseHumanGates } from './cli-shared.ts'
 
 const HGM_DIR = '.cyning-harness'
 const EVENTS_DIR = 'events'
@@ -110,27 +111,14 @@ export function parseTaskMarkdown(content: string, fileName: string): {
   const title = titleMatch ? titleMatch[1].trim() : taskSlug
   const statusMatch = content.match(/\*\*状态\*\*\s*[:：]\s*`?([a-zA-Z0-9_-]+)`?/)
   const status = statusMatch ? statusMatch[1] : 'pending'
-  const gates: { human_gate_id: string; status: string; blocks_hats: string[] }[] = []
-  const gateHeader = content.search(/^\s*\|\s*human_gate_id\s*\|/m)
-  if (gateHeader !== -1) {
-    const tableStart = content.lastIndexOf('\n', gateHeader) + 1
-    let tableEnd = content.indexOf('\n\n', gateHeader)
-    if (tableEnd === -1) tableEnd = content.length
-    const table = content.slice(tableStart, tableEnd).trim()
-    const lines = table.split('\n').filter((l) => l.trim().startsWith('|'))
-    for (let i = 2; i < lines.length; i += 1) {
-      const cols = lines[i].split('|').map((c) => c.trim().replace(/\*/g, ''))
-      if (cols.length >= 3) {
-        const humanGateId = cols[1]
-        const gateStatus = cols[2]
-        const blocksHats =
-          cols[3] && cols[3] !== '—' ? cols[3].split(/[,\s]+/).filter(Boolean) : []
-        if (humanGateId && gateStatus) {
-          gates.push({ human_gate_id: humanGateId, status: gateStatus, blocks_hats: blocksHats })
-        }
-      }
-    }
-  }
+  // DEF-015 D3：闸解析唯一实现为 cli-shared.parseHumanGates（宽松口径）；
+  // 本函数仅做结构适配（blocks_hats 拆数组），不再保留私有表头解析。
+  const gates = parseHumanGates(content).map((g) => ({
+    human_gate_id: g.id,
+    status: g.status,
+    blocks_hats:
+      g.blocksHats && g.blocksHats !== '—' ? g.blocksHats.split(/[,\s]+/).filter(Boolean) : [],
+  }))
   const mustRead: string[] = []
   const mustReadMatch = content.match(/MUST_READ|must_read|必须阅读/)
   if (mustReadMatch) {
@@ -160,6 +148,14 @@ export function ingestRepo(
   const occurredAt = options.occurredAt || isoDate()
   const events: HgmEvent[] = []
   let seq = 0
+  // DEF-015 T4：GateStatusChanged.old_status 由既有事件轨推导（同 subject 最新 new_status），
+  // 无历史才回退 'pending'；loadEvents 按 occurred_at+event_id 排序，后写覆盖先得最新态。
+  const priorGateStatus = new Map<string, string>()
+  for (const e of loadEvents(target)) {
+    if (e.type === 'GateStatusChanged') {
+      priorGateStatus.set(e.subject, String(e.data?.new_status ?? 'pending'))
+    }
+  }
   const manifestPath = path.join(target, HGM_DIR, 'manifest.json')
   if (existsSync(manifestPath)) {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as {
@@ -208,7 +204,7 @@ export function ingestRepo(
         actor,
         subject: `gate:${parsed.task_slug}:${g.human_gate_id}`,
         data: {
-          old_status: 'pending',
+          old_status: priorGateStatus.get(`gate:${parsed.task_slug}:${g.human_gate_id}`) ?? 'pending',
           new_status: g.status,
           task_slug: parsed.task_slug,
           human_gate_id: g.human_gate_id,
@@ -389,14 +385,24 @@ export function writeSnapshot(target: string, snapshot: HgmSnapshot): string {
   return p
 }
 
+// DEF-015 T4/D1：幂等键 = type:subject[:状态摘要]——GateStatusChanged 摘要取 data.new_status，
+// TaskCreated 取 data.status，无状态事件（RepositoryAdopted 等）保持两段键。
+// 迁移口径：旧两段键事件保留不重写，新键自变更点生效；状态变化后重跑 ingest 会补发新事件。
+function idempotencyKey(e: HgmEvent): string {
+  const base = `${e.type}:${e.subject}`
+  if (e.type === 'GateStatusChanged') return `${base}:${String(e.data?.new_status ?? '')}`
+  if (e.type === 'TaskCreated') return `${base}:${String(e.data?.status ?? '')}`
+  return base
+}
+
 export function ingestRepoIdempotent(
   target: string,
   options: { actor?: string; source?: string; dryRun?: boolean } = {},
 ): { events: HgmEvent[]; count: number; skipped: number } {
   const existing = loadEvents(target)
-  const existingKeys = new Set(existing.map((e) => `${e.type}:${e.subject}`))
+  const existingKeys = new Set(existing.map((e) => idempotencyKey(e)))
   const { events, count } = ingestRepo(target, { ...options, dryRun: true })
-  const newEvents = events.filter((e) => !existingKeys.has(`${e.type}:${e.subject}`))
+  const newEvents = events.filter((e) => !existingKeys.has(idempotencyKey(e)))
   if (!options.dryRun) {
     for (const e of newEvents) appendEvent(target, e)
   }
@@ -406,12 +412,17 @@ export function ingestRepoIdempotent(
 export function eventMatchesTaskSlug(event: HgmEvent, slug: string): boolean {
   if (!slug) return false
   const norm = slug.replace(/_/g, '-')
-  const subj = String(event?.subject || '')
   const dataSlug = event?.data?.task_slug ? String(event.data.task_slug).replace(/_/g, '-') : ''
+  // data.task_slug 等值优先
   if (dataSlug && dataSlug === norm) return true
-  if (subj.includes(slug)) return true
-  if (subj.replace(/_/g, '-').includes(norm)) return true
-  return false
+  // DEF-015 T3/D2：subject 侧仅做结构化等值匹配（task:<slug> / gate:<slug>:<hgid>），
+  // 删除 includes 子串兜底；无 data.task_slug 且非结构化 subject 的事件一律不匹配（宁缺勿滥）。
+  const parts = String(event?.subject || '').split(':')
+  let subjectSlug = ''
+  if (parts[0] === 'task' && parts.length === 2) subjectSlug = parts[1]
+  else if (parts[0] === 'gate' && parts.length === 3) subjectSlug = parts[1]
+  if (!subjectSlug) return false
+  return subjectSlug.replace(/_/g, '-') === norm
 }
 
 export function filterEventsForTask(events: HgmEvent[], slug: string): HgmEvent[] {

@@ -109,6 +109,13 @@
 
 `graph yaml *` = compile / check / export 及其 `--graph-id` / `--all` / `--no-recursive` 变体，**不得只做其中一种**。
 
+#### HGM 事件幂等键契约（DEF-015）
+
+- 幂等键格式：`type:subject[:状态摘要]`——`GateStatusChanged` 摘要取 `data.new_status`，`TaskCreated` 取 `data.status`；无状态事件（如 `RepositoryAdopted`）保持两段键 `type:subject`。
+- 迁移口径：存量 `.cyning-harness/events/*.jsonl` 旧两段键事件**保留不重写**，新键自变更点生效；闸 / task 状态变化后重跑 `graph ingest`（或 `timeline --ingest`）会**补发**新事件（行为修正，非契约破坏）。
+- `GateStatusChanged.old_status` 由既有事件轨中同 subject 最新 `new_status` 推导，无历史回退 `pending`。
+- `eventMatchesTaskSlug`：`data.task_slug` 等值优先；subject 侧仅对结构化形态（`task:<slug>` / `gate:<slug>:<hgid>`）做规范化等值匹配，无子串兜底——无 `data.task_slug` 且非结构化 subject 的外部手写事件不参与 task 过滤。
+
 #### G4 · `sync index`
 
 | 命令 | 2.24.0 用途 | 1.2.0 成功口径 |
