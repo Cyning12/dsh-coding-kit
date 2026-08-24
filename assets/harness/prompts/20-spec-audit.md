@@ -12,7 +12,7 @@ metadata:
 
 > **hat_id（V2）**：**20-spec-audit**（自工作区 Extended 收编进包）。  
 > **对应**：**10-spec**（SPEC 多轮思考）· **不**审 task 实现细节。  
-> **与 20-task-audit 分工**：本帽审 **SPEC** → `HG-SPEC-SIGNOFF`；[`20-task-audit.md`](./20-task-audit.md) 审 **task** → `HG-AUDIT-R1`。  
+> **与 20-task-audit 分工**：本帽审 **SPEC** → `HG-SPEC-SIGNOFF`；[`harness-20-task-audit/SKILL.md`](../../skills/harness-20-task-audit/SKILL.md) 审 **task** → `HG-AUDIT-R1`。  
 > **完整版 POINTER**（Ink 工作区）：`docs/harness/prompts/20-spec-audit.md`  
 > **本文件**：嵌入用户仓 `docs/harness/prompts/` 的 **精简真值**。
 

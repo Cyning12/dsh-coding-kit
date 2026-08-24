@@ -11,7 +11,7 @@ metadata:
 # 帽子：10-spec · SPEC 需求分析（Harness · Starter 子集）
 
 > **hat_id（V2）**：**10-spec**（自工作区 Extended 收编进包）。  
-> **姊妹帽**：task 思考 **10-task**（[`10-task-requirements.md`](./10-task-requirements.md)）。  
+> **姊妹帽**：task 思考 **10-task**（[`harness-10-task/SKILL.md`](../../skills/harness-10-task/SKILL.md)）。  
 > **双轨**：功能 / Epic **必经**；bugfix / 上游 Issue **可跳过**（Issue ≈ mini-SPEC）。  
 > **完整版 POINTER**（Ink 工作区）：`docs/harness/prompts/10-spec-requirements.md`  
 > **本文件**：嵌入用户仓 `docs/harness/prompts/` 的 **精简真值**。

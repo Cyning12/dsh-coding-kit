@@ -11,7 +11,7 @@ metadata:
 # 帽子：10-task · 任务需求分析（Harness · Starter 子集）
 
 > **hat_id（V2）**：**10-task**。  
-> **姊妹帽**：SPEC 思考 **10-spec**（[`10-spec-requirements.md`](./10-spec-requirements.md)）。  
+> **姊妹帽**：SPEC 思考 **10-spec**（[`harness-10-spec/SKILL.md`](../../skills/harness-10-spec/SKILL.md)）。  
 > **完整版 POINTER**（Ink 工作区）：`docs/harness/prompts/10-task-requirements.md`  
 > **本文件**：嵌入用户仓 `docs/harness/prompts/` 的 **精简真值**（自 `10-requirements.md` 改名 · V2 拆分）。
 

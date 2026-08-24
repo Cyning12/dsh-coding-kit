@@ -24,12 +24,6 @@ const EXEMPTIONS: Array<{ file: string; target: string; owner: string }> = [
   { file: 'assets/harness/templates/VIEW_done_thin_pointer.md', target: '../done/README.md', owner: 'embedded-relative（嵌入 docs/tasks/_views/ 后 resolve）' },
   { file: 'assets/harness/templates/VIEW_done_thin_pointer.md', target: './done_by_domain.md', owner: 'embedded-relative（嵌入 docs/tasks/_views/ 后 resolve）' },
   { file: 'assets/harness/templates/VIEW_done_thin_pointer.md', target: './in_progress.md', owner: 'embedded-relative（嵌入 docs/tasks/_views/ 后 resolve）' },
-  // skills 生成物「姊妹帽」跨 skill 引用：目标文件在包内/安装落点均不存在；DEF-009 未列名，
-  // 2026-08-24 实测确认悬空，待 00 登记新缺陷后再处理（本棒不动 skills 生成面，防 skills check drift）
-  { file: 'assets/skills/harness-10-spec/SKILL.md', target: './10-task-requirements.md', owner: '待登记 · skills 姊妹帽悬空指针' },
-  { file: 'assets/skills/harness-10-task/SKILL.md', target: './10-spec-requirements.md', owner: '待登记 · skills 姊妹帽悬空指针' },
-  { file: 'assets/skills/harness-20-spec-audit/SKILL.md', target: './20-task-audit.md', owner: '待登记 · skills 姊妹帽悬空指针' },
-  { file: 'assets/skills/harness-20-task-audit/SKILL.md', target: './20-spec-audit.md', owner: '待登记 · skills 姊妹帽悬空指针' },
 ]
 
 interface Hit {

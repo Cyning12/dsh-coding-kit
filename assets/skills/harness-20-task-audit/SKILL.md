@@ -12,7 +12,7 @@ metadata:
 
 > **hat_id（V2）**：**20-task-audit** = task 书面审核（**30 之前**）。  
 > **对应**：**10-task** · **不**审 SPEC。  
-> **姊妹帽**：SPEC 书面审 **[`20-spec-audit.md`](./20-spec-audit.md)**（对应 10-spec · HG-SPEC-SIGNOFF）。  
+> **姊妹帽**：SPEC 书面审 **[`harness-20-spec-audit/SKILL.md`](../../skills/harness-20-spec-audit/SKILL.md)**（对应 10-spec · HG-SPEC-SIGNOFF）。  
 > **完整版 POINTER**（Ink 工作区）：`docs/harness/prompts/20-task-audit.md`  
 > **本文件**：嵌入用户仓 `docs/harness/prompts/` 的 **精简真值**（自 `22-task-audit.md` 改名 · V2 拆分）。
 
