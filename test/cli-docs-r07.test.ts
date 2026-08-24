@@ -35,9 +35,10 @@ describe('R-07 T5 文档（V10）', () => {
     assert.match(ADAPTERS, /upgrade.*manifest/)
   })
 
-  it('CHANGELOG Unreleased 含 refresh-ide-blocks 条目', () => {
-    const m = CHANGELOG.match(/## \[Unreleased\]([\s\S]*?)(\n## \[|$)/)
+  it('CHANGELOG Unreleased 或最新发布节含 refresh-ide-blocks 条目（1.5.0 已归拢发布）', () => {
+    // 发版时条目自 Unreleased 归拢进版本节；锚定 1.4.0 之前的所有节（Unreleased + 最新发布），跨版本自维护
+    const m = CHANGELOG.match(/## \[Unreleased\][\s\S]*?(?=\n## \[1\.4\.0\])/)
     assert.ok(m, '须有 Unreleased 节')
-    assert.match(m[1] ?? '', /refresh-ide-blocks/)
+    assert.match(m[0] ?? '', /refresh-ide-blocks/)
   })
 })
