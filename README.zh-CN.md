@@ -212,7 +212,7 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 
 ## GitHub topic
 
-本仓库当前 GitHub topics：**`deepseek-harness`**、**`dsh-plugins`**、**`dsh`**。DSH 官方发现机制 tag 为 **`dsh-plugin`**（见上游 deepseek-harness `README.md` 与 `CONTRIBUTING.md`；无应用商店），本仓库当前未挂该 topic，但 `package.json` 的 npm keywords 含 `dsh-plugin` 与 `deepseek-harness`。
+本仓库当前 GitHub topics：**`dsh-plugin`**（DSH 官方发现机制 tag，见上游 deepseek-harness `README.md` 与 `CONTRIBUTING.md`；无应用商店）、**`deepseek-harness`**、**`dsh-plugins`**、**`dsh`**。`package.json` 的 npm keywords 同样含 `dsh-plugin` 与 `deepseek-harness`。
 
 ## License
 

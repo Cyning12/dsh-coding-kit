@@ -212,7 +212,7 @@ Note: scanning/loading is a **behavioral contract of the DSH runtime** and evolv
 
 ## GitHub topics
 
-This repository's current GitHub topics: **`deepseek-harness`**, **`dsh-plugins`**, **`dsh`**. DSH's official discovery tag is **`dsh-plugin`** (see upstream deepseek-harness `README.md` and `CONTRIBUTING.md`; there is no app store); this repo does not currently carry that topic, but the npm keywords in `package.json` do include `dsh-plugin` and `deepseek-harness`.
+This repository's current GitHub topics: **`dsh-plugin`** (DSH's official discovery tag — see upstream deepseek-harness `README.md` and `CONTRIBUTING.md`; there is no app store), **`deepseek-harness`**, **`dsh-plugins`**, **`dsh`**. The npm keywords in `package.json` likewise include `dsh-plugin` and `deepseek-harness`.
 
 ## License
 
