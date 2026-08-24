@@ -463,7 +463,6 @@ async function cmdVerify(args: string[]): Promise<void> {
   }
   if (json) emitJson(false, waived)
   else {
-    if (test.warn) console.log(test.reason)
     console.log(`VERIFY: PASS · ${label}`)
   }
 }

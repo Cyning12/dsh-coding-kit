@@ -118,7 +118,7 @@ npx dsh-coding-kit task check --file PATH
 - `pyproject.toml` / `setup.py` 存在**不再**视为测试制品（任意现代 Python 仓都有，与有无测试无关）。
 - 纯 lint / 纯部署 workflow（无 test 步骤）不再放行。
 - 探测深度为仓根起 3 层；monorepo 更深层或自定义测试命令（如 `make test`）不命中白名单时，在仓内放任一强信号文件（如 `tests/` 目录、`*_test.py`）即可。
-- **WARN 过渡（1.3.0）**：新探测失败但旧启发式（pyproject.toml / setup.py / 任意 workflow 存在）通过时，输出 `D5: WARN 过渡` 且 exit 0 不阻塞；原计划下一 minor 硬化为 FAIL，**1.4.0 未硬化、仍为 WARN 过渡**（硬化另列计划）。
+- **WARN 过渡已硬化（1.5.0）**：1.3.0–1.4.0 期间「新探测失败但旧启发式通过 → `D5: WARN 过渡` exit 0 不阻塞」的过渡分支已删除；自 1.5.0 起上述情形一律 **FAIL**（verify BLOCKED / audit FAIL，exit 2）。升级前请在仓内补真实测试制品（如 `tests/`、`*_test.py`、`*.test.ts` 或含 test 步骤的 CI）。
 
 ## 从 @cyning/harness 迁移
 

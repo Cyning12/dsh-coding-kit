@@ -177,7 +177,6 @@ function evalGuard(
           }
     case 'audit_D5': {
       const r = runTestCheck(ctx.target, ctx.absTask)
-      if (r.ok && r.warn) return { status: 'warn', detail: r.reason }
       return r.ok ? { status: 'pass', detail: r.reason } : { status: 'fail', detail: r.reason }
     }
     case 'task_lint': {

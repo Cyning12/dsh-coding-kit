@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed（行为变更 · 升级必读）
+
+- **D5 WARN 过渡硬化为 FAIL**（DEF-014 过渡结束，兑现 1.3.0 承诺）：`test_strategy=required` 时仅命中旧启发式（pyproject.toml / setup.py / 无 test 步骤的 workflow）的仓，verify / audit 由 WARN exit 0 改为 **FAIL exit 2**；旧启发式探测代码（`hasTestArtifactsLegacy`）删除。迁移：补真实测试制品（`tests/` / `*_test.py` / `*.test.ts` / 含 test 步骤的 CI）即可恢复 PASS。
+
 ## [1.4.0] - 2026-08-24
 
 > 主题：**闸接线 + 债闭环** —— DEF-003 阶段二落地：verify / task close / lifecycle dry-run 的「恒过 / 恒 unevaluated」守卫全部改为真求值，并配真豁免旗标（豁免留痕）；R-08 实证钉死 DSH skills 扫描事实。

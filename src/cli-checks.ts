@@ -463,20 +463,12 @@ function hasTestArtifacts(target: string): boolean {
   return false
 }
 
-// 旧启发式（DEF-014 过渡保留）：pyproject.toml / setup.py 存在、或任意 workflow 文件存在即视为有制品。
-// 仅用于「新探测失败但旧探测通过 → WARN 不阻塞」过渡分支，下一 minor 硬化后删除。
-function hasTestArtifactsLegacy(target: string): boolean {
-  if (existsSync(path.join(target, 'pyproject.toml'))) return true
-  if (existsSync(path.join(target, 'setup.py'))) return true
-  const ciDir = path.join(target, '.github', 'workflows')
-  if (existsSync(ciDir) && listWorkflowFiles(ciDir).length > 0) return true
-  return false
-}
-
+// 1.5.0 硬化（DEF-014 过渡结束）：旧启发式（pyproject.toml / setup.py / 任意 workflow 存在）
+// 不再放行 —— 新探测失败即 FAIL（verify BLOCKED exit 2 · audit FAIL exit 2）。
 export function runTestCheck(
   target: string,
   taskFile: string | undefined,
-): { ok: boolean; reason: string; warn?: boolean } {
+): { ok: boolean; reason: string } {
   if (!taskFile) return { ok: true, reason: '未指定 --task，跳过 D5' }
   const abs = resolveTaskPath(target, taskFile)
   if (!existsSync(abs)) return { ok: true, reason: 'task 文件不存在，跳过 D5' }
@@ -488,16 +480,6 @@ export function runTestCheck(
   }
   if (hasTestArtifacts(target)) {
     return { ok: true, reason: 'test_strategy=required 且检测到测试/CI 制品' }
-  }
-  if (hasTestArtifactsLegacy(target)) {
-    return {
-      ok: true,
-      warn: true,
-      reason:
-        'D5: WARN 过渡 · 仅命中旧启发式探针（pyproject.toml / setup.py / 无 test 步骤的 workflow），' +
-        '未检测到真实测试制品 · 本版本不阻塞，下一 minor 硬化为 FAIL · ' +
-        '请补测试文件（如 *_test.py / *.test.ts）或含 test 步骤的 CI',
-    }
   }
   return {
     ok: false,
