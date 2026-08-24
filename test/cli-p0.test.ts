@@ -311,6 +311,123 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     })
   })
 
+  it('C5c: 仅 pyproject.toml 无测试制品 → D5 WARN 过渡（exit 0 且含 WARN，DEF-014）', async () => {
+    await withTemp(async (dir) => {
+      const rel = 'docs/tasks/active/task_d5_pyproject_v1.md'
+      await writeRel(
+        dir,
+        rel,
+        taskMd({
+          slug: 'd5_pyproject',
+          audit: 'approved',
+          draft: 'approved',
+          testStrategy: 'required',
+        }),
+      )
+      await writeRel(dir, 'pyproject.toml', '[project]\nname = "demo"\nversion = "0.1.0"\n')
+      const v = runCli(['verify', '--task', rel, '--target', dir])
+      assert.equal(v.status, 0, v.combined)
+      assert.match(v.combined, /WARN/, v.combined)
+      assert.match(v.combined, /D5/, v.combined)
+      const a = runCli(['audit', '--task', rel, '--target', dir])
+      assert.equal(a.status, 0, a.combined)
+      assert.match(a.combined, /WARN/, a.combined)
+    })
+  })
+
+  it('C5d: 仅无 test 步骤 workflow → D5 WARN 过渡（exit 0 且含 WARN，DEF-014）', async () => {
+    await withTemp(async (dir) => {
+      const rel = 'docs/tasks/active/task_d5_lintci_v1.md'
+      await writeRel(
+        dir,
+        rel,
+        taskMd({
+          slug: 'd5_lintci',
+          audit: 'approved',
+          draft: 'approved',
+          testStrategy: 'required',
+        }),
+      )
+      await writeRel(
+        dir,
+        '.github/workflows/lint.yml',
+        [
+          'name: lint',
+          'on: [push]',
+          'jobs:',
+          '  lint:',
+          '    runs-on: ubuntu-latest',
+          '    steps:',
+          '      - uses: actions/checkout@v4',
+          '      - name: Run linter',
+          '        run: npm run lint',
+          '',
+        ].join('\n'),
+      )
+      const v = runCli(['verify', '--task', rel, '--target', dir])
+      assert.equal(v.status, 0, v.combined)
+      assert.match(v.combined, /WARN/, v.combined)
+      assert.match(v.combined, /D5/, v.combined)
+    })
+  })
+
+  it('C5e: CI 含 pytest 步骤 → D5 真 PASS（无 WARN，DEF-014 回归）', async () => {
+    await withTemp(async (dir) => {
+      const rel = 'docs/tasks/active/task_d5_pytestci_v1.md'
+      await writeRel(
+        dir,
+        rel,
+        taskMd({
+          slug: 'd5_pytestci',
+          audit: 'approved',
+          draft: 'approved',
+          testStrategy: 'required',
+        }),
+      )
+      await writeRel(
+        dir,
+        '.github/workflows/ci.yml',
+        [
+          'name: ci',
+          'on: [push]',
+          'jobs:',
+          '  test:',
+          '    runs-on: ubuntu-latest',
+          '    steps:',
+          '      - uses: actions/checkout@v4',
+          '      - name: Run tests',
+          '        run: pytest tests -q',
+          '',
+        ].join('\n'),
+      )
+      const v = runCli(['verify', '--task', rel, '--target', dir])
+      assert.equal(v.status, 0, v.combined)
+      assert.doesNotMatch(v.combined, /WARN/, v.combined)
+      assert.match(v.combined, /VERIFY: PASS/, v.combined)
+    })
+  })
+
+  it('C5f: test_*.py 文件存在 → D5 真 PASS（无 WARN，DEF-014 回归）', async () => {
+    await withTemp(async (dir) => {
+      const rel = 'docs/tasks/active/task_d5_pyfile_v1.md'
+      await writeRel(
+        dir,
+        rel,
+        taskMd({
+          slug: 'd5_pyfile',
+          audit: 'approved',
+          draft: 'approved',
+          testStrategy: 'required',
+        }),
+      )
+      await writeRel(dir, 'test_smoke.py', 'def test_ok():\n    assert True\n')
+      const v = runCli(['verify', '--task', rel, '--target', dir])
+      assert.equal(v.status, 0, v.combined)
+      assert.doesNotMatch(v.combined, /WARN/, v.combined)
+      assert.match(v.combined, /VERIFY: PASS/, v.combined)
+    })
+  })
+
   it('C6: task lint 缺必填节 E 失败；仅风格 W 不挡', async () => {
     await withTemp(async (dir) => {
       const missing = path.join(dir, 'task_missing_accept.md')
