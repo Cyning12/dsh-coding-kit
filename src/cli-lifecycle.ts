@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-import { fail, findGate, packageRoot, parseHumanGates, takeOption } from './cli-shared.ts'
+import { fail, findGate, packageRoot, parseHumanGates, resolveTarget, takeOption } from './cli-shared.ts'
 import { yamlLoad } from './yaml.ts'
 
 type LifecycleData = {
@@ -293,7 +293,7 @@ export async function cmdLifecycle(args: string[]): Promise<void> {
   if (!sub || sub === '--help' || sub === '-h' || args.includes('--help') || args.includes('-h')) {
     console.log(`用法:
   npx dsh-coding-kit lifecycle show [--json]
-  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH] [--json]
+  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH] [--target PATH] [--json]
        [--allow-no-review] [--allow-lint-fail] [--allow-no-spec-review]
        [--allow-invoke-gap] [--allow-unchecked]
 `)
@@ -316,6 +316,10 @@ export async function cmdLifecycle(args: string[]): Promise<void> {
     remaining = r2
     const { value: taskPath, rest: r3 } = takeOption(remaining, '--task')
     remaining = r3
+    // DEF-019 D1：补 --target（全包惯例 resolveTarget，缺省=cwd → 默认行为逐字节一致）；
+    // 须在未知参数 fail-fast 之前剔除
+    const { value: targetArg, rest: r4 } = takeOption(remaining, '--target')
+    remaining = r4
     const json = remaining.includes('--json')
     const flags: DryRunFlags = {
       allowNoReview: remaining.includes('--allow-no-review'),
@@ -343,12 +347,14 @@ export async function cmdLifecycle(args: string[]): Promise<void> {
     if (!transitionId || !fromState) {
       fail('lifecycle dry-run 须 --transition <id> 与 --from <state>\n提示: lifecycle show')
     }
+    // DEF-019：target 传入 opts.cwd（形参 cli-lifecycle.ts 预留），相对 --task 相对 target 解析
+    const target = resolveTarget(process.cwd(), targetArg)
     const report = dryRunTransition({
       transitionId,
       fromState,
       taskPath,
       flags,
-      cwd: process.cwd(),
+      cwd: target,
     })
     if (json) console.log(JSON.stringify(report, null, 2))
     else console.log(formatLifecycleDryRun(report))

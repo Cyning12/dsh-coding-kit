@@ -93,7 +93,7 @@
 | 命令 | 2.24.0 用途 | 1.2.0 成功口径 |
 |------|-------------|----------------|
 | `lifecycle show [--json]` | 只读展示 lifecycle.yaml | 打印状态/类型/守卫；缺资产 → 非 0 + 可读原因 |
-| `lifecycle dry-run --transition ID --from STATE …` | 转移资格判定（非 G7） | 同命令族；缺 `--transition`/`--from` → exit 1。**纳入**以免旧包残留 |
+| `lifecycle dry-run --transition ID --from STATE [--task PATH] [--target PATH] …` | 转移资格判定（非 G7） | 同命令族；缺 `--transition`/`--from` → exit 1；`--task` 相对 `--target`（缺省=cwd）解析。**纳入**以免旧包残留 |
 | `discipline show [--json]` | 只读展示 discipline-coverage.yaml | 机械化率资产；非 audit UI |
 
 #### G3 · Inform 图谱 / HGM · `graph yaml *` 与 `graph ingest\|snapshot\|axioms`

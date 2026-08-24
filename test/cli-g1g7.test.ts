@@ -213,6 +213,34 @@ describe('D1–D7 G1–G7 runtime', { concurrency: 1 }, () => {
     assert.match(r.combined, /dry-run|to_00|structure_ok/)
   })
 
+  it('DEF-019: lifecycle dry-run 支持 --target（--task 相对 target 解析）；缺省=cwd；未知旗标 fail-fast', async () => {
+    await withTemp(async (dir) => {
+      const rel = 'docs/tasks/active/task_lc_target_v1.md'
+      await writeRel(dir, rel, taskMd({ slug: 'lc_target' }))
+      // 带 --target：--task 相对 target 解析成功（cwd=KIT 下该相对路径不存在）
+      const withTarget = runCli([
+        'lifecycle', 'dry-run', '--transition', 'to_30', '--from', 'draft',
+        '--task', rel, '--target', dir,
+      ])
+      assert.equal(withTarget.status, 0, withTarget.combined)
+      assert.match(withTarget.combined, /HG-AUDIT-R1: pass/)
+      // 不带 --target：cwd 下不存在该 task → 「--task 不可读」exit 1（现状语义保留）
+      const noTarget = runCli([
+        'lifecycle', 'dry-run', '--transition', 'to_30', '--from', 'draft',
+        '--task', 'docs/tasks/active/task_lc_definitely_missing_v1.md',
+      ])
+      assert.equal(noTarget.status, 1, noTarget.combined)
+      assert.match(noTarget.combined, /--task 不可读/)
+      // 未知旗标仍 fail-fast（--target 接线不得破坏）
+      const bogus = runCli([
+        'lifecycle', 'dry-run', '--transition', 'to_30', '--from', 'draft', '--bogus',
+      ])
+      assert.equal(bogus.status, 1, bogus.combined)
+      assert.match(bogus.combined, /未知参数/)
+      assert.match(bogus.combined, /--bogus/)
+    })
+  })
+
   it('D3 / G3: graph yaml compile/check/export；check 有 diff 非 0', async () => {
     await withTemp(async (dir) => {
       const input = path.join(dir, 'docs', '_tech_graph')

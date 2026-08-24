@@ -88,7 +88,7 @@ function usage(version: string): void {
   npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
   npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
   npx dsh-coding-kit lifecycle show [--json]
-  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH]
+  npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH] [--target PATH]
   npx dsh-coding-kit discipline show [--json]
   npx dsh-coding-kit graph yaml compile|check|export …
   npx dsh-coding-kit graph ingest|snapshot|axioms …
