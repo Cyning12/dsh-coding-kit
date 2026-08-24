@@ -38,6 +38,22 @@ describe('D-DOC 1.2.4 DEF-020 · adapters README 声称未实现止血', { concu
     assert.equal(body.includes('HG-GRAPH-MODULES'), false, '旧包闸概念行须整行移除')
   })
 
+  // DEF-025 · 与 DEF-020 同口径：TEMPLATE_30_gate_stop 拒开工模板的 HG-GRAPH-MODULES
+  // 残留表行已整行删除（源 + skills 生成物 references 副本双侧钉死，防回潮）。
+  it('TEMPLATE_30_gate_stop.md 双侧（源 + 生成物副本）不含 HG-GRAPH-MODULES 残留表行（DEF-025）', () => {
+    for (const rel of [
+      'assets/harness/prompts/TEMPLATE_30_gate_stop.md',
+      'assets/skills/harness-20-task-audit/references/TEMPLATE_30_gate_stop.md',
+    ]) {
+      const body = readFileSync(path.join(KIT, rel), 'utf8')
+      assert.equal(
+        body.includes('HG-GRAPH-MODULES'),
+        false,
+        rel + ' 不得残留 HG-GRAPH-MODULES 表行（DEF-025 删行口径）',
+      )
+    }
+  })
+
   it('全 assets 面无 __HARNESS_GRAPH_MODULES_PATH__ 残留', () => {
     const offenders = listAll(ASSETS).filter((abs) =>
       readFileSync(abs, 'utf8').includes(PLACEHOLDER),
