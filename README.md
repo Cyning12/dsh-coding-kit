@@ -76,6 +76,7 @@ P0 闸与 G1–G7（**1.2.0 已交付**）：
 ```bash
 npx dsh-coding-kit init [--preset NAME] [--yes]   # NAME 词表: harness-only（唯一合法值）
 npx dsh-coding-kit upgrade --yes
+npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
 npx dsh-coding-kit check
 npx dsh-coding-kit verify --task <task.md>
 npx dsh-coding-kit gate-check --task <task.md>
@@ -100,6 +101,28 @@ npx dsh-coding-kit task check --file PATH
 ```
 
 `init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
+
+### refresh-ide-blocks（R-07 · 存量 IDE 块旧命令字面刷写）
+
+旧包 `@cyning/harness` 时代 wizard marker merge 嵌入的 IDE 块（`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`）内可能滞留旧命令字面。`refresh-ide-blocks` 仅在这类 **product marker 块体内** 做白名单字面替换：
+
+- **默认 dry-run**：无旗标（或显式 `--dry-run`）只扫描 + 报告，零写入，exit 0；`--yes` 才写盘。
+- **发现面（冻结白名单）**：仓根 `AGENTS.md`、`CLAUDE.md`、`.cursor/rules/*.mdc`（单层）。发现面之外的文件即使含 marker 也不处理。
+- **映射表（冻结 · 仅块体内生效）**：
+
+  | 组 | 规则 | 行为 |
+  |----|------|------|
+  | A1 | `npx @cyning/harness` → `npx dsh-coding-kit` | 自动替换，子命令与参数原样保留 |
+  | A2 | `npx @cyning/harness@<version>` → `npx dsh-coding-kit` | 自动替换，钉版整体丢弃（报告记 dropped_pin） |
+  | A3 | `npx --yes @cyning/harness[@<version>]` → `npx --yes dsh-coding-kit` | 自动替换，`--yes` 保留、钉版丢弃 |
+  | A4 | 裸 bin 形态 `harness skills build` / `harness skills check` → `npx dsh-coding-kit skills build` / `npx dsh-coding-kit skills check` | 自动替换（行前缀已含 `npx dsh-coding-kit` 时防二刷） |
+  | B1–B5 | `CYNING_HARNESS` / `--with-scripts` / `wizard/` 路径 / `harness:<name>` script 名 / 其他裸 `@cyning/harness` 引用 | **仅报告「需人工」，不替换** |
+
+- **纪律**：marker 行与块外内容字节不动；`<!-- cyning-harness-local:begin -->` 块永不改写；`docs/tasks/`、`docs/harness/reviews/`、`docs/harness/invokes/by-task/`（S2）一律拒写。
+- **preflight（--yes 专用 fail-fast，exit 2 零写入）**：git 脏树 / 单文件新旧字面混杂（MIXED）/ marker 配对畸形（MALFORMED）/ S2 断言闸任一命中即拒写。
+- **备份与回滚**：--yes 写盘前原字节备份到 `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/`（保留最近 5 代）；回滚首选 `git checkout -- <path>`，非 git 仓用备份 cp 回。
+- **幂等**：已刷写文件再次运行 A 组命中 0，`files_written=0`、字节不变、exit 0。
+- `--json` 输出单行机器报告（schema `dsh-coding-kit/refresh-ide-blocks-report@1`）。
 
 ### D5 测试制品探测边界（audit / verify · test_strategy=required）
 

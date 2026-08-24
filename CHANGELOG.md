@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- **`refresh-ide-blocks` 子命令**（R-07 · SPEC: PRD_R07_ide_block_rewrite.md）：刷写存量消费者仓 IDE marker 块（`<!-- cyning-harness:begin/end -->`）内滞留的旧 `npx @cyning/harness` 命令字面。默认 dry-run 零写入，`--yes` 才写盘；映射表 A1–A4 自动替换（钉版丢弃记 `dropped_pin`、裸 `harness skills build|check` 防二刷）、B1–B5 仅报告「需人工」；preflight fail-fast（git 脏树 / MIXED 新旧混杂 / MALFORMED 畸形块 / S2 断言闸）exit 2 零写入；写盘前备份至 `.cyning-harness/backups/refresh-ide-blocks/`（保留 5 代），幂等。`upgrade` 完成后若检测到旧字面，追加一行 dry-run 只读提示（不写 IDE 文件、不改 upgrade exit 码）。
+
 ### Changed（行为变更 · 升级必读）
 
 - **D5 WARN 过渡硬化为 FAIL**（DEF-014 过渡结束，兑现 1.3.0 承诺）：`test_strategy=required` 时仅命中旧启发式（pyproject.toml / setup.py / 无 test 步骤的 workflow）的仓，verify / audit 由 WARN exit 0 改为 **FAIL exit 2**；旧启发式探测代码（`hasTestArtifactsLegacy`）删除。迁移：补真实测试制品（`tests/` / `*_test.py` / `*.test.ts` / 含 test 步骤的 CI）即可恢复 PASS。

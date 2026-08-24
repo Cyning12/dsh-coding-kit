@@ -22,7 +22,7 @@ npx dsh-coding-kit init --preset harness-only --yes
 npx dsh-coding-kit verify --target . --task docs/tasks/active/task_*.md
 ```
 
-IDE 片段默认需手工嵌入（见下）；`init` / `upgrade` **不**自动刷新消费者仓已嵌入的 begin/end 块内命令字面。
+IDE 片段默认需手工嵌入（见下）；`init` / `upgrade` 不写消费者仓 IDE 文件（`upgrade` 仅改写 `.cyning-harness/manifest.json`）。存量仓已嵌入 begin/end 块内的旧 `npx @cyning/harness` 命令字面，用 **`npx dsh-coding-kit refresh-ide-blocks`** 刷写（默认 dry-run 只读，`--yes` 才写盘；local 块、块外内容与 S2 路径永不动——映射表与纪律见仓根 README「refresh-ide-blocks」节）。
 
 profile 字段（历史）：`tracks.ide_cursor` · `tracks.ide_claude` · `tracks.ide_agents`（缺省：cursor=true，其余 false）。旧包 `cyning-harness` 的 `wizard/install.sh` 勾选路径已废弃，勿再当作现行入口。
 
