@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fail, findGate, packageRoot, parseHumanGates, resolveTarget, takeOption } from './cli-shared.ts'
+// DEF-003 阶段二 T3：dry-run 守卫 adapter 复用 cli-checks 单一实现源（与 verify / status 同口径）
+import { findReview, lintTaskFile, runTestCheck } from './cli-checks.ts'
 import { yamlLoad } from './yaml.ts'
 
 type LifecycleData = {
@@ -142,6 +144,60 @@ function flagsAllow(flags: DryRunFlags, allowFlag?: string): boolean {
   return false
 }
 
+// DEF-003 阶段二 T3：dry-run 守卫 adapter 真接线（to_30: reviews_retention / audit_D5 / task_lint）。
+// 未在 evalGuard 登记的守卫 = 未接线：输出 unevaluated 且 detail 明示「未接线」（SPEC §9 R-TRUTH-1 · 禁止第三态）。
+type GuardOutcome = { status: 'pass' | 'fail' | 'warn'; detail: string }
+
+function evalHumanGate(gateId: string, content: string): GuardOutcome {
+  const gates = parseHumanGates(content)
+  const row = findGate(gates, gateId)
+  if (!row) return { status: 'fail', detail: `闸表无 ${gateId} 行` }
+  if (row.status === 'approved') return { status: 'pass', detail: `${gateId}=approved` }
+  return { status: 'fail', detail: `${gateId}=${row.status}（须 approved）` }
+}
+
+function evalGuard(
+  guardId: string,
+  ctx: { target: string; absTask: string; content: string },
+): GuardOutcome | null {
+  switch (guardId) {
+    case 'HG-AUDIT-R1':
+    case 'HG-TASK-DRAFT':
+      return evalHumanGate(guardId, ctx.content)
+    case 'reviews_retention':
+      return findReview(ctx.target, ctx.absTask)
+        ? {
+            status: 'pass',
+            detail: 'R<n> 审查文存在（docs/harness/reviews 或 reviews/ 命中 task_*_audit_R<n>_*）',
+          }
+        : {
+            status: 'fail',
+            detail: 'missing R<n> review（docs/harness/reviews 与 reviews/ 均无 task_*_audit_R<n>_*.md）',
+          }
+    case 'audit_D5': {
+      const r = runTestCheck(ctx.target, ctx.absTask)
+      if (r.ok && r.warn) return { status: 'warn', detail: r.reason }
+      return r.ok ? { status: 'pass', detail: r.reason } : { status: 'fail', detail: r.reason }
+    }
+    case 'task_lint': {
+      const r = lintTaskFile(ctx.absTask, ctx.target)
+      if (r.ok) {
+        const w =
+          r.warnings.length > 0
+            ? ` · ${r.warnings.length} 条 warn（${r.warnings.map((x) => x.rule).join(',')}）`
+            : ''
+        return { status: 'pass', detail: `lint PASS${w}` }
+      }
+      return {
+        status: 'fail',
+        detail: `lint FAIL: ${r.errors.map((e) => `${e.rule} ${e.message}`).join('；')}`,
+      }
+    }
+    default:
+      return null
+  }
+}
+
 function dryRunTransition(opts: {
   transitionId: string
   fromState: string
@@ -211,31 +267,31 @@ function dryRunTransition(opts: {
     detail: string | null
     allow_flag: string | null
   }[] = []
+  const taskContent = canEval ? readFileSync(absTask as string, 'utf8') : null
   for (const g of transition.guards) {
-    if (!canEval || (g.id !== 'HG-AUDIT-R1' && g.id !== 'HG-TASK-DRAFT')) {
+    if (!canEval || taskContent === null) {
       guards.push({
         id: g.id,
         severity: g.severity,
         status: 'unevaluated',
-        detail: !canEval ? '无 --task · 未求值' : '本波未接线 adapter',
+        detail: '无 --task · 未求值',
         allow_flag: g.allow_flag ?? null,
       })
       continue
     }
-    const content = readFileSync(absTask as string, 'utf8')
-    const gates = parseHumanGates(content)
-    const row = findGate(gates, g.id)
-    let status = 'fail'
-    let detail = `闸表无 ${g.id} 行`
-    if (row) {
-      if (row.status === 'approved') {
-        status = 'pass'
-        detail = `${g.id}=approved`
-      } else {
-        status = 'fail'
-        detail = `${g.id}=${row.status}（须 approved）`
-      }
+    const outcome = evalGuard(g.id, { target: opts.cwd, absTask: absTask as string, content: taskContent })
+    if (!outcome) {
+      // 未接线守卫：明示声明（R-TRUTH-1 · 禁止第三态），不等同 pass
+      guards.push({
+        id: g.id,
+        severity: g.severity,
+        status: 'unevaluated',
+        detail: '未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）',
+        allow_flag: g.allow_flag ?? null,
+      })
+      continue
     }
+    let { status, detail } = outcome
     if (status === 'fail' && g.allow_flag && flagsAllow(opts.flags, g.allow_flag)) {
       status = 'warn'
       detail = `${detail}（${g.allow_flag} 豁免）`

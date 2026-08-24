@@ -20,7 +20,20 @@ const UNWIRED_MARK = '未接线'
 // （prompts 源 + skills 生成物同源），实现锚点 allowlist 清空。
 // DEF-026 棒：30-execute-code#35「机械校验 invoke hats 集合」声称行已加「未接线」止血标注
 // （与 DEF-003 阶段一口径一致 · 接线属阶段二），词表同步扩「机械校验」关键词。
-const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = []
+const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = [
+  // DEF-003 阶段二 T3：to_30 三守卫真接线（dry-run adapter 真求值 · 红→绿钉死）
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'reviews_retention · audit_D5 · task_lint 已接线（PRD_DEF-003 阶段二 T3',
+    evidence: 'src/cli-lifecycle.ts evalGuard（reviews_retention/audit_D5/task_lint 真求值）· test/cli-lifecycle-guards.test.ts',
+  },
+  // DEF-003 阶段二 T4：verify R<n> 审查文存在性硬闸真接线（红→绿钉死）
+  {
+    file: 'assets/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md',
+    lineIncludes: '本包已接线**（src/cli.ts cmdVerify',
+    evidence: 'src/cli.ts cmdVerify findReview 硬闸 + --allow-no-review 豁免留痕 · test/cli-verify-review.test.ts',
+  },
+]
 
 function listAssets(dir: string): string[] {
   const out: string[] = []
@@ -79,7 +92,8 @@ describe('D-DOC 1.2.4 DEF-003 · 资产声称必须接线或明示未接线', { 
 
   it('DEF-003 六锚点「未接线」止血标注在位（阶段一 T1 钉死）', () => {
     const frag = readFileSync(path.join(ASSETS, 'harness', 'prompts', 'FRAGMENT_30_gate_verify_v1_zh.md'), 'utf8')
-    assert.ok(frag.split(/\r?\n/).filter((l) => l.includes(UNWIRED_MARK)).length >= 2, 'FRAGMENT 须 ≥2 处未接线')
+    // T4 后：#16 R<n> 审查文硬闸已接线（见 allowlist 锚点）；#18 pre-30 invoke hats 未接线标注保留（T5 范围）
+    assert.ok(frag.split(/\r?\n/).filter((l) => l.includes(UNWIRED_MARK)).length >= 1, 'FRAGMENT 须 ≥1 处未接线（pre-30 invoke hats · T5 接线前保留）')
     for (const rel of [
       'assets/harness/prompts/TEMPLATE_30_gate_stop.md',
       'assets/harness/invokes/TEMPLATE_invoke.md',

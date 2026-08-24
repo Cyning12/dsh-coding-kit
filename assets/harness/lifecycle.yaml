@@ -2,11 +2,11 @@
 #
 # 登记真值：状态 / 转移 / 守卫。yaml 本身不是引擎。
 # 由 `lifecycle dry-run` 引擎消费（v2.10+ · 资格判定旁路报告 · 不写盘）。
-# v2.11+ to_30：HG-AUDIT-R1 · HG-TASK-DRAFT 已接线（本包真接线）；reviews_retention · audit_D5 · task_lint 未接线（旧包 v2.x 史实 · dry-run 恒 unevaluated · 接线计划见 PRD_DEF-003 阶段二）
+# v2.11+ to_30：HG-AUDIT-R1 · HG-TASK-DRAFT 已接线（本包真接线）；reviews_retention · audit_D5 · task_lint 已接线（PRD_DEF-003 阶段二 T3 · src/cli-lifecycle.ts evalGuard · test/cli-lifecycle-guards.test.ts 钉死）
 # v2.13+ close：close_self_check · close_acceptance · close_slug · close_status 已接线；close_invoke · close_review 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
 # v2.17+ close 增补：close_graph_delta · close_kpi · close_experience —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
 # v2.18+ close 增补：close_wiki_delta · close_wiki_promotion —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
-#   （to_00 / spec_reviews_retention 仍可 unevaluated）
+#   （to_00 / spec_reviews_retention 未接线 · verify --spec 本包未交付 · dry-run 明示「未接线」）
 # 只读展示：npx dsh-coding-kit lifecycle show [--json]
 # 本包未附带 JSON Schema（旧 schema 指针已移除 · DEF-009）
 
@@ -41,7 +41,7 @@ transitions:
     to: in_progress
     hat: "30"
     description: "执行帽开工（verify --task 与全量模式聚合 · v2.9+）"
-    # 守卫接线真值（dsh-coding-kit@1.2.x）：HG-AUDIT-R1 / HG-TASK-DRAFT 已接线；reviews_retention / audit_D5 / task_lint 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
+    # 守卫接线真值（本包）：to_30 五守卫全部已接线（HG-AUDIT-R1 / HG-TASK-DRAFT / reviews_retention / audit_D5 / task_lint · PRD_DEF-003 阶段二 T3 dry-run adapter 真求值）
     guards:
       - id: HG-AUDIT-R1
         command_or_check: "gate-check · human_gate HG-AUDIT-R1=approved"

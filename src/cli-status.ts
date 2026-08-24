@@ -13,6 +13,8 @@ import {
   takeOption,
   toRel,
 } from './cli-shared.ts'
+// DEF-003 T3/T4：findReview 单一实现源迁至 cli-checks.ts（verify / dry-run / status 共用）
+import { findReview } from './cli-checks.ts'
 import { summarizeTaskHgm } from './cli-graph-hgm.ts'
 
 const OBS_STATUS_SCHEMA = 'obs_status.v1'
@@ -68,22 +70,6 @@ function findLastInvoke(target: string, slug: string): { path: string | null; ha
   }
   if (!best) return empty
   return { path: best.path, hat_id: best.hat_id }
-}
-
-function findReview(target: string, taskFile: string): boolean {
-  const dirs = [path.join(target, 'docs/harness/reviews'), path.join(target, 'reviews')]
-  const stripVer = (s: string) => s.replace(/_v\d+$/, '')
-  const base = stripVer(path.basename(taskFile, '.md'))
-  const RE = /^(task_.+?)_audit_R\d+_.*\.md$/i
-  for (const reviewsDir of dirs) {
-    if (!existsSync(reviewsDir)) continue
-    for (const name of readdirSync(reviewsDir)) {
-      const m = name.match(RE)
-      if (!m) continue
-      if (stripVer(m[1]) === base) return true
-    }
-  }
-  return false
 }
 
 function buildTaskStatus(target: string, taskFile: string, options: { check?: boolean } = {}) {
