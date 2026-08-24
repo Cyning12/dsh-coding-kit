@@ -1,6 +1,6 @@
 # dsh-coding-kit
 
-**dsh-coding-kit@1.3.0** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI** 与 **G1–G7 过程命令**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
+**dsh-coding-kit@1.4.0** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI** 与 **G1–G7 过程命令**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
 
 > **加载 ≠ 注入。** 安装或加载本插件 **不会** 自动改写 system prompt。`apply()` 只注册工具。必须由你或模型调用 `apply_coding_standards` 之后，后续回合的 runtime context 才会含 `# Coding Standards`。
 
@@ -11,7 +11,7 @@
 | DSH 会话 / 模型调工具 | `dsh plugin add dsh-coding-kit` | 不要只 `npm install`（缺 bundle 层则工具不出现） |
 | Cursor / CI / 存量仓日常闸 | `npx dsh-coding-kit` | 不要把插件 `init_coding_kit` 与 CLI `init` 当成同一入口 |
 
-两条入口同一 npm 包 **`dsh-coding-kit@1.3.0`**。插件面与 CLI 面互不替代。
+两条入口同一 npm 包 **`dsh-coding-kit@1.4.0`**。插件面与 CLI 面互不替代。
 
 `peerDependencies` 中的 `@deepseek-ai/cordis` 与 `@deepseek-ai/dsh-tools` 是 **DSH 宿主插件契约**（仅宿主加载本包为插件时需要；CLI-only 不需要），已在 `peerDependenciesMeta` 标为 **optional**。
 
@@ -118,14 +118,14 @@ npx dsh-coding-kit task check --file PATH
 - `pyproject.toml` / `setup.py` 存在**不再**视为测试制品（任意现代 Python 仓都有，与有无测试无关）。
 - 纯 lint / 纯部署 workflow（无 test 步骤）不再放行。
 - 探测深度为仓根起 3 层；monorepo 更深层或自定义测试命令（如 `make test`）不命中白名单时，在仓内放任一强信号文件（如 `tests/` 目录、`*_test.py`）即可。
-- **WARN 过渡（1.3.0）**：新探测失败但旧启发式（pyproject.toml / setup.py / 任意 workflow 存在）通过时，输出 `D5: WARN 过渡` 且 exit 0 不阻塞；**下一 minor 硬化为 FAIL**。
+- **WARN 过渡（1.3.0）**：新探测失败但旧启发式（pyproject.toml / setup.py / 任意 workflow 存在）通过时，输出 `D5: WARN 过渡` 且 exit 0 不阻塞；原计划下一 minor 硬化为 FAIL，**1.4.0 未硬化、仍为 WARN 过渡**（硬化另列计划）。
 
 ## 从 @cyning/harness 迁移
 
-钉 **dsh-coding-kit@1.3.0** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
+钉 **dsh-coding-kit@1.4.0** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
 
-1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.3.0`）。
-2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.3.0，`from_version` 记旧号）。
+1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.4.0`）。
+2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.4.0，`from_version` 记旧号）。
 3. CI / 脚本里把 `npx @cyning/harness` 换成 `npx dsh-coding-kit`。
 
 Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）。命令一律 `npx dsh-coding-kit`。
@@ -139,12 +139,12 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 整段粘贴：
 
 ````text
-你 = 本仓库维护 Agent。把本仓从 @cyning/harness 迁到 dsh-coding-kit@1.3.0。
+你 = 本仓库维护 Agent。把本仓从 @cyning/harness 迁到 dsh-coding-kit@1.4.0。
 
 最小路径（必须，按序）：
-1. package.json 的 devDependency：删除 @cyning/harness，改为 dsh-coding-kit（钉 1.3.0）。
+1. package.json 的 devDependency：删除 @cyning/harness，改为 dsh-coding-kit（钉 1.4.0）。
 2. 在仓根执行：npx dsh-coding-kit upgrade --yes
-   （读旧 .cyning-harness/manifest.json；version 钉 1.3.0，from_version 记旧号；不覆盖 docs/tasks、reviews、invokes/by-task。）
+   （读旧 .cyning-harness/manifest.json；version 钉 1.4.0，from_version 记旧号；不覆盖 docs/tasks、reviews、invokes/by-task。）
 3. CI 与脚本里所有 npx @cyning/harness 换成 npx dsh-coding-kit。
 命令一律 npx dsh-coding-kit。禁止再写 npx @cyning/harness skills build。
 
