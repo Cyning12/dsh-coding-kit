@@ -70,6 +70,8 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": "^0.0.1-rc.1",
     "@types/node": "^22.15.0",
     "typescript": "^5.8.0"
   },
