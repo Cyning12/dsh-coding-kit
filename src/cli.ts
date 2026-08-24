@@ -21,7 +21,7 @@ import {
   STATUS_RE,
   takeOption,
 } from './cli-shared.ts'
-import { lintTaskFile, PLACEHOLDER_RE, runTestCheck } from './cli-checks.ts'
+import { findReview, lintTaskFile, PLACEHOLDER_RE, runTestCheck } from './cli-checks.ts'
 import { cmdStatus, cmdTimeline } from './cli-status.ts'
 import { cmdSync } from './cli-sync.ts'
 import { cmdTaskCheck, cmdTaskLintDone, cmdTaskLintWikiDelta } from './cli-task-extra.ts'
@@ -346,7 +346,9 @@ async function cmdAudit(args: string[]): Promise<void> {
 
 async function cmdVerify(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    console.log('用法: npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json]')
+    console.log(
+      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json] [--allow-no-review]',
+    )
     return
   }
   const json = args.includes('--json')
@@ -358,12 +360,16 @@ async function cmdVerify(args: string[]): Promise<void> {
   const { value: specFile, rest: r3 } = takeOption(rest, '--spec')
   rest = r3
   if (specFile) notDelivered('verify --spec')
+  // DEF-003 阶段二 T4：--allow-no-review 真生效（R<n> 审查文硬闸豁免 · 留痕）；
+  // 其余 --allow-* 仍走 DEF-011 fail-fast（--allow-invoke-gap 属 T5 范围）
+  const allowNoReview = rest.includes('--allow-no-review')
+  rest = rest.filter((a) => a !== '--allow-no-review')
   if (rest.length > 0) fail(`verify 未知参数: ${rest.join(' ')}`)
   const target = resolveTarget(process.cwd(), targetArg)
   if (!taskFile) fail('verify 须指定 --task FILE（1.1.0 P0 子集）')
   const abs = resolveTaskPath(target, taskFile)
   const label = path.basename(abs)
-  const emitJson = (blocked: boolean): void => {
+  const emitJson = (blocked: boolean, waived?: string[]): void => {
     console.log(
       JSON.stringify(
         {
@@ -372,6 +378,7 @@ async function cmdVerify(args: string[]): Promise<void> {
           task: taskFile,
           blocked,
           verdict: blocked ? 'BLOCKED' : 'PASS',
+          ...(waived && waived.length > 0 ? { waived } : {}),
         },
         null,
         2,
@@ -403,7 +410,21 @@ async function cmdVerify(args: string[]): Promise<void> {
     else console.log(`VERIFY: BLOCKED · ${test.reason} · ${label}`)
     fail('', 2)
   }
-  if (json) emitJson(false)
+  // DEF-003 阶段二 T4：R<n> 审查文存在性硬闸（findReview 与 status / dry-run 同口径 · cli-checks 单一实现源）
+  const reviewFound = findReview(target, abs)
+  if (!reviewFound && !allowNoReview) {
+    if (json) emitJson(true)
+    else console.log(`VERIFY: BLOCKED · missing R<n> review · ${label}`)
+    fail('', 2)
+  }
+  const waived: string[] = []
+  if (!reviewFound && allowNoReview) {
+    waived.push('missing R<n> review（--allow-no-review 豁免）')
+    if (!json) {
+      console.log('verify: 留痕 · 缺 R<n> 审查文 · --allow-no-review 豁免生效（仍须补审并由维护者签 HG-AUDIT-R1）')
+    }
+  }
+  if (json) emitJson(false, waived)
   else {
     if (test.warn) console.log(test.reason)
     console.log(`VERIFY: PASS · ${label}`)

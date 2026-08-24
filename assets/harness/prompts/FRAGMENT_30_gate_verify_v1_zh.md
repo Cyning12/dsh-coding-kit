@@ -13,7 +13,7 @@
 | HG-TASK-DRAFT | {读表} | {若有} | {Y/N} | {Y/N} | … |
 | HG-AUDIT-R1 | {读表} | {若有} | {Y/N} | Y | … |
 
-reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（旧包 **v2.5+** 史实：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review`——**dsh-coding-kit@1.2.x 未接线**（本包 verify 不查审查文存在性），接线计划见 PRD_DEF-003 阶段二；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
+reviews：task_*_audit_R1_*.md 存在且 R1 通过？ {是/否}（**v2.5+**：`verify` 对 R<n> 审查文**存在性**机械强制 · 缺失即 `VERIFY: BLOCKED · missing R<n> review` · `--allow-no-review` 豁免留痕——**本包已接线**（src/cli.ts cmdVerify · findReview 与 status 同口径 · PRD_DEF-003 阶段二 T4 · test/cli-verify-review.test.ts 钉死）；结论通过与否仍由维护者签 `HG-AUDIT-R1` 覆盖）
 
 pre-30 invoke：`required ∩ {10,20,00}` 文件是否齐全？ {是/否}（旧包 **v2.14+** 史实：`verify --task` **硬闸** · 缺失即 `VERIFY: BLOCKED · missing pre-30 invoke hats` · `may_start_30=false`——**dsh-coding-kit@1.2.x 未接线**（本包 verify 不扫描 invoke 文件，`--allow-invoke-gap` 无豁免语义），接线计划见 PRD_DEF-003 阶段二；缺 40 **不挡** 30；`minimal` 无 preRequired 不挡）
 

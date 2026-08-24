@@ -270,6 +270,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
           testStrategy: 'recommended',
         }),
       )
+      // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
+      await writeRel(dir, 'docs/harness/reviews/task_approved_ok_audit_R1_2026-08-20.md', '# R1 fixture')
       const r = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(r.status, 0, r.combined)
       assert.match(r.combined, /VERIFY: PASS/)
@@ -325,6 +327,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
         }),
       )
       await writeRel(dir, 'pyproject.toml', '[project]\nname = "demo"\nversion = "0.1.0"\n')
+      // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
+      await writeRel(dir, 'docs/harness/reviews/task_d5_pyproject_audit_R1_2026-08-20.md', '# R1 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.match(v.combined, /WARN/, v.combined)
@@ -364,6 +368,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
           '',
         ].join('\n'),
       )
+      // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
+      await writeRel(dir, 'docs/harness/reviews/task_d5_lintci_audit_R1_2026-08-20.md', '# R1 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.match(v.combined, /WARN/, v.combined)
@@ -400,6 +406,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
           '',
         ].join('\n'),
       )
+      // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
+      await writeRel(dir, 'docs/harness/reviews/task_d5_pytestci_audit_R1_2026-08-20.md', '# R1 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.doesNotMatch(v.combined, /WARN/, v.combined)
@@ -421,6 +429,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
         }),
       )
       await writeRel(dir, 'test_smoke.py', 'def test_ok():\n    assert True\n')
+      // DEF-003 T4：verify 查 R<n> 审查文存在性 · 补审查文保持本用例 PASS 口径
+      await writeRel(dir, 'docs/harness/reviews/task_d5_pyfile_audit_R1_2026-08-20.md', '# R1 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
       assert.equal(v.status, 0, v.combined)
       assert.doesNotMatch(v.combined, /WARN/, v.combined)

@@ -93,13 +93,15 @@ const PENDING_REL = 'docs/tasks/active/task_flags_pending_v1.md'
 async function seedFixtures(dir: string): Promise<void> {
   await writeRel(dir, APPROVED_REL, taskMd({ slug: 'flags_ok' }))
   await writeRel(dir, PENDING_REL, taskMd({ slug: 'flags_pending', audit: 'pending', draft: 'pending' }))
+  // DEF-003 T4：verify 查 R<n> 审查文存在性（approved task 须配审查文才 PASS）
+  await writeRel(dir, 'docs/harness/reviews/task_flags_ok_audit_R1_2026-08-20.md', '# R1 fixture')
 }
 
 describe('DEF-011 verify/gate-check 旗标不再静默吞（D1 fail-fast · D2 --json 最小接通 · D3 拒绝）', { concurrency: 1 }, () => {
   // D1/D3: 无实现语义的旗标一律 exit 1，不再被 filter 丢弃
+  // DEF-003 T4：--allow-no-review 已真生效（豁免 R<n> 审查文硬闸 · 见 cli-verify-review.test.ts），移出拒绝清单
   const VERIFY_REJECTED: string[][] = [
     ['--allow-invoke-gap'],
-    ['--allow-no-review'],
     ['--allow-lint-fail'],
     ['--agent-hint'],
     ['--graph'],
