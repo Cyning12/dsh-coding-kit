@@ -8,16 +8,18 @@ const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ASSETS = path.join(KIT, 'assets')
 
 // DEF-003 阶段一 · 「声称 vs 实现」回归闸（SPEC.md §9 R-TRUTH-1 的可执行臂）。
-// 词表（R5 纪律：只匹配「v2.x+ 硬闸/机械强制/机械闸/已接线」声称句式，不匹配纯史实叙事）：
+// 词表（R5 纪律：只匹配「v2.x+ 硬闸/机械强制/机械闸/机械校验/已接线」声称句式，不匹配纯史实叙事）：
 //   一行同时命中 VERSION_RE 与 CLAIM_RE = 能力声称行，必须：
 //   ① 同行含「未接线」标注（先 B 止血口径）；或
 //   ② 逐行落在 WIRED_CLAIMS_ANCHORS（真接线 / fail-loud 实现锚点，注释注明证据）。
 const VERSION_RE = /v2\.\d+\+/
-const CLAIM_RE = /硬闸|机械强制|机械闸|已接线/
+const CLAIM_RE = /硬闸|机械强制|机械闸|机械校验|已接线/
 const UNWIRED_MARK = '未接线'
 
 // DEF-005 棒已处理：20-spec-audit「verify --spec 机械闸」声称行已加「未接线」止血标注
 // （prompts 源 + skills 生成物同源），实现锚点 allowlist 清空。
+// DEF-026 棒：30-execute-code#35「机械校验 invoke hats 集合」声称行已加「未接线」止血标注
+// （与 DEF-003 阶段一口径一致 · 接线属阶段二），词表同步扩「机械校验」关键词。
 const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = []
 
 function listAssets(dir: string): string[] {
