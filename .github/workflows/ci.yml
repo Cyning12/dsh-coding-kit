@@ -1,0 +1,24 @@
+# DEF-018 D1(a)：仓级 CI——本地 prepublishOnly 之外，拦截「不发布但合入」的 src→lib 漂移
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.x', '24.x']  # 对齐 package.json engines: ^22.19.0 || >=24.0.0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:lib

@@ -32,7 +32,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test --test-concurrency=1 --experimental-strip-types test/*.test.ts",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+    "test:lib": "node --test --test-concurrency=1 --experimental-strip-types test/lib-smoke/cli-lib-smoke.test.ts",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build && npm run test:lib"
   },
   "engines": {
     "node": "^22.19.0 || >=24.0.0"
