@@ -4,6 +4,44 @@
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-08-24
+
+> 主题：**行为纠偏 · CLI 说真话做正事** —— 17 个 PRD/债项全面落地：help / 旗标 / --json / 幂等键 / --strict 等一律收紧为真实语义，155 项测试红线锁住，新上 CI。
+
+### Changed（行为变更 · 升级必读）
+
+- **子命令 `--help`**：输出子命令自身 usage（原误输出根 usage）。
+- **未知旗标不再静默吞**：`verify` / `gate-check` 收到未知旗标 exit 1 报错（原静默忽略）。
+- **`--json` 真生效**：`verify` / `gate-check` --json 输出五字段结构化结果（原旗标被吞、仍输出文本）。
+- **`verify --spec`**：文案去版本号；校验失败 exit 2→1（exit 2 回归纯闸语义）。
+- **入参校验收紧**：`init --preset` 词表校验（未知 preset 拒收）；`upgrade --force` 拒收。
+- **`check` 三向版本判定**：高版本 manifest 不再误报「可升级」（DEF-013）。
+- **`graph ingest` 幂等键含状态摘要**：闸/task 状态变化后重跑会补发事件（旧事件保留、不覆盖）。
+- **外部手写事件过滤收紧**：改为结构化等值匹配（原宽松匹配易误吞/误放）。
+- **`status`**：`event_count` 无匹配由 null 改为 0；`reviews.CLOSE` 事件接线。
+- **`lifecycle` dry-run 新增 `--target`**。
+- **`ingest` 扫描双路径**：harness 布局仓事件量跳变属预期。
+- **D5 假阳性降级为 WARN 过渡**。
+- **插件 override**：根上探 git root + 按文件边界截断。
+- **`--strict` 真语义**：原先形同虚设，现真实收紧——**CI 中使用 `--strict` 的管线可能翻红**。
+- **`skills install --out` 指向产品包 `assets/skills` → 拒写**（防污染源包资产）。
+
+> 本次含 skills/prompts 资产修复（DEF-024/025/026），安装遵循 no-clobber：**升级后建议重跑 `skills install`**，否则本地仍保留旧资产。
+
+### Fixed
+
+- **DEF-007 · stubs 死指针**：`assets/graph/stubs/README.md` 指针钉正。
+- **DEF-024 · 姊妹帽死链**：skills 资产 4 处悬空姊妹帽链接修复。
+- **DEF-025 · HG-GRAPH-MODULES 残留行**：gate-stop 模板残留行清除。
+- **DEF-026 · 「机械校验」未接线声明**：30-execute-code 降级标注，不再冒充已接线。
+
+### Added
+
+- **lib 冒烟测试 + mtime 哨兵 + `npm run test:lib`**：锁住构建产物新鲜度。
+- **CI workflow**（`.github/workflows/ci.yml`，node 22/24 矩阵）。
+- **新增测试**：`test/cli-hgm-parser.test.ts`、`test/cli-status-obs.test.ts`、`test/cli-help.test.ts`、`test/cli-flags.test.ts`、`test/cli-verify-spec.test.ts`、`test/cli-validation.test.ts`。
+- **SPEC 新增 HGM 幂等键契约**。
+
 ## [1.2.4] - 2026-08-24
 
 > 主题：**修谎止损 · 发布物说真话** —— 全面清查 assets/ 文档面与包真实能力的偏差，未接线声明一律降级标注，并以测试红线锁住。
