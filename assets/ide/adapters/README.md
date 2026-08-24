@@ -10,36 +10,44 @@
 | [`CLAUDE.md.fragment.example`](./CLAUDE.md.fragment.example) | ✅ | **Claude Code** | 仓根 `CLAUDE.md`（marker merge） |
 | [`AGENTS.md.fragment.example`](./AGENTS.md.fragment.example) | ✅ | **通用 Agent** | 仓根 `AGENTS.md`（marker merge） |
 
-## 安装勾选
+## 现行安装入口
+
+CLI 闸与模板以 **`npx dsh-coding-kit`** 为准（包内本目录 = npm `assets/ide/adapters/`）：
 
 ```bash
-# 三类 IDE 一次勾选（dry-run 预览）
-/path/to/cyning-harness/wizard/install.sh \
-  --preset harness-only \
-  --ide cursor,claude,agents \
-  --dry-run --target /path/to/project
+# 仓根：初始化 Harness 闸（不覆盖 S2 过程域）
+npx dsh-coding-kit init --preset harness-only --yes
 
-# 实装
-/path/to/cyning-harness/wizard/install.sh \
-  --preset harness-only --ide cursor,claude,agents
+# 嵌入前建议先 verify（task 路径按仓调整）
+npx dsh-coding-kit verify --target . --task docs/tasks/active/task_*.md
 ```
 
-profile 字段：`tracks.ide_cursor` · `tracks.ide_claude` · `tracks.ide_agents`（缺省：cursor=true，其余 false）。
+IDE 片段默认需手工嵌入（见下）；`init` / `upgrade` **不**自动刷新消费者仓已嵌入的 begin/end 块内命令字面。
+
+profile 字段（历史）：`tracks.ide_cursor` · `tracks.ide_claude` · `tracks.ide_agents`（缺省：cursor=true，其余 false）。旧包 `cyning-harness` 的 `wizard/install.sh` 勾选路径已废弃，勿再当作现行入口。
 
 ## marker merge 纪律（D3）
 
-- 块标记：`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`
+- 块标记：`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`（**marker 字符串**，不是 npx 包名；可保留）
 - **不覆盖**用户仓已有 `CLAUDE.md` / `AGENTS.md` 全文；**产品块外**手写保持不变
 - **仓内定制（v2.22+）**：使用 `<!-- cyning-harness-local:begin -->` … `<!-- cyning-harness-local:end -->`，且须在产品 begin/end **之外**。sync **永不**改写 local 块；若误写在产品块内，apply 会尝试 **salvage** 到产品块外。
 - G-L / 图谱模块页路径：在 `.cyning-harness/profile.json` 设可选 `"graph_modules_path": "l1/01_modules"`（默认 `01_struct`），由 sync 写入 `FRAGMENT_30_gate_verify_v1_zh.md` 占位。
-- **首次迁入操作序（强制）**：先迁 profile/local 并 **git commit**，再 `upgrade`（脏树易撞 S5）——见 [`docs/RUNBOOK_upgrade_wiki_delta_v1_zh.md`](../docs/RUNBOOK_upgrade_wiki_delta_v1_zh.md) **§1.2.1**。
-- 由 [`wizard/install.sh`](../install.sh) + [`harness-sync.sh`](../harness-sync.sh) 执行
+- **首次迁入操作序（强制）**：先迁 profile/local 并 **git commit**，再 `npx dsh-coding-kit upgrade --yes`（脏树易撞 S5）。
 
 ## 手工嵌入（备查）
 
+从已安装的 npm 包复制（路径相对消费者仓根）：
+
 ```bash
 mkdir -p .cursor/rules
-cp cyning-harness/ide/adapters/cursor-harness-starter.mdc.example .cursor/rules/05-harness-starter.mdc
+cp node_modules/dsh-coding-kit/assets/ide/adapters/cursor-harness-starter.mdc.example \
+  .cursor/rules/05-harness-starter.mdc
+```
+
+或从本仓库源树：
+
+```bash
+cp assets/ide/adapters/cursor-harness-starter.mdc.example .cursor/rules/05-harness-starter.mdc
 ```
 
 ## 纪律（D3）

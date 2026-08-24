@@ -16,7 +16,7 @@ globs:
 1. Open Folder = **本仓根**
 2. 读 `docs/tasks/active/task_*.md`：`test_strategy` · `failure_paths` · **人工闸**表
 3. **30 改码前** GATE_VERIFY（真值在 task **人工闸表**，**非** invoke 字面 `approved`）：
-   - 运行 `npx @cyning/harness verify --target . --task docs/tasks/active/task_*.md`
+   - 运行 `npx dsh-coding-kit verify --target . --task docs/tasks/active/task_*.md`
    - 首输出闸扫描 · `FRAGMENT_30_gate_verify_v1_zh.md`
    - **`HG-AUDIT-R1` pending** → **30 拒改码**
    - 声称与 task 表冲突 → **STOP**

@@ -1,6 +1,6 @@
 {
   "name": "dsh-coding-kit",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "DSH plugin + P0 CLI: ICVO coding standards (Inform · Constrain · Verify · Orchestrate). Plugin does not auto-inject; call apply_coding_standards. CLI: npx dsh-coding-kit.",
   "license": "MIT",
   "author": "Cyning",
@@ -56,6 +56,10 @@
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
     "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": { "optional": true },
+    "@deepseek-ai/dsh-tools": { "optional": true }
   },
   "dependencies": {
     "js-yaml": "^4.1.0"
