@@ -70,6 +70,11 @@ export function lintDoneInvokes(target: string): {
   }
 }
 
+// DEF-021：wiki_delta strict 词表——none / n/a 为字面值；
+// 其余值须为 path 形态（含 / 或 .，如 docs/coding_wiki/x.md 或 coding_wiki/templates）
+const WIKI_DELTA_LITERALS = new Set(['none', 'n/a'])
+const WIKI_DELTA_PATHISH_RE = /[/.]/
+
 export function lintWikiDeltaMissing(
   target: string,
   options: { scope?: string; strict?: boolean } = {},
@@ -111,6 +116,28 @@ export function lintWikiDeltaMissing(
         }
         missing.push(row)
         issues.push(row)
+      } else if (strict) {
+        // DEF-021 完成态 A：--strict 在默认档之上追加扩展检查（SPEC G7 note/path 口径）。
+        // 词表 path|none|n/a：none / n/a 为字面值；其余按 path 形态处理。
+        // 新缺口只入 issues 不入 missing，默认档结果不变。
+        const value = String(raw).trim()
+        if (!WIKI_DELTA_LITERALS.has(value)) {
+          if (!WIKI_DELTA_PATHISH_RE.test(value)) {
+            issues.push({
+              path: relPath,
+              scope: dirScope,
+              code: 'wiki_delta_invalid',
+              detail: `wiki_delta 值非法: ${value}（须 path|none|n/a）`,
+            })
+          } else if (!existsSync(path.resolve(target, value))) {
+            issues.push({
+              path: relPath,
+              scope: dirScope,
+              code: 'wiki_delta_path_missing',
+              detail: `wiki_delta 指向不存在的 wiki 路径（相对仓根）: ${value}`,
+            })
+          }
+        }
       }
     }
   }
@@ -306,6 +333,10 @@ export async function cmdTaskLintWikiDelta(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(
       `用法: npx dsh-coding-kit task lint-wiki-delta [--target PATH] [--scope all|active|done] [--strict] [--json]`,
+    )
+    console.log(
+      '  默认档: 缺 wiki_delta 字段（wiki_delta_missing）；--strict 追加值域校验（path|none|n/a）' +
+        '与 path 存在性检查（wiki_delta_invalid / wiki_delta_path_missing）',
     )
     return
   }

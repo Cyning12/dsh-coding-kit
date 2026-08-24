@@ -144,7 +144,7 @@
 | 命令 | 2.24.0 用途 | 1.2.0 成功口径 |
 |------|-------------|----------------|
 | `task lint-done [--target]` | done slug vs `invokes/by-task` 目录名 | done 有而 invoke 无 → exit 2；invoke 多出仅 warn |
-| `task lint-wiki-delta [--target] [--scope all\|active\|done] [--strict] [--json]` | wiki_delta 缺口 | 默认缺字段；`--strict` 含 note/path。有缺口 → exit 2 |
+| `task lint-wiki-delta [--target] [--scope all\|active\|done] [--strict] [--json]` | wiki_delta 缺口 | 默认缺字段（`wiki_delta_missing`）；`--strict` 追加值域校验（`path\|none\|n/a`）与 path 存在性检查（`wiki_delta_invalid` / `wiki_delta_path_missing`，note/path 口径）。有缺口 → exit 2 |
 | `task check --file PATH [--no-circular] [--registry DIR]…` | sidecar `task.harness.v1.json` | schema 失败或环 → 非 0 |
 
 `task lint` / `task close` 属 1.1.0 P0，本版只回归、不改成功口径。
