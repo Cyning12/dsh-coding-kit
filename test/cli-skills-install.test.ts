@@ -281,6 +281,17 @@ describe('1.2.1 skills install I1–I12', { concurrency: 1 }, () => {
     })
   })
 
+  it('I13: --out 指到产品包自身 assets/skills（或其子目录）→ 拒写非 0（DEBT R-05）', async () => {
+    const before = hashTree(SKILLS_SRC)
+    const root = runCli(['skills', 'install', '--out', SKILLS_SRC])
+    assert.notEqual(root.status, 0, root.combined)
+    assert.match(root.combined, /拒写/)
+    const sub = runCli(['skills', 'install', '--out', path.join(SKILLS_SRC, 'harness-10-spec')])
+    assert.notEqual(sub.status, 0, sub.combined)
+    assert.match(sub.combined, /拒写/)
+    assert.equal(hashTree(SKILLS_SRC), before, '拒写后包内 assets/skills 不得变化')
+  })
+
   it('I10: --out 以 ~ 开头 → exit 1；cwd 下无名为 ~ 的目录', async () => {
     await withTemp(async (dir) => {
       const r = runCli(['skills', 'install', '--out', '~/.something'], { cwd: dir })
