@@ -2,7 +2,7 @@
 name: harness-10-task
 description: 起草/修订 Harness task 文件（验收标准、failure_paths、非范围、依赖、思考轮控制表 R0–R5）。当需要把一项工作拆成可执行可验收的 task、或补全 task 结构时使用。不用于：直接实现代码（那是 hat 30，且须 HG-AUDIT-R1=approved）；起草 SPEC（用 harness-10-spec）。
 license: MIT
-compatibility: Requires npx @cyning/harness CLI（task lint / verify）· docs/tasks/active/ 目录约定
+compatibility: Requires npx dsh-coding-kit CLI（task lint / verify）· docs/tasks/active/ 目录约定
 metadata:
   hat_id: "10-task"
   track: starter
@@ -43,7 +43,7 @@ metadata:
 ## 交接物
 
 - 可粘贴进 `docs/tasks/active/task_*.md` 的正文块；并注明建议 `test_strategy`。
-- 产出 task 须 `npx @cyning/harness task lint --file <task>` PASS（v2.3+ · 结构闸 E1–E7 / W1+；v2.12+ 含 **W6** invoke 留档字段提醒）。
+- 产出 task 须 `npx dsh-coding-kit task lint --file <task>` PASS（v2.3+ · 结构闸 E1–E7 / W1+；v2.12+ 含 **W6** invoke 留档字段提醒）。
 - 承接 **20-task-audit 审查**：按 `docs/harness/reviews/*_audit_*.md` 回填 task。
 
 ## OSS 阶段 C · 思考轮（Starter 摘要）

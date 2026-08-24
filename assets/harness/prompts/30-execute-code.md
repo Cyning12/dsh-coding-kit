@@ -1,8 +1,8 @@
 ---
 name: harness-30-execute
-description: 在 Harness task 边界内实现代码并自检（hat 30+40 闭环）。仅当存在 active task 且其人工闸表 HG-AUDIT-R1=approved、npx @cyning/harness verify --task PASS 时使用；激活后首动作必须是 GATE_VERIFY 闸扫描。不要用于：无 task 的直接改码请求；任何 blocks-30 闸 pending 的状态（此时只能输出 STOP 与签闸指引）；起草 task/SPEC（用 harness-10-task / harness-10-spec）。
+description: 在 Harness task 边界内实现代码并自检（hat 30+40 闭环）。仅当存在 active task 且其人工闸表 HG-AUDIT-R1=approved、npx dsh-coding-kit verify --task PASS 时使用；激活后首动作必须是 GATE_VERIFY 闸扫描。不要用于：无 task 的直接改码请求；任何 blocks-30 闸 pending 的状态（此时只能输出 STOP 与签闸指引）；起草 task/SPEC（用 harness-10-task / harness-10-spec）。
 license: MIT
-compatibility: Requires npx @cyning/harness CLI（verify / task close）· docs/tasks/active/ 与 docs/harness/invokes/ 目录约定
+compatibility: Requires npx dsh-coding-kit CLI（verify / task close）· docs/tasks/active/ 与 docs/harness/invokes/ 目录约定
 metadata:
   hat_id: "30"
   track: starter-experimental
@@ -32,7 +32,7 @@ metadata:
 - `test_strategy: required` → **先** 可失败测试再改实现
 - 闸扫描通过后：运行 task **验证命令**；回填 `### 自检结论（执行者）`
 - invoke 快照落盘 `docs/harness/invokes/by-task/<task_slug>/`（须覆盖 task 要求的 hats；40 可与 30 合并为 `invoke_*_30_40_*.md`；**pre-30** 须在 30 改码前落盘，见 verify v2.14+）
-- 归档（active→done）**只能**走 `npx @cyning/harness task close --file <task> --yes`：`CLOSE: PASS` 后方可归档；机械校验 **invoke hats 集合** / 自检结论 / 验收勾选 / slug / 状态 / R1 review / graph_delta / KPI / experience / **wiki_delta**（及晋升指针），任一不过 **不执行** mv（v2.2+ · hats 集合 v2.12+ · wiki v2.18+）
+- 归档（active→done）**只能**走 `npx dsh-coding-kit task close --file <task> --yes`：`CLOSE: PASS` 后方可归档；机械校验 **invoke hats 集合** / 自检结论 / 验收勾选 / slug / 状态 / R1 review / graph_delta / KPI / experience / **wiki_delta**（及晋升指针），任一不过 **不执行** mv（v2.2+ · hats 集合 v2.12+ · wiki v2.18+）
 - 关账前答 **`wiki_delta`**（`path` | `none` | `n/a` + note）；若有可复用教训，更新 `docs/coding_wiki/`，并在经验节写指针（`Wiki:` / `wiki_promoted:` / 含 `coding_wiki`）
 
 ## 禁止什么

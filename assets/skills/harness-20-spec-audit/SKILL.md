@@ -27,7 +27,7 @@ metadata:
 - 判定：`pass` | `conditional_pass` | `fail` · 建议 **HG-SPEC-SIGNOFF**（**不**代签）
 - **轻量路径**：10-spec 思考轮已充分时，单轮 R1 即可
 - 通过 → 建议 00 起草 task；**不**附 30 Prompt
-- **v2.8+ 机械闸**：00 前跑 `npx @cyning/harness verify --spec <SPEC路径> [--workspace-root <Projects>]`——机器只查审查文**存在性**；缺失 exit 2。豁免：`--allow-no-spec-review` · bugfix / `skip_spec_audit`
+- **v2.8+ 机械闸**：00 前跑 `npx dsh-coding-kit verify --spec <SPEC路径> [--workspace-root <Projects>]`——机器只查审查文**存在性**；缺失 exit 2。豁免：`--allow-no-spec-review` · bugfix / `skip_spec_audit`
 
 ## 禁止什么
 

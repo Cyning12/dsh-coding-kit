@@ -32,11 +32,11 @@ jobs:
 
       - name: graph ingest（幂等）
         continue-on-error: true
-        run: npx --yes @cyning/harness graph ingest --target .
+        run: npx --yes dsh-coding-kit graph ingest --target .
 
       # 可选：过程闸（须业务仓有 active task 路径）
       # - name: status --check
       #   continue-on-error: true
       #   run: |
-      #     npx --yes @cyning/harness status --target . \
+      #     npx --yes dsh-coding-kit status --target . \
       #       --task docs/harness/tasks/active/task_xxx.md --check

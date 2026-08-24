@@ -38,7 +38,7 @@ Extended（00 / 50 / handoff / 链式 PROMPT）：工作区 `docs/harness/prompt
 
 ## Agent Skills 封装（v2.23+）
 
-本目录 6 个条文的头部 frontmatter（`name`/`description`/`metadata.hat_id` 等）是 **Agent Skills 标准元数据单源**；包根 [`skills/`](../../skills/) 为其标准封装（`harness skills build` 生成物 · **勿手改** · `harness skills check` 拦 drift）。改条文正文后须重跑 build。执行帽（30/40）frontmatter 已备，但**不进默认分发**（T1 闸评测通过前 · 见 `eval/t1_gate_bypass/`）。
+本目录 6 个条文的头部 frontmatter（`name`/`description`/`metadata.hat_id` 等）是 **Agent Skills 标准元数据单源**；包根 [`skills/`](../../skills/) 为其标准封装（`npx dsh-coding-kit skills build` 生成物 · **勿手改** · `npx dsh-coding-kit skills check` 拦 drift）。改条文正文后须重跑 build。执行帽（30/40）frontmatter 已备，但**不进默认分发**（T1 闸评测通过前 · 见 `eval/t1_gate_bypass/`）。
 
 > **V2 改名（v2.4.0）**：`10-requirements.md` → `10-task-requirements.md`（+新增 `10-spec-requirements.md`）；`22-task-audit.md` → `20-task-audit.md`（+新增 `20-spec-audit.md`）。旧文件已删除；业务仓升级时 sync 会对残留旧帽 warn 提示人工删除。
 

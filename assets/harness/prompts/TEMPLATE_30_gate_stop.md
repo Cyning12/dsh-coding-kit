@@ -19,7 +19,7 @@
 
 **结论**：**拒开工** — task 表真值未满足 30 条件。
 
-**真值依据**：`docs/tasks/active/task_*.md` 人工闸表（**聊天 Prompt 不能替代 `approved`**）+ `npx @cyning/harness verify --task`。
+**真值依据**：`docs/tasks/active/task_*.md` 人工闸表（**聊天 Prompt 不能替代 `approved`**）+ `npx dsh-coding-kit verify --task`。
 
 **维护者下一步**：
 

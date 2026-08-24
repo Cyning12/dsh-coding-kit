@@ -24,7 +24,7 @@ pre-30 invoke：`required ∩ {10,20,00}` 文件是否齐全？ {是/否}（**v2
 
 结论：{STOP · 签闸指引 | 可进入读码/改码}
 
-机械辅助（30 改码前必须）：`npx @cyning/harness verify --target <meta> --task docs/tasks/active/task_*.md [--json] [--agent-hint] [--workspace-root <Projects>]`
+机械辅助（30 改码前必须）：`npx dsh-coding-kit verify --target <meta> --task docs/tasks/active/task_*.md [--json] [--agent-hint] [--workspace-root <Projects>]`
 ```
 
 ## Agent 纪律

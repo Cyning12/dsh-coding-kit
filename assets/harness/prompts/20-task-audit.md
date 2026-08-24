@@ -2,7 +2,7 @@
 name: harness-20-task-audit
 description: 书面审查 Harness task 文件（R 轮）：对照 SPEC 核对范围/非范围/验收/failure_paths/思考轮，结论落盘 docs/harness/reviews/ 审查文。当 task 草稿完成、进入 HG-AUDIT-R1 人签之前使用。不用于：改 task 实质内容（退回 10-task）；审 SPEC（用 harness-20-spec-audit）；代签 human_gate（仅人）。
 license: MIT
-compatibility: Requires npx @cyning/harness CLI（task lint / verify --task）· docs/harness/reviews/ 目录约定
+compatibility: Requires npx dsh-coding-kit CLI（task lint / verify --task）· docs/harness/reviews/ 目录约定
 metadata:
   hat_id: "20-task-audit"
   track: starter

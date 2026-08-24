@@ -31,7 +31,7 @@ jobs:
           package-manager-cache: false
 
       - name: skills check（drift + frontmatter 约束）
-        run: npx --yes @cyning/harness@2.23.0 skills check
+        run: npx --yes dsh-coding-kit skills check
 
       # 官方规范校验器兜底（包名/版本为占位 · 接线时按官方仓库实际分发替换并锁版本）
       - name: skills-ref validate（官方规范校验）

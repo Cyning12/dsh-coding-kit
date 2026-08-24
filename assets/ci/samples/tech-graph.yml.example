@@ -48,7 +48,7 @@ jobs:
 
       # 可选：npx harness 辅助步骤（仍须 package-manager-cache: false）
       # - name: harness graph check（示例）
-      #   run: npx --yes @cyning/harness graph --help
+      #   run: npx --yes dsh-coding-kit graph --help
 
       - name: Graph compile
         run: ./scripts/graph-compile.sh

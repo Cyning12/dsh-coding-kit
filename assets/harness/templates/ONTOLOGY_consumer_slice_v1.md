@@ -29,7 +29,7 @@
 ## 3. 边界声明
 
 - **本仓业务语义** 以本文件 + `_tech_graph` 为准。  
-- **纪律包产品本体**（帽子 / 闸 / HGM）见依赖的 `@cyning/harness` 文档，勿在此复制全文。  
+- **纪律包产品本体**（帽子 / 闸 / HGM）见依赖的 `@cyning/harness` 文档（旧包，已弃用，现行为 dsh-coding-kit），勿在此复制全文。  
 - 改路由 / API / 数据边界时：更新相关 flow，并在 task 填 `graph_delta`。
 
 ---

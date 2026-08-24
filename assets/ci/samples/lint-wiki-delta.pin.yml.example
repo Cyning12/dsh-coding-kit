@@ -1,7 +1,9 @@
 # Optional · wiki_delta 扫描 · 读 harness.pin.json（消费者自管 pin · v2.21+）
+# 【旧机制示例】旧包 @cyning/harness 已弃用，现行为 dsh-coding-kit；本文件仅为旧包 pin 流程存档，
+# 本包未接线 harness.pin.json 读取，现行样例见 lint-wiki-delta.yml.example。
 #
 # 适用：仓根有 harness.pin.json（或等价单源版本文件，须改 jq/node 取值）。
-# 对比：lint-wiki-delta.yml.example 写死 @cyning/harness@2.21。
+# 对比：lint-wiki-delta.yml.example 曾写死 @cyning/harness@2.21（旧包，已弃用，现行为 dsh-coding-kit）。
 # 获取：同 RUNBOOK §5.1（clone / npm pack / raw）。
 #
 # Python / npx-only：package-manager-cache: false（见 ci/samples/README）

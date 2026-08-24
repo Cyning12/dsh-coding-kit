@@ -7,7 +7,7 @@
 # v2.17+ close 增补：close_graph_delta · close_kpi · close_experience
 # v2.18+ close 增补：close_wiki_delta · close_wiki_promotion
 #   （to_00 / spec_reviews_retention 仍可 unevaluated）
-# 只读展示：npx @cyning/harness lifecycle show [--json]
+# 只读展示：npx dsh-coding-kit lifecycle show [--json]
 # Schema：schema/lifecycle.v1.schema.json
 
 version: "1"

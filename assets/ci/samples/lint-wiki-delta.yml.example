@@ -30,17 +30,17 @@ jobs:
 
       - name: task lint-wiki-delta
         # 迁移中可改为 continue-on-error: true
-        run: npx --yes @cyning/harness@2.21 task lint-wiki-delta --target .
+        run: npx --yes dsh-coding-kit task lint-wiki-delta --target .
 
       # 可选矩阵 B · 关账预检（迁完字段后再开；半迁勿开）
       # - name: task lint-wiki-delta --strict
-      #   run: npx --yes @cyning/harness@2.21 task lint-wiki-delta --target . --strict
+      #   run: npx --yes dsh-coding-kit task lint-wiki-delta --target . --strict
 
       # 可选：仅扫 active
       # - name: lint-wiki-delta · active only
-      #   run: npx --yes @cyning/harness@2.21 task lint-wiki-delta --target . --scope active
+      #   run: npx --yes dsh-coding-kit task lint-wiki-delta --target . --scope active
 
-      # 可选 · 读 pin（若仓有 harness.pin.json，勿写死 @2.21）：
+      # 可选 · 读 pin【旧机制示例：旧包 @cyning/harness 已弃用，现行为 dsh-coding-kit；harness.pin.json 为旧包 pin 流程，本包未接线】：
       # - name: lint from pin
       #   run: |
       #     PIN=$(node -p "require('./harness.pin.json').version")
