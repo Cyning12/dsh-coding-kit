@@ -17,6 +17,9 @@ import { summarizeTaskHgm } from './cli-graph-hgm.ts'
 
 const OBS_STATUS_SCHEMA = 'obs_status.v1'
 
+// DEF-016 D1：reviews.CLOSE 检测口径与 cli.ts CLOSE_STATUSES 同（done/completed）
+const CLOSE_STATUSES = new Set(['done', 'completed'])
+
 function extractTaskStatus(content: string): string | null {
   const m = content.match(STATUS_RE)
   return m ? m[1].toLowerCase() : null
@@ -101,16 +104,21 @@ function buildTaskStatus(target: string, taskFile: string, options: { check?: bo
   const reviewFound = findReview(target, absTask)
   const lastInvoke = findLastInvoke(target, slug)
   const hgm = summarizeTaskHgm(target, slug)
+  const taskStatus = extractTaskStatus(content)
+  // DEF-016 D1（接线）：CLOSE = 关账完成信号（代理口径，非「close 审查通过」强证据）——
+  // task 状态 ∈ CLOSE_STATUSES（与 task close 归档行为对齐）或文件位于 done/ 目录。
+  const inDoneDir = absTask.split(path.sep).includes('done')
+  const closeDone = (taskStatus !== null && CLOSE_STATUSES.has(taskStatus)) || inDoneDir
   const payload = {
     schema_version: OBS_STATUS_SCHEMA,
     task_slug: slug,
     task_path: toRel(target, absTask),
-    status: extractTaskStatus(content) || 'unknown',
+    status: taskStatus || 'unknown',
     gates: gates.map((g) => ({ id: g.id, status: g.status, blocks_hats: g.blocksHats })),
     may_start_30: gateEval.ok,
     blockers,
     last_invoke: lastInvoke,
-    reviews: { R1: reviewFound, CLOSE: false },
+    reviews: { R1: reviewFound, CLOSE: closeDone },
     verify_preview: {
       ok: gateEval.ok,
       reason: gateEval.ok ? '闸投影 PASS（非正式 verify）' : gateEval.reason,

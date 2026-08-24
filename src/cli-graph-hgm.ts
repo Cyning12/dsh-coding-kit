@@ -430,12 +430,13 @@ export function filterEventsForTask(events: HgmEvent[], slug: string): HgmEvent[
   return events.filter((e) => eventMatchesTaskSlug(e, slug))
 }
 
+// DEF-016 D3：event_count 语义唯一——0 = 事件轨可读取且与本 task 无匹配事件（含空轨）；
+// null 仅表示事件轨读取失败/不可用（catch 分支）。last_at 与 event_count 同生同灭。
 export function summarizeTaskHgm(target: string, slug: string): { event_count: number | null; last_at: string | null } {
   try {
     const events = loadEvents(target)
-    if (!events.length) return { event_count: 0, last_at: null }
     const related = filterEventsForTask(events, slug)
-    if (!slug || related.length === 0) return { event_count: null, last_at: null }
+    if (!slug || related.length === 0) return { event_count: 0, last_at: null }
     const last = related[related.length - 1]
     return { event_count: related.length, last_at: last.occurred_at || null }
   } catch {
