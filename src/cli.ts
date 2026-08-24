@@ -299,6 +299,35 @@ function walkFiles(dir: string, depth: number, acc: string[]): void {
   }
 }
 
+// D5 CI 测试步骤匹配模式（DEF-014）：workflow 文本命中任一模式才算「CI 含 test 步骤」
+const CI_TEST_STEP_PATTERNS: RegExp[] = [
+  /\bpytest\b/,
+  /\bvitest\b/,
+  /\bjest\b/,
+  /\bnpm\s+(run\s+)?test\b/,
+  /\bpnpm\s+(run\s+)?test\b/,
+  /\byarn\s+test\b/,
+  /\bnode\s+--test\b/,
+  /\bgo\s+test\b/,
+  /\bcargo\s+test\b/,
+  /\btox\b/,
+  /\bunittest\b/,
+  /^\s*-?\s*name\s*:.*\btest\b/im,
+]
+
+function workflowHasTestStep(text: string): boolean {
+  return CI_TEST_STEP_PATTERNS.some((re) => re.test(text))
+}
+
+function listWorkflowFiles(ciDir: string): string[] {
+  try {
+    return readdirSync(ciDir).filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'))
+  } catch {
+    return []
+  }
+}
+
+// 收紧后的 D5 探测（DEF-014）：强信号探针 + 测试文件名 + CI 含 test 步骤
 function hasTestArtifacts(target: string): boolean {
   const probes = [
     'test',
@@ -314,8 +343,6 @@ function hasTestArtifacts(target: string): boolean {
     'playwright.config.ts',
     'cypress.config.js',
     'pytest.ini',
-    'pyproject.toml',
-    'setup.py',
   ]
   for (const p of probes) {
     if (existsSync(path.join(target, p))) return true
@@ -326,16 +353,31 @@ function hasTestArtifacts(target: string): boolean {
   if (found.some((f) => testName.test(path.basename(f)))) return true
   const ciDir = path.join(target, '.github', 'workflows')
   if (existsSync(ciDir)) {
-    try {
-      if (readdirSync(ciDir).some((f) => f.endsWith('.yml') || f.endsWith('.yaml'))) return true
-    } catch {
-      return false
+    for (const f of listWorkflowFiles(ciDir)) {
+      try {
+        if (workflowHasTestStep(readFileSync(path.join(ciDir, f), 'utf8'))) return true
+      } catch {
+        // 忽略不可读 workflow，继续检查其余文件
+      }
     }
   }
   return false
 }
 
-function runTestCheck(target: string, taskFile: string | undefined): { ok: boolean; reason: string } {
+// 旧启发式（DEF-014 过渡保留）：pyproject.toml / setup.py 存在、或任意 workflow 文件存在即视为有制品。
+// 仅用于「新探测失败但旧探测通过 → WARN 不阻塞」过渡分支，下一 minor 硬化后删除。
+function hasTestArtifactsLegacy(target: string): boolean {
+  if (existsSync(path.join(target, 'pyproject.toml'))) return true
+  if (existsSync(path.join(target, 'setup.py'))) return true
+  const ciDir = path.join(target, '.github', 'workflows')
+  if (existsSync(ciDir) && listWorkflowFiles(ciDir).length > 0) return true
+  return false
+}
+
+function runTestCheck(
+  target: string,
+  taskFile: string | undefined,
+): { ok: boolean; reason: string; warn?: boolean } {
   if (!taskFile) return { ok: true, reason: '未指定 --task，跳过 D5' }
   const abs = resolveTaskPath(target, taskFile)
   if (!existsSync(abs)) return { ok: true, reason: 'task 文件不存在，跳过 D5' }
@@ -345,13 +387,23 @@ function runTestCheck(target: string, taskFile: string | undefined): { ok: boole
   if (strategy !== 'required') {
     return { ok: true, reason: `test_strategy=${strategy || 'unset'}，无需 D5 强检查` }
   }
-  if (!hasTestArtifacts(target)) {
+  if (hasTestArtifacts(target)) {
+    return { ok: true, reason: 'test_strategy=required 且检测到测试/CI 制品' }
+  }
+  if (hasTestArtifactsLegacy(target)) {
     return {
-      ok: false,
-      reason: 'D5: test_strategy=required 但目标仓未声明测试路径或 CI 引用',
+      ok: true,
+      warn: true,
+      reason:
+        'D5: WARN 过渡 · 仅命中旧启发式探针（pyproject.toml / setup.py / 无 test 步骤的 workflow），' +
+        '未检测到真实测试制品 · 本版本不阻塞，下一 minor 硬化为 FAIL · ' +
+        '请补测试文件（如 *_test.py / *.test.ts）或含 test 步骤的 CI',
     }
   }
-  return { ok: true, reason: 'test_strategy=required 且检测到测试/CI 制品' }
+  return {
+    ok: false,
+    reason: 'D5: test_strategy=required 但目标仓未声明测试路径或 CI 引用',
+  }
 }
 
 async function cmdGateCheck(args: string[]): Promise<void> {
@@ -499,7 +551,10 @@ async function cmdVerify(args: string[]): Promise<void> {
     fail('', 2)
   }
   if (json) emitJson(false)
-  else console.log(`VERIFY: PASS · ${label}`)
+  else {
+    if (test.warn) console.log(test.reason)
+    console.log(`VERIFY: PASS · ${label}`)
+  }
 }
 
 function lintTaskFile(filePath: string, cwd: string): {

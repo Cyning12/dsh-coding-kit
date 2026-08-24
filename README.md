@@ -87,6 +87,25 @@ npx dsh-coding-kit task check --file PATH
 
 `init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
 
+### D5 测试制品探测边界（audit / verify · test_strategy=required）
+
+`audit` / `verify` 在 task 声明 `test_strategy=required` 时执行 D5 强检查：目标仓须存在**真实测试制品**，否则 exit 2。D5 是制品探测，不执行测试命令。探测口径（自 1.3.0 收紧）：
+
+**强信号探针（存在即 PASS）**
+
+- 目录：`test/` `tests/` `spec/` `specs/` `__tests__/`
+- 配置文件：`jest.config.{js,ts}` `vitest.config.{js,ts}` `playwright.config.{js,ts}` `cypress.config.js` `pytest.ini`
+- 测试文件名（仓根起 3 层内）：`*.(test|spec).(js|ts|mjs|cjs)`、`*_test.py`、`test_*.py`
+
+**CI 探测**：`.github/workflows/` 下 `*.yml|*.yaml` 逐一读文本，命中以下任一 test 步骤模式才算有 CI 测试：`pytest` `vitest` `jest` `npm (run )?test` `pnpm (run )?test` `yarn test` `node --test` `go test` `cargo test` `tox` `unittest`，或 step `name:` 含 `test`。
+
+**已知误判面与逃生口**
+
+- `pyproject.toml` / `setup.py` 存在**不再**视为测试制品（任意现代 Python 仓都有，与有无测试无关）。
+- 纯 lint / 纯部署 workflow（无 test 步骤）不再放行。
+- 探测深度为仓根起 3 层；monorepo 更深层或自定义测试命令（如 `make test`）不命中白名单时，在仓内放任一强信号文件（如 `tests/` 目录、`*_test.py`）即可。
+- **WARN 过渡（1.3.0）**：新探测失败但旧启发式（pyproject.toml / setup.py / 任意 workflow 存在）通过时，输出 `D5: WARN 过渡` 且 exit 0 不阻塞；**下一 minor 硬化为 FAIL**。
+
 ## 从 @cyning/harness 迁移
 
 钉 **dsh-coding-kit@1.2.4** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
