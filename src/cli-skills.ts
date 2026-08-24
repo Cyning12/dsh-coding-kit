@@ -376,7 +376,11 @@ function cmdSkillsInstall(args: string[]): void {
     fail(`dest 已存在且为文件（非目录）: ${dest}`)
   }
 
-  const src = path.join(packageRoot(), 'assets', 'skills')
+  // DSH_CK_SKILLS_SRC：内部测试钩子（非公开契约，勿依赖）——允许测试把 skills 源
+  // 指向临时副本，避免 install 测试改动包内 assets/skills（DEF-018 T4 / D2=a）。
+  const src = process.env.DSH_CK_SKILLS_SRC
+    ? path.resolve(process.env.DSH_CK_SKILLS_SRC)
+    : path.join(packageRoot(), 'assets', 'skills')
   if (!existsSync(src) || !statSync(src).isDirectory()) {
     fail('源 assets/skills 缺失。消费者请重装 npm 包；维护者请先执行 skills build')
   }

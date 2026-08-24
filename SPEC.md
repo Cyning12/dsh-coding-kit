@@ -131,6 +131,8 @@
 
 路径从旧仓 `harness/prompts` + `skills/` 映射到本包等价目录，由 10-task / 30 落盘，不得改消费者 `docs/tasks/` 等。
 
+`skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]`（1.2.1 起）：复制产品包 `assets/skills` 到 dest（默认 `<target>/.dsh/skills`）。拒写规则：dest 命中 `.coding-kit` / `.dsh/coding-kit`、S2 三域（`docs/tasks` / `reviews` / `invokes/by-task`）、或已存在为文件时非 0 退出。环境变量 `DSH_CK_SKILLS_SRC` 为**内部测试钩子（非公开契约）**：仅测试用于把 skills 源指向临时副本（避免改动包内资产），消费者与脚本勿依赖（DEF-018）。
+
 #### G6 · `wiki export`
 
 | 命令 | 2.24.0 用途 | 1.2.0 成功口径 |
