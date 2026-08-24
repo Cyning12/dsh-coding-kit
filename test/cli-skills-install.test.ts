@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
-import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
@@ -101,17 +101,23 @@ function executeHatSkillMd(dirName: string): string {
   ].join('\n')
 }
 
-async function seedExecuteHatsInSrc(): Promise<() => Promise<void>> {
-  const written: string[] = []
+// DEF-018 T4：不再改包内 assets/skills——复制到临时目录、在副本中 seed，
+// 经内部测试钩子 DSH_CK_SKILLS_SRC（非公开契约）把 CLI 源指向副本。
+const ENV_MARKER_DIR = 'harness-10-env-marker-fixture'
+
+async function seedSkillsSrcCopy(dir: string): Promise<string> {
+  const copy = path.join(dir, 'skills-src-copy')
+  await cp(SKILLS_SRC, copy, { recursive: true })
   for (const name of EXECUTE_DIRS) {
-    const dir = path.join(SKILLS_SRC, name)
-    await mkdir(dir, { recursive: true })
-    await writeFile(path.join(dir, 'SKILL.md'), executeHatSkillMd(name), 'utf8')
-    written.push(dir)
+    const hatDir = path.join(copy, name)
+    await mkdir(hatDir, { recursive: true })
+    await writeFile(path.join(hatDir, 'SKILL.md'), executeHatSkillMd(name), 'utf8')
   }
-  return async () => {
-    for (const dir of written) await rm(dir, { recursive: true, force: true })
-  }
+  // 标记 skill：命中 dest 即证明 DSH_CK_SKILLS_SRC 生效（未生效时真源无此目录）
+  const marker = path.join(copy, ENV_MARKER_DIR)
+  await mkdir(marker, { recursive: true })
+  await writeFile(path.join(marker, 'SKILL.md'), '# env marker fixture\n', 'utf8')
+  return copy
 }
 
 describe('1.2.1 skills install I1–I12', { concurrency: 1 }, () => {
@@ -242,35 +248,37 @@ describe('1.2.1 skills install I1–I12', { concurrency: 1 }, () => {
     })
   })
 
-  it('I8: 源 assets/skills 缺失 → 非 0 + 可读原因', async () => {
+  it('I8: 源 assets/skills 缺失 → 非 0 + 可读原因（env 指向不存在目录，DEF-018）', async () => {
     await withTemp(async (dir) => {
-      const bak = `${SKILLS_SRC}.__i8_bak__`
-      await rename(SKILLS_SRC, bak)
-      try {
-        const r = runCli(['skills', 'install', '--target', dir])
-        assert.notEqual(r.status, 0, r.combined)
-        assert.match(r.combined, /源|assets\/skills|缺失|不存在/)
-        assert.equal(existsSync(path.join(dir, '.dsh', 'skills', 'harness-10-spec')), false)
-      } finally {
-        await rename(bak, SKILLS_SRC)
-      }
+      const missingSrc = path.join(dir, 'no-such-skills-src')
+      const r = runCli(['skills', 'install', '--target', dir], {
+        env: { DSH_CK_SKILLS_SRC: missingSrc },
+      })
+      assert.notEqual(r.status, 0, r.combined)
+      assert.match(r.combined, /源|assets\/skills|缺失|不存在/)
+      assert.equal(existsSync(path.join(dir, '.dsh', 'skills', 'harness-10-spec')), false)
     })
   })
 
-  it('I9: 默认 dest 不出现 harness-30-execute / harness-40-self-check（即使源里有）', async () => {
-    const cleanup = await seedExecuteHatsInSrc()
-    try {
-      await withTemp(async (dir) => {
-        const r = runCli(['skills', 'install', '--target', dir])
-        assert.equal(r.status, 0, r.combined)
-        const dest = path.join(dir, '.dsh', 'skills')
-        for (const name of EXECUTE_DIRS) {
-          assert.equal(existsSync(path.join(dest, name)), false, `execute hat leaked: ${name}`)
-        }
+  it('I9: 默认 dest 不出现 harness-30-execute / harness-40-self-check（即使源里有，临时副本隔离）', async () => {
+    await withTemp(async (dir) => {
+      const srcCopy = await seedSkillsSrcCopy(dir)
+      const target = path.join(dir, 'target')
+      await mkdir(target, { recursive: true })
+      const r = runCli(['skills', 'install', '--target', target], {
+        env: { DSH_CK_SKILLS_SRC: srcCopy },
       })
-    } finally {
-      await cleanup()
-    }
+      assert.equal(r.status, 0, r.combined)
+      const dest = path.join(target, '.dsh', 'skills')
+      assert.equal(
+        existsSync(path.join(dest, ENV_MARKER_DIR)),
+        true,
+        'env 覆盖未生效：标记 skill 未命中 dest',
+      )
+      for (const name of EXECUTE_DIRS) {
+        assert.equal(existsSync(path.join(dest, name)), false, `execute hat leaked: ${name}`)
+      }
+    })
   })
 
   it('I10: --out 以 ~ 开头 → exit 1；cwd 下无名为 ~ 的目录', async () => {
@@ -305,28 +313,29 @@ describe('1.2.1 skills install I1–I12', { concurrency: 1 }, () => {
     assert.equal(/build\s*\|\s*check\s*\|\s*install/.test(rootHelp.combined), false)
   })
 
-  it('I12: 自备 30/40 源树；--with-execute-hats 出现对应目录，无旗标则跳过', async () => {
-    const cleanup = await seedExecuteHatsInSrc()
-    try {
-      await withTemp(async (dir) => {
-        const skipped = runCli(['skills', 'install', '--target', dir])
-        assert.equal(skipped.status, 0, skipped.combined)
-        for (const name of EXECUTE_DIRS) {
-          assert.equal(existsSync(path.join(dir, '.dsh', 'skills', name)), false)
-        }
-        const included = runCli(['skills', 'install', '--target', dir, '--with-execute-hats'])
-        assert.equal(included.status, 0, included.combined)
-        for (const name of EXECUTE_DIRS) {
-          assert.equal(
-            existsSync(path.join(dir, '.dsh', 'skills', name, 'SKILL.md')),
-            true,
-            `missing execute hat after flag: ${name}`,
-          )
-        }
+  it('I12: 自备 30/40 源树（临时副本）；--with-execute-hats 出现对应目录，无旗标则跳过', async () => {
+    await withTemp(async (dir) => {
+      const srcCopy = await seedSkillsSrcCopy(dir)
+      const target = path.join(dir, 'target')
+      await mkdir(target, { recursive: true })
+      const env = { DSH_CK_SKILLS_SRC: srcCopy }
+      const skipped = runCli(['skills', 'install', '--target', target], { env })
+      assert.equal(skipped.status, 0, skipped.combined)
+      for (const name of EXECUTE_DIRS) {
+        assert.equal(existsSync(path.join(target, '.dsh', 'skills', name)), false)
+      }
+      const included = runCli(['skills', 'install', '--target', target, '--with-execute-hats'], {
+        env,
       })
-    } finally {
-      await cleanup()
-    }
+      assert.equal(included.status, 0, included.combined)
+      for (const name of EXECUTE_DIRS) {
+        assert.equal(
+          existsSync(path.join(target, '.dsh', 'skills', name, 'SKILL.md')),
+          true,
+          `missing execute hat after flag: ${name}`,
+        )
+      }
+    })
   })
 
   it('I-BUILD: skills build 默认 dest 仍为产品包 assets/skills；不得 rm 消费者 .dsh/skills', async () => {
