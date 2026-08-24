@@ -90,6 +90,7 @@ describe('R-07 refresh-ide-blocks', { concurrency: 1 }, () => {
       const now = await readFile(path.join(dir, 'AGENTS.md'), 'utf8')
       assert.match(now, /npx dsh-coding-kit verify --target \. --task docs\/tasks\/active\/task_\*\.md/)
       assert.equal(now.includes(`运行 \`npx @cyning/harness`), false, '块内旧字面须归零')
+      assert.equal(now.includes('npx npx'), false, '替换不得产生 npx npx 双前缀')
       assert.ok(now.includes(`散文提及 ${OLD_VERIFY} 在块外`), '块外同字面字节不变')
       assert.ok(now.includes(PB) && now.includes(PE), 'marker 行不动')
       assert.ok(now.endsWith('尾部正文保持不变。\n'), '尾部正文字节不变')
@@ -367,6 +368,7 @@ describe('R-07 refresh-ide-blocks', { concurrency: 1 }, () => {
       assert.ok(now.includes('npx dsh-coding-kit check'), 'A2 替换且丢钉版')
       assert.equal(now.includes('@2.24.0'), false, 'A2 钉版整体丢弃')
       assert.ok(now.includes('npx --yes dsh-coding-kit init'), 'A3 保留 --yes 丢钉版')
+      assert.equal(now.includes('npx npx'), false, '替换不得产生 npx npx 双前缀')
       assert.ok(now.includes('npx dsh-coding-kit skills build'), 'A4 替换')
       // V7：B 组字面写盘后原样存在
       assert.ok(now.includes('CYNING_HARNESS=1'), 'B1 不替换')

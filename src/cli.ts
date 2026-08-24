@@ -3,6 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { cmdGraph } from './cli-graph.ts'
+import { cmdRefreshIdeBlocks, countStaleIdeLiterals } from './cli-refresh-ide-blocks.ts'
 import { cmdDiscipline, cmdLifecycle } from './cli-lifecycle.ts'
 import { cmdSkills } from './cli-skills.ts'
 import {
@@ -78,6 +79,7 @@ function usage(version: string): void {
   npx dsh-coding-kit --help | -h
   npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]  （NAME 词表: harness-only）
   npx dsh-coding-kit upgrade [--target PATH] [--yes]
+  npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
   npx dsh-coding-kit check [--target PATH]
   npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json]
   npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]
@@ -198,6 +200,17 @@ async function cmdUpgrade(args: string[], pkgVersion: string): Promise<void> {
   console.log(`upgrade: ${current.version} → ${pkgVersion}`)
   console.log(`manifest: ${manifestPath(target)}`)
   if (!yes) console.log('upgrade 完成（S2 路径未写入）。')
+  // R-07 §5.2：upgrade 内嵌 dry-run 只读提示（不写 IDE 文件、不改 exit 码；扫描异常吞为提示级）
+  try {
+    const stale = countStaleIdeLiterals(target)
+    if (stale > 0) {
+      console.log(
+        '提示: 检测到 ' + stale + ' 处 IDE 块内旧命令字面；运行 `npx dsh-coding-kit refresh-ide-blocks --yes` 刷写（先 `refresh-ide-blocks --dry-run` 看详情）。',
+      )
+    }
+  } catch {
+    // 提示级：扫描异常不影响 upgrade 语义
+  }
 }
 
 async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
@@ -629,6 +642,10 @@ export async function runCli(argv: string[]): Promise<void> {
   }
   if (cmd === 'check') {
     await cmdCheck(rest, pkgVersion)
+    return
+  }
+  if (cmd === 'refresh-ide-blocks') {
+    await cmdRefreshIdeBlocks(rest)
     return
   }
   if (cmd === 'audit') {
