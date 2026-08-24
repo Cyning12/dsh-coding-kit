@@ -38,12 +38,6 @@ const EXEMPTIONS: Array<{ file: string; target: string; owner: string }> = [
     target: 'docs/rethink/2026-07-mechanization-rate/03_coverage_matrix.md',
     owner: 'DEF-005',
   },
-  // DEF-004 名下：ontology.yaml 注释引包外人类真值文档（DEF-004 T4 改注时移除本条）
-  {
-    file: 'assets/ontology.yaml',
-    target: 'docs/methodology/product/DESIGN_ONTOLOGY_v1_zh.md',
-    owner: 'DEF-004',
-  },
 ]
 
 interface Hit {

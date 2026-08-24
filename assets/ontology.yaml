@@ -1,9 +1,10 @@
 # cyning-harness 产品设计本体 · 机器可读抽取（草案 v1.0.0）
-# 人类真值：docs/methodology/product/DESIGN_ONTOLOGY_v1_zh.md
-# 冲突时以 Markdown 为准 · 供未来 harness ontology-check 使用
+# 人类真值：DESIGN_ONTOLOGY_v1_zh.md（私仓 cyning-harness 工作区文档 · 不随 npm 包分发）
+# 冲突时以 Markdown 为准 · 机器校验请用 npx dsh-coding-kit graph axioms check
+# （该命令校验 HGM 公理，不校验本文件；独立的 ontology-check 本包未接线）
 
 version: "1.3"
-product_semver: "2.0.4"
+product_semver: "1.2.3" # 自旧包 cyning-harness 2.0.4 迁移，对齐本包 package.json
 license: MIT
 
 classes:
@@ -57,18 +58,19 @@ relations:
     object: TraceArtifact
     cardinality: "0..*"
 
+# 公理命名空间：ONTO- 前缀，独立于 graph axioms 代码公理（D2/D3/S2/rejected→draft，src/cli-graph-hgm.ts）
 axioms:
-  - id: P1
+  - id: ONTO-P1
     text: "纪律包不含业务代码与 LLM Runtime"
-  - id: S2
+  - id: ONTO-S2
     text: "禁止 sync 覆盖 docs/tasks、reviews、invokes/by-task"
-  - id: S5
+  - id: ONTO-S5
     text: "harness-sync apply 前须 git-clean（可 --force 跳过）"
-  - id: D1
+  - id: ONTO-D1
     text: "每次 20-task-audit 必须产出 AuditReview（零阻塞须写明）"
-  - id: D2
+  - id: ONTO-D2
     text: "HG-AUDIT-R1 pending 时 20-task-audit 不得附 30 Prompt（别名 22-task-audit）"
-  - id: D7
+  - id: ONTO-D7
     text: "public push 须 HG-RELEASE 人闸 checklist 全勾"
 
 # V2 hat_id · Starter 闭包 + Extended POINTER（见 DESIGN_ONTOLOGY §3.2）
@@ -108,6 +110,4 @@ human_gates:
     blocks_hats: []
     note: "维护者 CLOSE · npm/GitHub public · 非 Agent 自动签"
 
-schemas:
-  manifest: "./schema/manifest.v1.schema.json"
-  task_sidecar: "./schema/task.harness.v1.schema.json"
+# schemas 段已移除：manifest/task JSON Schema 未随包交付（DEF-004 · 旧 ./schema/*.schema.json 指针悬空）
