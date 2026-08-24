@@ -135,7 +135,7 @@ function renderReadme(skills: SkillPrompt[], { withExecuteHats }: { withExecuteH
 
 \`.dsh/coding-kit\` / \`.coding-kit\` 是规范覆盖（\`apply_coding_standards\` / \`init_coding_kit\`），**不是** skill 目录，禁止当作 install dest。
 
-\`.dsh/skills\` 是本包推荐的 **安装落点**，不是「本仓已验证 DSH 会自动扫描并按需加载」的声明。DSH runtime 发现 / 加载 skill 的规则 **以 DSH 上游文档为准**。本仓库 **未**对照上游源码做扫描验证，**不得**声称已验证自动按需加载。
+已验证（2026-08-22 · 对照 DSH 上游源码 deepseek-harness@141eb6f，dsh 0.1.0-rc.8）：DSH runtime **会自动扫描** \`.dsh/skills\` 与 \`$HOME/.dsh/skills\` 两个 **安装落点** 并 **按需加载**。证据锚点：\`packages/skill/skill-filesystem/src/index.ts:246\`（\`<projectRoot>/.dsh/skills\`，rank 100）与 \`:253\`（\`$DSH_HOME\` 或 \`~/.dsh\` 下 \`skills/\`，rank 400）；目录级文档 \`docs/subsystems/skills.md\`「Local discovery priority」表同口径。结构要求：目录包 \`<name>/SKILL.md\` 或平铺 \`<name>.md\`（index.ts:724-728）；frontmatter 必填 \`name\`/\`description\`，\`name\` 须 kebab-case（index.ts:810-816）。扫描/加载属 DSH runtime 行为契约，随上游版本演进，锚点对应 0.1.0-rc.8。
 
 ## 技能清单
 
@@ -239,6 +239,10 @@ const SKILLS_USAGE = `用法:
   npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
   npx dsh-coding-kit skills build [--with-execute-hats]
   npx dsh-coding-kit skills check
+
+落点说明：.dsh/skills 两个安装落点已对照 DSH 上游源码验证（deepseek-harness@141eb6f · 0.1.0-rc.8）——
+DSH runtime 自动扫描 <repo>/.dsh/skills 与 $HOME/.dsh/skills 并按需加载；
+证据锚点 packages/skill/skill-filesystem/src/index.ts:246 / :253，详见 README「扫描验证」节。
 `
 
 const EXECUTE_HAT_DIRS = new Set(['harness-30-execute', 'harness-40-self-check'])
