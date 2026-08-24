@@ -120,6 +120,10 @@ function isPinnedVersion(current: string, pkgVersion: string): boolean {
 }
 
 async function cmdInit(args: string[], pkgVersion: string): Promise<void> {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('用法: npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]')
+    return
+  }
   const yes = args.includes('--yes')
   let rest = args.filter((a) => a !== '--yes')
   const { value: preset, rest: r1 } = takeOption(rest, '--preset')
@@ -153,6 +157,10 @@ async function cmdInit(args: string[], pkgVersion: string): Promise<void> {
 }
 
 async function cmdUpgrade(args: string[], pkgVersion: string): Promise<void> {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('用法: npx dsh-coding-kit upgrade [--target PATH] [--yes]')
+    return
+  }
   const yes = args.includes('--yes')
   let rest = args.filter((a) => a !== '--yes' && a !== '--force')
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
@@ -178,6 +186,10 @@ async function cmdUpgrade(args: string[], pkgVersion: string): Promise<void> {
 }
 
 async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('用法: npx dsh-coding-kit check [--target PATH]')
+    return
+  }
   let rest = args
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
   rest = r1
@@ -323,6 +335,10 @@ function runTestCheck(target: string, taskFile: string | undefined): { ok: boole
 }
 
 async function cmdGateCheck(args: string[]): Promise<void> {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('用法: npx dsh-coding-kit gate-check [--target PATH] [--task FILE]')
+    return
+  }
   let rest = args.filter((a) => a !== '--graph' && a !== '--json')
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
   rest = r1
@@ -350,6 +366,10 @@ async function cmdGateCheck(args: string[]): Promise<void> {
 }
 
 async function cmdAudit(args: string[]): Promise<void> {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('用法: npx dsh-coding-kit audit [--target PATH] [--task FILE]')
+    return
+  }
   let rest = args
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
   rest = r1
@@ -379,6 +399,10 @@ async function cmdAudit(args: string[]): Promise<void> {
 }
 
 async function cmdVerify(args: string[]): Promise<void> {
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log('用法: npx dsh-coding-kit verify [--target PATH] [--task FILE]')
+    return
+  }
   let rest = args.filter(
     (a) =>
       a !== '--graph' &&
@@ -607,9 +631,15 @@ async function cmdTaskClose(args: string[]): Promise<void> {
   console.log(`CLOSE: PASS · ${slug}`)
 }
 
+const TASK_USAGE = 'task lint --file PATH · task close --file PATH [--yes] · task lint-done · task lint-wiki-delta · task check --file PATH'
+
 async function cmdTask(args: string[]): Promise<void> {
   const [sub, ...rest] = args
-  if (!sub) fail('task 子命令未知: (空)\n用法: task lint --file PATH · task close --file PATH [--yes] · task lint-done · task lint-wiki-delta · task check --file PATH')
+  if (sub === '--help' || sub === '-h') {
+    console.log(`用法: ${TASK_USAGE}`)
+    return
+  }
+  if (!sub) fail(`task 子命令未知: (空)\n用法: ${TASK_USAGE}`)
   if (sub === 'lint') {
     await cmdTaskLint(rest)
     return
@@ -630,12 +660,12 @@ async function cmdTask(args: string[]): Promise<void> {
     await cmdTaskCheck(rest)
     return
   }
-  fail(`task 子命令未知: ${sub}\n用法: task lint --file PATH · task close --file PATH [--yes] · task lint-done · task lint-wiki-delta · task check --file PATH`)
+  fail(`task 子命令未知: ${sub}\n用法: ${TASK_USAGE}`)
 }
 
 export async function runCli(argv: string[]): Promise<void> {
   const pkgVersion = await readPkgVersion()
-  if (argv.length === 0 || argv.includes('-h') || argv.includes('--help')) {
+  if (argv.length === 0 || argv[0] === '-h' || argv[0] === '--help') {
     usage(pkgVersion)
     return
   }
