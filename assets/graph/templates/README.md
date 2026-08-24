@@ -22,18 +22,19 @@
 ## 编辑与复制流程
 
 1. **改图**：只改 `.graph.yaml`，不要手写 `.md`。
-2. **编译**：在 `cyning-harness/` 根运行：
+2. **编译**（业务仓根，本包作为依赖安装后）：
    ```bash
-   node scripts/graph_yaml_compile.js
+   npx dsh-coding-kit graph yaml compile --all --input docs/_tech_graph
    ```
-3. **校验**：
+3. **校验**（两步：先 `export` 生成 `shared/graph.json`，再 `check` 做 YAML ↔ graph.json 切片比对）：
    ```bash
-   bash scripts/verify-template-compile.sh
+   npx dsh-coding-kit graph yaml export --input docs/_tech_graph
+   npx dsh-coding-kit graph yaml check --all --input docs/_tech_graph
    ```
-4. **复制到业务仓**：
+4. **复制到业务仓**（模板源在本包 assets 内）：
    ```bash
    mkdir -p docs/_tech_graph
-   cp -R cyning-harness/graph/templates/* docs/_tech_graph/
+   cp -R node_modules/dsh-coding-kit/assets/graph/templates/* docs/_tech_graph/
    # 按需删除 README 或本说明段
    ```
 
@@ -56,4 +57,5 @@
 ## 历史说明
 
 - v0.1 使用 `.md` + `.ai.md` 双轨；v0.2 起改为 YAML-first，`.ai.md` 已弃用。
-- 复杂业务仓应采用 `.graph.yaml` 源 + manifest/contract CI；`cyning-harness` 模板包维持简化编译流。
+- 复杂业务仓应采用 `.graph.yaml` 源 + manifest/contract CI；本模板包（dsh-coding-kit）维持简化编译流。
+- v1.2.4（DEF-006）：编译/校验命令面迁移至本包 `npx dsh-coding-kit graph yaml compile|export|check`；`00_main.md`/`10_flow_MAIN.md` 以本包编译器重生成（输出契约见 `99_mermaid_protocol.md` §7）。

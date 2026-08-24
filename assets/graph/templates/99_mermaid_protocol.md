@@ -5,8 +5,9 @@
 ## 0. YAML-first 工作流
 
 - **唯一人工编辑源**：`*.graph.yaml`（本目录下如 `00_main.graph.yaml`、`10_flow_MAIN.graph.yaml`）。
-- **生成物**：同名 `*.md` 由 `scripts/graph_yaml_compile.js` 自动生成，包含 YAML frontmatter、Mermaid flowchart、Nodes/Edges 表。
-- **禁止手写 `.md`**：如需改图，改 YAML 源后重新运行编译脚本；`--check` 模式可检测 `.md` 与 `.graph.yaml` 是否同步。
+- **生成物**：同名 `*.md` 由本包 CLI `npx dsh-coding-kit graph yaml compile`（`--graph-id ID` 或 `--all`）自动生成，包含 YAML frontmatter、Mermaid flowchart、Nodes/Edges 表。
+- **禁止手写 `.md`**：如需改图，改 YAML 源后重新运行 `graph yaml compile`；手改生成物会被下次编译覆盖。
+- **一致性校验**：`graph yaml check` 比对的是 YAML 源与 `graph.json` 切片（按 graph_id 过滤节点/边），需先 `graph yaml export` 生成 `shared/graph.json`；本包不校验 `.md` 与 `.graph.yaml` 的同步（md 由编译单一来源生成，见 §7）。
 - **历史 `.ai.md` 双轨已弃用**：Post-G0 后不再维护 `.md` + `.ai.md` 两份文件；所有结构化信息（锚点、边类型）集中在 YAML 源中。
 
 ---
@@ -109,7 +110,9 @@ edges:
 | `edges[].label` | 边标签 | `"->"` 表示裸执行边 |
 | `edges[].mark` | 元关系标记 | 如 `::triggers`、`::branches` |
 | `edges[].type` | 边类型 | 与 `mark` 命名空间对应 |
-| `edges[].anchors` | `%% → path[#Ln|::symbol]` 注释 + 写入 table | 代码追溯 |
+| `edges[].anchors` | `%% → path[#Ln|::symbol]` 独立注释行；Edges 表 Anchors 列渲染为 `N anchor(s)` 摘要 | 代码追溯 |
+
+> 编译器 Edges 表列序固定为 `From | To | Mark | Type | Label | Anchors`（与 §7 输出契约同源）。
 
 ---
 
@@ -148,4 +151,5 @@ edges:
 |------|------|
 | 2026-06-30 | v3：YAML-first，删除 `.ai.md` 双轨，新增 YAML → Mermaid 映射 |
 | 2026-08-24 | DEF-023：新增 §7 IDE 预览兼容输出契约；§1.2/§2 示例改官方 `-->|"…"|` 与引号节点形态；锚点注释改 `%%` |
+| 2026-08-24 | DEF-006：§0 编译器名改本包 `npx dsh-coding-kit graph yaml compile`；`check` 语义如实改写为 YAML↔graph.json 切片比对（需先 `export`）；§6 补 Edges 表列序与锚点摘要化说明 |
 | YYYY-MM-DD | 嵌入用户仓时填写首次版本 |
