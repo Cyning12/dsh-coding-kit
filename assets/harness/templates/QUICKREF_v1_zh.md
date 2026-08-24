@@ -1,47 +1,35 @@
-# cyning-harness · 业务仓速查
+# dsh-coding-kit · 业务仓速查
 
-> 本文件由 `npx @cyning/harness init/upgrade` 自动生成，可手动删除。
+> 本文件为**手工嵌入**模板：复制本模板到业务仓即可，可手动删除。
+> 现行 CLI `init`/`upgrade` 只写 `.cyning-harness/manifest.json`，不会生成本文件。
 
 ---
 
 ## 常用命令
 
 ```bash
-# 30 前聚合验证（gate-check + audit D5 + S5 warn + 可选 --graph）
-npx @cyning/harness verify [--target .] [--task docs/tasks/active/task_xxx.md] [--graph] [--json] [--agent-hint] [--workspace-root PATH]
+# 30 前聚合验证（gate-check + audit D5 + S5 warn）
+npx dsh-coding-kit verify [--target PATH] [--task docs/tasks/active/task_xxx.md]
 
-# 仅人工闸	npx @cyning/harness gate-check [--target .] [--task ...] [--graph] [--json]
-
-# 生成 invoke 索引
-npx @cyning/harness sync index [--target .]
-
-# 升级 Harness 过程轨
-npx @cyning/harness upgrade --target . --yes
+# 仅人工闸
+npx dsh-coding-kit gate-check [--target PATH] [--task docs/tasks/active/task_xxx.md]
 
 # ICVO 审计（指定 task）
-npx @cyning/harness audit --target . --task docs/tasks/active/task_xxx.md
-```
+npx dsh-coding-kit audit [--target PATH] [--task docs/tasks/active/task_xxx.md]
 
-## Node 仓可选路径
+# 生成 invoke 索引
+npx dsh-coding-kit sync index [--target PATH]
 
-若 init/upgrade 时使用了 `--with-scripts`：
+# 升级 Harness 过程轨（仅写 manifest）
+npx dsh-coding-kit upgrade [--target PATH] [--yes]
 
-```bash
-pnpm install
-pnpm harness:verify --task docs/tasks/active/task_xxx.md
-pnpm harness:gate
-pnpm harness:audit --task docs/tasks/active/task_xxx.md
+# 接入检查
+npx dsh-coding-kit check [--target PATH]
 ```
 
 ---
 
-## 本地产品包覆盖
+## 备注
 
-维护者开发时：
-
-```bash
-export CYNING_HARNESS=/path/to/cyning-harness
-npx @cyning/harness verify --target .
-```
-
-业务仓无需 clone 产品包即可使用 CLI。
+- 以上命令与 `npx dsh-coding-kit --help` usage 块逐条对齐；详细参数以 `--help` 为准。
+- 本模板随包分发（`assets/harness/templates/`），经插件工具 `init_coding_kit` 整树复制到业务仓 `.coding-kit/`，此后由业务仓手工维护。

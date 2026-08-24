@@ -9,7 +9,7 @@ const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 // DEF-002 D-DOC 回归闸：assets 文本面不得残留「现行旧包命令面」。
 // 允许保留旧包名的仅剩 D1/D2 拍板的「历史叙事 / 旧机制示例」行，
 // 必须逐行登记在下方 LEGACY_ALLOWLIST（文件相对路径 + 行内容精确匹配）。
-// 非范围：assets/harness/templates/QUICKREF_v1_zh.md 归 DEF-008 母单，本闸不扫。
+// DEF-008 T3：扫描面含 templates/ 全目录（含 QUICKREF_v1_zh.md），钉死 templates 无旧包命令面残留。
 
 const LEGACY_ALLOWLIST: Array<{ file: string; line: string }> = [
   // lint-wiki-delta.yml.example · 读 pin 注释块（D2 旧机制示例，#43 注明行覆盖 #47）
@@ -74,7 +74,8 @@ function scanScope(): string[] {
   // DEF-002 T4 补扫资产
   files.push(path.join(KIT, 'assets', 'harness', 'lifecycle.yaml'))
   files.push(path.join(KIT, 'assets', 'coding_wiki', 'templates', 'README.md'))
-  files.push(path.join(KIT, 'assets', 'harness', 'templates', 'ONTOLOGY_consumer_slice_v1.md'))
+  // DEF-008 T3：templates/ 全目录（含 QUICKREF_v1_zh.md 与 ONTOLOGY_consumer_slice_v1.md）
+  files.push(...listFiles(path.join(KIT, 'assets', 'harness', 'templates'), (n) => n.endsWith('.md')))
   return files
 }
 

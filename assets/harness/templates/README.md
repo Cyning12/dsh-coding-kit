@@ -10,6 +10,7 @@
 | [`TASK_epic.md`](./TASK_epic.md) | ✅ | Epic 总纲 + §3.1 编排主表 + 00 入口 |
 | [`TASK_graph_bootstrap.md`](./TASK_graph_bootstrap.md) | ✅ | D4-a · **`HG-GRAPH-MODULES`** blocks **30** |
 | [`ONTOLOGY_consumer_slice_v1.md`](./ONTOLOGY_consumer_slice_v1.md) | ✅ | 绿野 consumer ontology 切片（v2.17+ · 非 ontology-check） |
+| [`QUICKREF_v1_zh.md`](./QUICKREF_v1_zh.md) | ✅ | 业务仓命令速查 · **手工嵌入**（复制到业务仓，非 CLI 生成；命令面钉 `npx dsh-coding-kit`） |
 
 ## v0.2.1 · done 分层索引
 
