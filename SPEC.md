@@ -359,3 +359,10 @@ SPEC：`dsh-coding-kit/SPEC.md`
 | 2026-08-16 | 10-spec：产品仓根 `SPEC.md` draft；1.2.0 = SPEC B §2.2 全表（G1–G7）；upgrade 钉 1.2.0；别名未落地故只禁新增；`SPEC.md` 不进 npm；`HG-SPEC-SIGNOFF` pending |
 | 2026-08-16 | 00 落盘：维护者对话「签收」→ `HG-SPEC-SIGNOFF` **approved** · 状态 `signed` |
 | 2026-08-16 | 00 落盘：人确认「已发版」+ `npm view=1.2.0` → `HG-PUBLISH-1.2.0` **approved** |
+
+---
+
+## 9. 设计红线（v1.2.4 增补 · DEF-003）
+
+- **R-TRUTH-1 · 声称的能力必须接线或明示未接线**：资产（`assets/` 下 prompts / FRAGMENT / TEMPLATE / yaml / 示例与生成物）中任何能力声称——尤其是「机械闸 / 硬闸 / 机械强制 / 已接线」句式——**必须接线或明示未接线**：要么在本包 `src/` 有真实实现并以可失败自动化测试钉死，要么在文本同行/邻近行标注「未接线（旧包 v2.x 史实）」并附接线计划指针。**禁止第三态**（声称存在、实现缺失、且无标注）。
+- **违反即缺陷**：发现的「声称 vs 实现」漂移按缺陷登记，修复路径对齐 PROP-03「先声明止血、再按需求补实现」；回归闸 `test/cli-docs-def003.test.ts` 对词表命中行强制「未接线标注或 allowlist 实现锚点」。

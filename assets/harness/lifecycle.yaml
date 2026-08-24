@@ -2,10 +2,10 @@
 #
 # 登记真值：状态 / 转移 / 守卫。yaml 本身不是引擎。
 # 由 `lifecycle dry-run` 引擎消费（v2.10+ · 资格判定旁路报告 · 不写盘）。
-# v2.11+ to_30 已接线：HG-AUDIT-R1 · HG-TASK-DRAFT · reviews_retention · audit_D5 · task_lint
-# v2.13+ close 已接线：close_invoke · close_self_check · close_acceptance · close_slug · close_status · close_review
-# v2.17+ close 增补：close_graph_delta · close_kpi · close_experience
-# v2.18+ close 增补：close_wiki_delta · close_wiki_promotion
+# v2.11+ to_30：HG-AUDIT-R1 · HG-TASK-DRAFT 已接线（本包真接线）；reviews_retention · audit_D5 · task_lint 未接线（旧包 v2.x 史实 · dry-run 恒 unevaluated · 接线计划见 PRD_DEF-003 阶段二）
+# v2.13+ close：close_self_check · close_acceptance · close_slug · close_status 已接线；close_invoke · close_review 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
+# v2.17+ close 增补：close_graph_delta · close_kpi · close_experience —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
+# v2.18+ close 增补：close_wiki_delta · close_wiki_promotion —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
 #   （to_00 / spec_reviews_retention 仍可 unevaluated）
 # 只读展示：npx dsh-coding-kit lifecycle show [--json]
 # Schema：schema/lifecycle.v1.schema.json
@@ -41,6 +41,7 @@ transitions:
     to: in_progress
     hat: "30"
     description: "执行帽开工（verify --task 与全量模式聚合 · v2.9+）"
+    # 守卫接线真值（dsh-coding-kit@1.2.x）：HG-AUDIT-R1 / HG-TASK-DRAFT 已接线；reviews_retention / audit_D5 / task_lint 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
     guards:
       - id: HG-AUDIT-R1
         command_or_check: "gate-check · human_gate HG-AUDIT-R1=approved"
@@ -67,6 +68,7 @@ transitions:
     to: archived
     hat: "close"
     description: "task close · active→done 归档"
+    # 守卫接线真值（dsh-coding-kit@1.2.x）：close_self_check / close_acceptance / close_slug / close_status 已接线；其余 close_* 未接线（旧包 v2.x 史实 · dry-run 恒 unevaluated · 接线计划见 PRD_DEF-003 阶段二）
     guards:
       - id: close_invoke
         command_or_check: "task close 检查1 · invoke hats 集合覆盖（required_invoke_hats / profile · v2.12+）"
@@ -99,7 +101,7 @@ transitions:
         severity: block
         allow_flag: "--allow-kpi-gap"
       - id: close_experience
-        command_or_check: "task close · experience_capture（required 硬闸 · v2.17+）"
+        command_or_check: "task close · experience_capture（required 硬闸 · v2.17+ 旧包史实 · 本包未接线）"
         severity: block
         allow_flag: "--allow-experience-gap"
       - id: close_wiki_delta

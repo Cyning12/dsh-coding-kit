@@ -15,7 +15,7 @@
 
 **冲突**：task 表 `pending` 且声称 `approved` → **拒开工**（不得采信聊天）。
 
-**pre-30 invoke（v2.14+）**：`verify` 报 `missing pre-30 invoke hats` → **拒开工**（用户「开工」不能豁免；维护者可用 `--allow-invoke-gap` 留痕放行）。
+**pre-30 invoke（旧包 v2.14+ 史实 · dsh-coding-kit@1.2.x 未接线）**：旧包 `verify` 报 `missing pre-30 invoke hats` → **拒开工**——该硬闸本包未实现（`--allow-invoke-gap` 无豁免语义），接线计划见 PRD_DEF-003 阶段二；当前以 task 人工闸表与 invoke 留档人工核对为准。
 
 **结论**：**拒开工** — task 表真值未满足 30 条件。
 
