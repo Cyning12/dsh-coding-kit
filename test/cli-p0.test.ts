@@ -315,7 +315,7 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     })
   })
 
-  it('C5c: 仅 pyproject.toml 无测试制品 → D5 WARN 过渡（exit 0 且含 WARN，DEF-014）', async () => {
+  it('C5c: 仅 pyproject.toml 无测试制品 → D5 FAIL（非 0，DEF-014 · 1.5.0 WARN→FAIL 硬化）', async () => {
     await withTemp(async (dir) => {
       const rel = 'docs/tasks/active/task_d5_pyproject_v1.md'
       await writeRel(
@@ -334,16 +334,17 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
       await writeRel(dir, 'docs/harness/invokes/by-task/d5_pyproject/invoke_20260801_10_d5_pyproject.md', '# invoke 10 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
-      assert.equal(v.status, 0, v.combined)
-      assert.match(v.combined, /WARN/, v.combined)
-      assert.match(v.combined, /D5/, v.combined)
+      assert.equal(v.status, 2, v.combined)
+      assert.doesNotMatch(v.combined, /WARN/, v.combined)
+      assert.match(v.combined, /D5: test_strategy=required/, v.combined)
       const a = runCli(['audit', '--task', rel, '--target', dir])
-      assert.equal(a.status, 0, a.combined)
-      assert.match(a.combined, /WARN/, a.combined)
+      assert.notEqual(a.status, 0, a.combined)
+      assert.doesNotMatch(a.combined, /WARN/, a.combined)
+      assert.match(a.combined, /D5/, a.combined)
     })
   })
 
-  it('C5d: 仅无 test 步骤 workflow → D5 WARN 过渡（exit 0 且含 WARN，DEF-014）', async () => {
+  it('C5d: 仅无 test 步骤 workflow → D5 FAIL（非 0，DEF-014 · 1.5.0 WARN→FAIL 硬化）', async () => {
     await withTemp(async (dir) => {
       const rel = 'docs/tasks/active/task_d5_lintci_v1.md'
       await writeRel(
@@ -377,9 +378,9 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
       await writeRel(dir, 'docs/harness/invokes/by-task/d5_lintci/invoke_20260801_10_d5_lintci.md', '# invoke 10 fixture')
       const v = runCli(['verify', '--task', rel, '--target', dir])
-      assert.equal(v.status, 0, v.combined)
-      assert.match(v.combined, /WARN/, v.combined)
-      assert.match(v.combined, /D5/, v.combined)
+      assert.equal(v.status, 2, v.combined)
+      assert.doesNotMatch(v.combined, /WARN/, v.combined)
+      assert.match(v.combined, /D5: test_strategy=required/, v.combined)
     })
   })
 
