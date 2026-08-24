@@ -159,7 +159,7 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 - .claude/skills 或 ~/.claude/skills = Claude Code 的 skill 目录（本命令默认不写；若你用 Claude 可另拷或 --out）。
 - .dsh/coding-kit 或 .coding-kit = 规范覆盖（apply_coding_standards / init_coding_kit），不是 skill 目录。
 
-安装路径不等于已验证的 DSH 自动扫描。DSH runtime 是否读取 .dsh/skills，以 DSH 上游文档为准。本包未验证、也不声称已验证按需加载。
+已验证（对照 DSH 上游源码）：DSH runtime 自动扫描本仓 .dsh/skills 与 $HOME/.dsh/skills 并按需加载。skill 形态为 <name>/SKILL.md 目录包或 <name>.md 平铺文件，frontmatter 必填 name/description；证据锚点见 README「扫描验证」节。
 
 不要做：GitHub Archive；npm publish / deprecate；让 apply 在加载时自动注入；默认安装 30/40；把 skills 拷进 .dsh/coding-kit。
 ````
@@ -174,9 +174,16 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 | `<repo>/.claude/skills` 或 `~/.claude/skills` | Claude Code skill 目录 | 用户另拷或 `--out`；**默认不写** |
 | `<repo>/.dsh/coding-kit` 或 `.coding-kit` | 规范覆盖（standards / wiki） | `init_coding_kit`；**禁止**当作 skill dest |
 
-### 扫描免责
+### 扫描验证（已对照 DSH 上游源码）
 
-`.dsh/skills` 是本包推荐的 **安装落点**，不是「本仓已验证 DSH 会自动扫描并按需加载」的声明。DSH runtime 发现 / 加载 skill 的规则 **以 DSH 上游文档为准**。本仓库 **未**对照上游源码做扫描验证，**不得**在 README、`--help`、skill README 或迁移 Prompt 中声称已验证自动按需加载。
+**已验证（2026-08-22 · 对照 DSH 上游源码 deepseek-harness@141eb6f，即 dsh 0.1.0-rc.8）**：DSH runtime **会自动扫描** `<repo>/.dsh/skills` 与 `$HOME/.dsh/skills` 并 **按需加载**，二者正是本包 `skills install` 的两个 **安装落点**。证据锚点：
+
+- `packages/skill/skill-filesystem/src/index.ts:246` —— 扫描 `<projectRoot>/.dsh/skills`（source=`project-dsh`，rank 100）；同文件 `:253` —— 扫描 `<dshHome>/skills`（`$DSH_HOME` 或 `~/.dsh`，source=`user-dsh`，rank 400）。
+- `docs/subsystems/skills.md`「Local discovery priority」表同口径（rank 100/400 两行）；加载机制：skill 摘要注入会话 catalog，模型经 `skill({ name })` 工具按需拉取正文（该文档「Session catalog and tool contract」节）。
+
+结构与 frontmatter 要求（同源码）：目录包 `<name>/SKILL.md` 或平铺 `<name>.md`（index.ts:724-728）；frontmatter 必填 `name`/`description`，`name` 须 kebab-case（index.ts:810-816）；projectRoot = 最近含 `.git` 的祖先目录（index.ts:937-947）。
+
+注意：扫描/加载是 **DSH runtime 的行为契约**，随上游版本演进；以上锚点对应 0.1.0-rc.8。本包职责止于把 skill 写入正确落点并保持 frontmatter 合法（`skills check`）。
 
 ## GitHub topic
 

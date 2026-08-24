@@ -27,7 +27,7 @@ function extractPromptBody(readme: string): string {
 }
 
 describe('D-DOC 1.2.1 README / renderReadme', { concurrency: 1 }, () => {
-  it('D-DOC: README 命令表分列 skills install / build / check；钉 1.3.0 Prompt；路径对照；扫描免责', () => {
+  it('D-DOC: README 命令表分列 skills install / build / check；钉 1.3.0 Prompt；路径对照；扫描验证（已对照上游源码）', () => {
     const readme = readFileSync(README, 'utf8')
     assert.match(readme, /npx dsh-coding-kit skills install/)
     assert.match(readme, /npx dsh-coding-kit skills build/)
@@ -62,10 +62,17 @@ describe('D-DOC 1.2.1 README / renderReadme', { concurrency: 1 }, () => {
 
     assert.match(readme, /安装落点/)
     assert.match(readme, /自动扫描/)
-    assert.match(readme, /上游/)
+    assert.match(readme, /上游源码/)
     assert.match(readme, /按需加载/)
-    assert.match(readme, /不是「本仓已验证 DSH 会自动扫描并按需加载」|安装路径不等于已验证/)
-    assert.match(readme, /不声称已验证按需加载|不得.*声称已验证/)
+    // R-08 已验证口径：扫描验证节 + 证据锚点（DSH 源文件#行）+ 旧免责措辞清零
+    assert.match(readme, /### 扫描验证（已对照 DSH 上游源码）/)
+    assert.match(readme, /已验证（2026-08-22 · 对照 DSH 上游源码 deepseek-harness@141eb6f/)
+    assert.match(readme, /packages\/skill\/skill-filesystem\/src\/index\.ts:246/)
+    assert.match(readme, /:253/)
+    assert.match(readme, /rank 100/)
+    assert.match(readme, /<name>\/SKILL\.md/)
+    assert.match(readme, /frontmatter 必填/)
+    assert.doesNotMatch(readme, /未对照上游源码做扫描验证|不是「本仓已验证|安装路径不等于已验证|不声称已验证按需加载|不得.*声称已验证/)
 
     const bashBlocks = [...readme.matchAll(/```bash\r?\n([\s\S]*?)```/g)].map((x) => x[1]).join('\n')
     assert.equal(bashBlocks.includes(CURRENT_LEGACY_BUILD), false)
@@ -91,9 +98,13 @@ describe('D-DOC 1.2.1 README / renderReadme', { concurrency: 1 }, () => {
     assert.match(skillsReadme, /\.dsh\/coding-kit/)
     assert.match(skillsReadme, /不是.*skill 目录|不是 skill 目录/)
     assert.match(skillsReadme, /安装落点/)
-    assert.match(skillsReadme, /自动扫描|按需加载/)
-    assert.match(skillsReadme, /上游/)
-    assert.match(skillsReadme, /不得.*声称已验证|不是「本仓已验证/)
+    assert.match(skillsReadme, /自动扫描/)
+    assert.match(skillsReadme, /按需加载/)
+    assert.match(skillsReadme, /上游源码/)
+    // R-08 已验证口径 + 证据锚点 + 旧免责措辞清零
+    assert.match(skillsReadme, /已验证（2026-08-22 · 对照 DSH 上游源码 deepseek-harness@141eb6f/)
+    assert.match(skillsReadme, /skill-filesystem\/src\/index\.ts:246/)
+    assert.doesNotMatch(skillsReadme, /不得.*声称已验证|不是「本仓已验证|未对照上游源码/)
 
     const bashBlocks = [...readme.matchAll(/```bash\r?\n([\s\S]*?)```/g)].map((x) => x[1]).join('\n')
     assert.equal(bashBlocks.includes(HARNESS_BUILD_ENTRY), false)
