@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-08-24
+
 ### Fixed
 
 - **DEF-023 · graph yaml compile Mermaid emit IDE 预览断裂（P0-HOT）**：
@@ -17,3 +19,7 @@
 
 - **升级本包后须重跑 `graph yaml compile`**（或 `graph yaml compile --all`）重新生成 `docs/_tech_graph/*.md`；旧 emit（`// →` 注释、`--"…"-->` 边）在 IDE Markdown 预览中会静默失败（节点横排一行、边丢失）。`graph yaml check` 比对 graph.json 不受影响。
 - `assets/graph/templates/99_mermaid_protocol.md` 新增「§7 IDE 预览兼容 · 编译器输出契约」，§1.2 / §2 示例改为官方形态。
+
+### Chore
+
+- **DEF-001 · 发布物与 git 历史对齐**：补建与 npm 已发布包一一对应的 `v1.2.1` / `v1.2.2` 提交与 tag（发布物源态可由 tag 复现）；本提交起「publish 前 commit + tag」为硬步骤。

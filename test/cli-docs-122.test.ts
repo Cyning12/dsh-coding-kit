@@ -47,9 +47,9 @@ describe('1.2.2 E2 adapters + README FAQ', { concurrency: 1 }, () => {
     assert.match(body, /cyning-harness:end/)
   })
 
-  it('P3-1: 根 README 钉 1.2.2；FAQ auto-install-peers=false；Prompt 围栏纪律', () => {
+  it('P3-1: 根 README 钉 1.2.3；FAQ auto-install-peers=false；Prompt 围栏纪律', () => {
     const readme = readFileSync(README, 'utf8')
-    assert.match(readme, /dsh-coding-kit@1\.2\.2/)
+    assert.match(readme, /dsh-coding-kit@1\.2\.3/)
     assert.equal(/1\.2\.1\.1/.test(readme), false)
     assert.match(readme, /auto-install-peers=false/)
     assert.match(readme, /peerDependenciesMeta|optional/)
@@ -60,11 +60,11 @@ describe('1.2.2 E2 adapters + README FAQ', { concurrency: 1 }, () => {
     const prompt = m[1]
     assert.doesNotMatch(prompt, /```/)
     assert.doesNotMatch(prompt, /~~~/)
-    assert.match(prompt, /dsh-coding-kit@1\.2\.2/)
-    assert.match(prompt, /version 钉 1\.2\.2/)
+    assert.match(prompt, /dsh-coding-kit@1\.2\.3/)
+    assert.match(prompt, /version 钉 1\.2\.3/)
   })
 
-  it('D8: npm pack --dry-run 不含 SPEC.md；filename 含 1.2.2', () => {
+  it('D8: npm pack --dry-run 不含 SPEC.md；filename 含 1.2.3', () => {
     const pack = spawnSync('npm', ['pack', '--dry-run', '--json'], {
       encoding: 'utf8',
       cwd: KIT,
@@ -77,7 +77,7 @@ describe('1.2.2 E2 adapters + README FAQ', { concurrency: 1 }, () => {
     }>
     const entry = Array.isArray(info) ? info[0] : info
     assert.ok(entry)
-    assert.match(String(entry.filename ?? ''), /dsh-coding-kit-1\.2\.2/)
+    assert.match(String(entry.filename ?? ''), /dsh-coding-kit-1\.2\.3/)
     const paths = (entry.files ?? []).map((f) => f.path)
     assert.equal(paths.some((p) => /(^|\/)SPEC\.md$/.test(p)), false)
     assert.ok(paths.some((p) => p.startsWith('bin/')))
