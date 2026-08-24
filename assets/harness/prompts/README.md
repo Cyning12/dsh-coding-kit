@@ -14,7 +14,7 @@
   → 50（↺ 30 · 可选）→ CLOSE
 ```
 
-**Inform / 图谱分期（路径 D）**：SPEC 签收后 **每阶段一子 task**（P1 空树 → P2 G-L0 → P3 modules → P4 flow 增量…）；禁止单次 30 画满全部 flow。详述：[`../../docs/methodology/product/SDD_HAT_FLOW_v2_zh.md`](../../docs/methodology/product/SDD_HAT_FLOW_v2_zh.md)。
+**Inform / 图谱分期（路径 D）**：SPEC 签收后 **每阶段一子 task**（P1 空树 → P2 G-L0 → P3 modules → P4 flow 增量…）；禁止单次 30 画满全部 flow。详述：SDD_HAT_FLOW_v2_zh.md（不随包发布 · 薄指针页 `assets/docs/POINTER_SDD_HAT_FLOW.md`）。
 
 | 10 | 20 | 人闸 |
 |----|-----|------|
@@ -34,7 +34,7 @@
 | [`FRAGMENT_30_gate_verify_v1_zh.md`](./FRAGMENT_30_gate_verify_v1_zh.md) | — | GATE_VERIFY · pre-30 / graph 字段 |
 | [`TEMPLATE_30_gate_stop.md`](./TEMPLATE_30_gate_stop.md) | — | 30 拒开工 |
 
-Extended（00 / 50 / handoff / 链式 PROMPT）：工作区 `docs/harness/prompts/` · 见 [`SDD_HAT_FLOW_v2_zh.md`](../../docs/methodology/product/SDD_HAT_FLOW_v2_zh.md) §6。
+Extended（00 / 50 / handoff / 链式 PROMPT）：工作区 `docs/harness/prompts/` · 见 SDD_HAT_FLOW_v2_zh.md §6（不随包发布 · 薄指针页 `assets/docs/POINTER_SDD_HAT_FLOW.md`）。
 
 ## Agent Skills 封装（v2.23+）
 

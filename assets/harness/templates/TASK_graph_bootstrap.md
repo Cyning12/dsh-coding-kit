@@ -85,7 +85,7 @@
 
 ## 给执行帽的必读列表
 
-1. [`docs/ONBOARDING.md`](../../docs/ONBOARDING.md) §3 存量档位
+1. 薄指针页 [`POINTER_ONBOARDING.md`](../../docs/POINTER_ONBOARDING.md)（原文不随包发布）§3 存量档位
 2. `docs/_tech_graph/01_struct.md` · `99_mermaid_protocol.md`
 3. 本 task 验收表
 

@@ -31,5 +31,5 @@ cp standards/SOURCES_v1_zh.md docs/standards/SOURCES_编码规范外部参考_v1
 
 ## 关联
 
-- Onboarding：[`docs/ONBOARDING.md`](../docs/ONBOARDING.md) §4
+- Onboarding：见薄指针页 [`POINTER_ONBOARDING.md`](../docs/POINTER_ONBOARDING.md)（原文不随包发布）§4
 - Harness 衔接：工作区 `GUIDANCE_standards_in_harness_starter_m2_v1_zh.md` §3（POINTER，非复制）

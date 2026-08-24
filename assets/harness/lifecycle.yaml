@@ -8,7 +8,7 @@
 # v2.18+ close 增补：close_wiki_delta · close_wiki_promotion —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 阶段二）
 #   （to_00 / spec_reviews_retention 仍可 unevaluated）
 # 只读展示：npx dsh-coding-kit lifecycle show [--json]
-# Schema：schema/lifecycle.v1.schema.json
+# 本包未附带 JSON Schema（旧 schema 指针已移除 · DEF-009）
 
 version: "1"
 

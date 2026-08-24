@@ -28,7 +28,7 @@
     # 有 pin：
     # cp cyning-harness/ci/samples/lint-wiki-delta.pin.yml.example .github/workflows/lint-wiki-delta.yml
 
-无 monorepo checkout 时：见 [`docs/RUNBOOK_upgrade_wiki_delta_v1_zh.md`](../docs/RUNBOOK_upgrade_wiki_delta_v1_zh.md) §5.1（`npm pack` / GitHub raw）。
+无 monorepo checkout 时：见薄指针页 [`POINTER_RUNBOOK_wiki_delta.md`](../../docs/POINTER_RUNBOOK_wiki_delta.md)（原文不随包发布 · §5.1 `npm pack` / GitHub raw）。
 
 按 `package.json` / `requirements.txt` / Node 版本 / env 变量 **裁剪注释块**。
 
@@ -59,7 +59,7 @@ Ink workflow 含图谱 export、跨仓 checkout 等 **业务专有** 步骤；St
 ## 与 Harness 关系
 
 - task `test_strategy: required` → 本地/CI 须与 workflow 命令一致
-- L2 模板 CI 对齐节：[`standards/TEMPLATE_CODING_BASELINE_L2_*.md`](../standards/)
+- L2 模板 CI 对齐节：[`standards/TEMPLATE_CODING_BASELINE_L2_*.md`](../../standards/)
 - ONBOARDING §5：五轨检查清单含 CI 样例已适配
 - **不**把 tech-graph / pre-commit hook 绑进 `init` 默认拷贝；按需从本目录 `cp`
 

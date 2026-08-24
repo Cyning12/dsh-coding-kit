@@ -51,7 +51,7 @@ invoke §3 应 **pointer** 到本目录，勿重复贴长文。
 | 靠什么 | 两层起步 + 加深阈值 | 双括号 wikilink + md 相对链 |
 | 加深后 | `git mv` 到 `topics/<子域>/` | **边不断**（修好链即可） |
 
-详述与关账字段：[`docs/USER_GUIDE_v1.0_zh.md`](../../docs/USER_GUIDE_v1.0_zh.md)「Wiki 目录 vs 关系图」· `wiki_delta` 决策树见同文 **§6.0b**（本文不重复）。
+详述与关账字段：见薄指针页 [`POINTER_USER_GUIDE.md`](../../docs/POINTER_USER_GUIDE.md)（原文不随包发布）「Wiki 目录 vs 关系图」· `wiki_delta` 决策树见原文 **§6.0b**（本文不重复）。
 
 > **防踩坑（v2.19+）**：叙述里勿写裸双括号字面当作「格式说明」（会被 `wiki export` 当边解析）；请写「双括号 wikilink」，互链只指向真实页。
 

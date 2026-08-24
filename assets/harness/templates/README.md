@@ -21,7 +21,7 @@
 | [`VIEW_done_thin_pointer.md`](./VIEW_done_thin_pointer.md) | ✅ | `_views/done.md` 薄指针（≤15 行） |
 | [`FRAGMENT_task_domain_infer_v1_zh.md`](./FRAGMENT_task_domain_infer_v1_zh.md) | ✅ | 关账 `git mv` 域推断规则 |
 
-`wizard/install.sh` 在首次安装时创建 `done/<domain>/` 子目录并复制 Hub / views（仅当目标文件不存在）。
+现行**无自动安装器**；首次按下方「嵌入步骤」**手工**创建 `done/<domain>/` 子目录并复制 Hub / views（仅当目标文件不存在）。（旧包曾有 wizard 安装脚本，已废弃，未随包交付。）
 
 ## 嵌入步骤
 
@@ -47,4 +47,4 @@ cp harness/templates/TASK_TEMPLATE.md docs/tasks/active/task_<slug>.md
 ## 关联
 
 - 图谱模板：[`graph/templates/`](../../graph/templates/README.md)
-- ONBOARDING：[`docs/ONBOARDING.md`](../../docs/ONBOARDING.md) §3 · §7
+- ONBOARDING：见薄指针页 [`POINTER_ONBOARDING.md`](../../docs/POINTER_ONBOARDING.md)（原文不随包发布）§3 · §7

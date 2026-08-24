@@ -49,7 +49,7 @@
 
 ## 嵌入后
 
-- **新仓**：骨架 + 模块表人签 + 至少 1 主 flow（见 [`docs/ONBOARDING.md`](../../docs/ONBOARDING.md) §3）
+- **新仓**：骨架 + 模块表人签 + 至少 1 主 flow（见薄指针页 [`POINTER_ONBOARDING.md`](../../docs/POINTER_ONBOARDING.md) · 原文 §3）
 - **存量**：按 ONBOARDING 档位 S0～S3；**禁止**首次全 flow 构图
 - **人签**：`01_struct` 模块表 → **HG-GRAPH-MODULES** approved → 允许 30 改码
 

@@ -1,6 +1,6 @@
 # Optional · wiki_delta 扫描（默认硬失败 · v2.19+）
 #
-# 获取本文件：见 docs/RUNBOOK_upgrade_wiki_delta_v1_zh.md §5.1（clone / npm pack / GitHub raw）
+# 获取本文件：见薄指针页 assets/docs/POINTER_RUNBOOK_wiki_delta.md（原文不随包发布）§5.1（clone / npm pack / GitHub raw）
 # 失败策略：迁移中 continue-on-error: true；迁完硬失败；--strict 半迁勿开。
 # Python / 无 package.json：必须 package-manager-cache: false（见 ci/samples/README）
 # 有 harness.pin.json：改用 lint-wiki-delta.pin.yml.example，或按下方「读 pin」注释改写。
