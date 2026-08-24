@@ -71,9 +71,10 @@ export function lintDoneInvokes(target: string): {
 }
 
 // DEF-021：wiki_delta strict 词表——none / n/a 为字面值；
-// 其余值须为 path 形态（含 / 或 .，如 docs/coding_wiki/x.md 或 coding_wiki/templates）
-const WIKI_DELTA_LITERALS = new Set(['none', 'n/a'])
-const WIKI_DELTA_PATHISH_RE = /[/.]/
+// 其余值须为 path 形态（含 / 或 .，如 docs/coding_wiki/x.md 或 coding_wiki/templates）。
+// DEF-003 阶段二 T6：export 供 cli-checks evalCloseWikiDelta 复用（同一词表 · 不复制）。
+export const WIKI_DELTA_LITERALS = new Set(['none', 'n/a'])
+export const WIKI_DELTA_PATHISH_RE = /[/.]/
 
 export function lintWikiDeltaMissing(
   target: string,

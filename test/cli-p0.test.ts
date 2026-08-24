@@ -512,7 +512,12 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
           selfCheckBody: '自检已回填：fixture close ok。',
         }),
       )
-      const pass = runCli(['task', 'close', '--file', okAbs, '--yes'])
+      // DEF-003 T6：close 守卫接线后，legacy fixture（无 invoke/review/wiki_delta/KPI 制品）
+      // 须显式豁免旗标才过；graph_delta 缺字段为 warn 不挡（lifecycle.yaml 口径）
+      const pass = runCli([
+        'task', 'close', '--file', okAbs, '--yes',
+        '--allow-invoke-gap', '--allow-no-review', '--allow-kpi-gap', '--allow-wiki-gap',
+      ])
       assert.equal(pass.status, 0, pass.combined)
       assert.equal(existsSync(okAbs), false)
       assert.equal(existsSync(path.join(dir, 'docs/tasks/done/task_close_ok_v1.md')), true)

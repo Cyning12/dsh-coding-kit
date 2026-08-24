@@ -23,6 +23,7 @@ import {
 } from './cli-shared.ts'
 import {
   checkPre30InvokeHats,
+  evalCloseGuard,
   findReview,
   lintTaskFile,
   PLACEHOLDER_RE,
@@ -41,8 +42,20 @@ type Manifest = {
   upgraded_at: string
 }
 
-const UNCHECKED_RE = /^\s*- \[ \]/
-const CLOSE_STATUSES = new Set(['done', 'completed'])
+// DEF-003 阶段二 T6：close 守卫求值顺序（lifecycle.yaml#71-111 登记序；
+// close_wiki_promotion 未接线不在列 · dry-run 明示 unevaluated）
+const CLOSE_GUARD_ORDER = [
+  'close_invoke',
+  'close_self_check',
+  'close_acceptance',
+  'close_slug',
+  'close_status',
+  'close_review',
+  'close_graph_delta',
+  'close_kpi',
+  'close_experience',
+  'close_wiki_delta',
+]
 // init --preset 合法词表（DEF-013 D1：当前唯一合法值；新增 preset 须先扩展此常量）
 const VALID_PRESETS = ['harness-only'] as const
 
@@ -479,8 +492,23 @@ async function cmdTaskLint(args: string[]): Promise<void> {
 
 async function cmdTaskClose(args: string[]): Promise<void> {
   const yes = args.includes('--yes')
+  // DEF-003 阶段二 T6：close 守卫豁免旗标（lifecycle.yaml allow_flag 登记 · 真豁免并留痕）
   const allowUnchecked = args.includes('--allow-unchecked')
-  let rest = args.filter((a) => a !== '--yes' && a !== '--allow-unchecked')
+  const allowInvokeGap = args.includes('--allow-invoke-gap')
+  const allowNoReview = args.includes('--allow-no-review')
+  const allowKpiGap = args.includes('--allow-kpi-gap')
+  const allowExperienceGap = args.includes('--allow-experience-gap')
+  const allowWikiGap = args.includes('--allow-wiki-gap')
+  let rest = args.filter(
+    (a) =>
+      a !== '--yes' &&
+      a !== '--allow-unchecked' &&
+      a !== '--allow-invoke-gap' &&
+      a !== '--allow-no-review' &&
+      a !== '--allow-kpi-gap' &&
+      a !== '--allow-experience-gap' &&
+      a !== '--allow-wiki-gap',
+  )
   const { value: fileArg, rest: r1 } = takeOption(rest, '--file')
   rest = r1
   const { value: targetArg, rest: r2 } = takeOption(rest, '--target')
@@ -494,34 +522,29 @@ async function cmdTaskClose(args: string[]): Promise<void> {
   const fileSlug = extractTaskSlug(abs)
   const slug = meta.task_slug ?? fileSlug
   const blockers: string[] = []
-  if (!meta.task_slug) blockers.push('Harness 元信息表缺 task_slug')
-  else if (normalizeSlug(meta.task_slug) !== normalizeSlug(fileSlug)) {
-    blockers.push(`slug 不一致: 文件名 ${fileSlug} ≠ 元信息 task_slug ${meta.task_slug}`)
+  const traces: string[] = []
+  const closeAllowFlags: Record<string, string | undefined> = {
+    close_invoke: allowInvokeGap ? '--allow-invoke-gap' : undefined,
+    close_acceptance: allowUnchecked ? '--allow-unchecked' : undefined,
+    close_review: allowNoReview ? '--allow-no-review' : undefined,
+    close_kpi: allowKpiGap ? '--allow-kpi-gap' : undefined,
+    close_experience: allowExperienceGap ? '--allow-experience-gap' : undefined,
+    close_wiki_delta: allowWikiGap ? '--allow-wiki-gap' : undefined,
   }
-  const selfCheck = extractSection(content, '### 自检结论', '\n##')
-  if (!selfCheck) blockers.push('缺 ### 自检结论 节')
-  else {
-    const substantive = selfCheck
-      .split('\n')
-      .slice(1)
-      .map((l) => l.trim())
-      .filter(Boolean)
-      .filter((l) => !PLACEHOLDER_RE.test(l))
-    if (substantive.length === 0) blockers.push('自检结论未回填（空或纯占位符）')
-  }
-  const acceptance = extractSection(content, '## 验收标准', '\n##')
-  if (!acceptance) blockers.push('缺 ## 验收标准 节')
-  else {
-    const unchecked = acceptance.split('\n').filter((l) => UNCHECKED_RE.test(l))
-    if (unchecked.length > 0 && !allowUnchecked) {
-      blockers.push(`验收标准 ${unchecked.length} 项未勾选（或 --allow-unchecked 显式豁免）`)
+  // DEF-003 阶段二 T6：close 守卫逐项真求值（cli-checks evalCloseGuard 单一实现源 ·
+  // 与 lifecycle dry-run 同口径；缺项即拒 close 并指明守卫 id；warn 级不挡但留痕）
+  for (const guardId of CLOSE_GUARD_ORDER) {
+    const outcome = evalCloseGuard(guardId, abs, content)
+    if (!outcome) continue
+    if (outcome.status === 'warn') {
+      traces.push(`close: warn · ${guardId} · ${outcome.detail}`)
+      continue
     }
-  }
-  const statusLine = content.split('\n').find((l) => STATUS_RE.test(l))
-  const status = statusLine ? statusLine.match(STATUS_RE)?.[1]?.toLowerCase() : null
-  if (!status) blockers.push('未找到 > **状态** 行')
-  else if (!CLOSE_STATUSES.has(status)) {
-    blockers.push(`状态非 done/completed（当前: ${status}）`)
+    if (outcome.status === 'fail') {
+      const flag = closeAllowFlags[guardId]
+      if (flag) traces.push(`close: 留痕 · ${guardId} · ${outcome.detail} → ${flag} 豁免生效`)
+      else blockers.push(`${guardId}: ${outcome.detail}`)
+    }
   }
   const activeDir = path.dirname(abs)
   const inActive = path.basename(activeDir) === 'active'
@@ -534,6 +557,7 @@ async function cmdTaskClose(args: string[]): Promise<void> {
     dest = path.join(path.dirname(activeDir), 'done', path.basename(abs))
   }
   if (dest && existsSync(dest)) blockers.push(`目标已存在（不覆盖）: ${dest}`)
+  for (const t of traces) console.log(t)
   if (blockers.length > 0) {
     for (const b of blockers) console.log(`  - ${b}`)
     console.log(`CLOSE: BLOCKED · ${slug}`)
@@ -552,7 +576,8 @@ async function cmdTaskClose(args: string[]): Promise<void> {
   console.log(`CLOSE: PASS · ${slug}`)
 }
 
-const TASK_USAGE = 'task lint --file PATH · task close --file PATH [--yes] · task lint-done · task lint-wiki-delta · task check --file PATH'
+const TASK_USAGE =
+  'task lint --file PATH · task close --file PATH [--yes] [--allow-unchecked] [--allow-invoke-gap] [--allow-no-review] [--allow-kpi-gap] [--allow-experience-gap] [--allow-wiki-gap] · task lint-done · task lint-wiki-delta · task check --file PATH'
 
 async function cmdTask(args: string[]): Promise<void> {
   const [sub, ...rest] = args
