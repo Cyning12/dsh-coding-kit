@@ -13,13 +13,11 @@ const ASSETS = path.join(KIT, 'assets')
 //   ② assets/**/*.yaml 注释中的相对路径 token（形如 a/b/c.json|md|yaml）。
 // 逐一 resolve 到包内真实文件，不存在即悬空引用。
 // 豁免：EXEMPTIONS 精确登记（file + target + owner/理由），仅限：
-//   - 其他 PRD 名下的悬空指针（DEF-004/005/007，修复落地后须同步移除条目）；
+//   - 其他 PRD 名下的悬空指针（修复落地后须同步移除条目；DEF-007 条目已随 1.3.0 修复移除）；
 //   - 模板「嵌入后相对」链接（目标路径在消费仓嵌入位置 resolve，非包内位置）。
 // 防腐化：每条豁免必须仍真实命中一处悬空（防条目成为永久豁免）。
 
 const EXEMPTIONS: Array<{ file: string; target: string; owner: string }> = [
-  // DEF-007 名下：graph/stubs examples 指针（PRD_DEF-009 §3 非范围）
-  { file: 'assets/graph/stubs/README.md', target: '../../examples/oss-fork/', owner: 'DEF-007' },
   // 模板嵌入后相对：VIEW/图谱模板复制到消费仓后 resolve（包内位置不 resolve 属预期）
   { file: 'assets/graph/templates/01_struct.md', target: './00_main.ai.md', owner: 'embedded-relative（嵌入消费仓 _tech_graph/ 后双轨生成）' },
   { file: 'assets/harness/templates/VIEW_done_by_domain.md', target: '../done/README.md', owner: 'embedded-relative（嵌入 docs/tasks/_views/ 后 resolve）' },
