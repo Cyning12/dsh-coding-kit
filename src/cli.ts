@@ -78,8 +78,8 @@ function usage(version: string): void {
   npx dsh-coding-kit init [--preset NAME] [--target PATH] [--yes]
   npx dsh-coding-kit upgrade [--target PATH] [--yes]
   npx dsh-coding-kit check [--target PATH]
-  npx dsh-coding-kit verify [--target PATH] [--task FILE]
-  npx dsh-coding-kit gate-check [--target PATH] [--task FILE]
+  npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json]
+  npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]
   npx dsh-coding-kit audit [--target PATH] [--task FILE]
   npx dsh-coding-kit task lint --file PATH
   npx dsh-coding-kit task close --file PATH [--yes]
@@ -336,33 +336,54 @@ function runTestCheck(target: string, taskFile: string | undefined): { ok: boole
 
 async function cmdGateCheck(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    console.log('用法: npx dsh-coding-kit gate-check [--target PATH] [--task FILE]')
+    console.log('用法: npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]')
     return
   }
-  let rest = args.filter((a) => a !== '--graph' && a !== '--json')
+  const json = args.includes('--json')
+  let rest = args.filter((a) => a !== '--json')
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
   rest = r1
   const { value: taskFile, rest: r2 } = takeOption(rest, '--task')
   rest = r2
   if (rest.length > 0) fail(`gate-check 未知参数: ${rest.join(' ')}`)
   const target = resolveTarget(process.cwd(), targetArg)
-  console.log('=== Harness gate-check ===')
-  console.log(`目标: ${target}`)
   const mf = await readManifest(target)
-  if (mf) {
-    console.log(`manifest.version: ${mf.version}`)
-    console.log(`manifest.preset: ${mf.preset}`)
-  } else {
-    console.log(`manifest: (未接入 · 无 ${manifestPath(target)})`)
+  if (!json) {
+    console.log('=== Harness gate-check ===')
+    console.log(`目标: ${target}`)
+    if (mf) {
+      console.log(`manifest.version: ${mf.version}`)
+      console.log(`manifest.preset: ${mf.preset}`)
+    } else {
+      console.log(`manifest: (未接入 · 无 ${manifestPath(target)})`)
+    }
+    console.log('')
   }
-  console.log('')
   if (!taskFile) fail('gate-check 须指定 --task FILE（1.1.0 P0 子集）')
   const abs = resolveTaskPath(target, taskFile)
   if (!existsSync(abs)) fail(`错误: 未找到 --task 文件 ${abs}`)
   const formatted = formatGateCheck(abs, await readFile(abs, 'utf8'))
-  process.stdout.write(formatted.text)
+  if (json) {
+    console.log(
+      JSON.stringify(
+        {
+          command: 'gate-check',
+          target,
+          task: taskFile,
+          blocked: formatted.blocked,
+          verdict: formatted.blocked ? 'BLOCKED' : 'PASS',
+        },
+        null,
+        2,
+      ),
+    )
+  } else {
+    process.stdout.write(formatted.text)
+  }
   if (formatted.blocked) fail('', 2)
-  console.log('闸检查: 未发现阻塞（仍须 Agent 首输出 GATE_VERIFY · 不得采信 invoke 字面 approved）')
+  if (!json) {
+    console.log('闸检查: 未发现阻塞（仍须 Agent 首输出 GATE_VERIFY · 不得采信 invoke 字面 approved）')
+  }
 }
 
 async function cmdAudit(args: string[]): Promise<void> {
@@ -400,39 +421,46 @@ async function cmdAudit(args: string[]): Promise<void> {
 
 async function cmdVerify(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    console.log('用法: npx dsh-coding-kit verify [--target PATH] [--task FILE]')
+    console.log('用法: npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json]')
     return
   }
-  let rest = args.filter(
-    (a) =>
-      a !== '--graph' &&
-      a !== '--json' &&
-      a !== '--agent-hint' &&
-      a !== '--allow-no-review' &&
-      a !== '--allow-lint-fail' &&
-      a !== '--allow-invoke-gap',
-  )
+  const json = args.includes('--json')
+  let rest = args.filter((a) => a !== '--json')
   const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
   rest = r1
   const { value: taskFile, rest: r2 } = takeOption(rest, '--task')
   rest = r2
   const { value: specFile, rest: r3 } = takeOption(rest, '--spec')
   rest = r3
-  const { rest: r4 } = takeOption(rest, '--workspace-root')
-  rest = r4
   if (specFile) notDelivered('verify --spec')
   if (rest.length > 0) fail(`verify 未知参数: ${rest.join(' ')}`)
   const target = resolveTarget(process.cwd(), targetArg)
   if (!taskFile) fail('verify 须指定 --task FILE（1.1.0 P0 子集）')
   const abs = resolveTaskPath(target, taskFile)
   const label = path.basename(abs)
+  const emitJson = (blocked: boolean): void => {
+    console.log(
+      JSON.stringify(
+        {
+          command: 'verify',
+          target,
+          task: taskFile,
+          blocked,
+          verdict: blocked ? 'BLOCKED' : 'PASS',
+        },
+        null,
+        2,
+      ),
+    )
+  }
   if (!existsSync(abs)) {
-    console.log(`VERIFY: BLOCKED · task 文件不存在 · ${label}`)
+    if (json) emitJson(true)
+    else console.log(`VERIFY: BLOCKED · task 文件不存在 · ${label}`)
     fail('', 2)
   }
   const content = await readFile(abs, 'utf8')
   const formatted = formatGateCheck(abs, content)
-  process.stdout.write(formatted.text)
+  if (!json) process.stdout.write(formatted.text)
   if (formatted.blocked) {
     const gates = parseHumanGates(content)
     const audit = findGate(gates, 'HG-AUDIT-R1')
@@ -440,15 +468,18 @@ async function cmdVerify(args: string[]): Promise<void> {
       audit?.status !== 'approved' ? 'HG-AUDIT-R1 pending' : formatted.text.includes('HG-TASK-DRAFT')
         ? 'HG-TASK-DRAFT pending'
         : 'gate-check blocked'
-    console.log(`VERIFY: BLOCKED · ${reason} · ${label}`)
+    if (json) emitJson(true)
+    else console.log(`VERIFY: BLOCKED · ${reason} · ${label}`)
     fail('', 2)
   }
   const test = runTestCheck(target, taskFile)
   if (!test.ok) {
-    console.log(`VERIFY: BLOCKED · ${test.reason} · ${label}`)
+    if (json) emitJson(true)
+    else console.log(`VERIFY: BLOCKED · ${test.reason} · ${label}`)
     fail('', 2)
   }
-  console.log(`VERIFY: PASS · ${label}`)
+  if (json) emitJson(false)
+  else console.log(`VERIFY: PASS · ${label}`)
 }
 
 function lintTaskFile(filePath: string, cwd: string): {
