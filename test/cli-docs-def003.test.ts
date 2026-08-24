@@ -20,7 +20,14 @@ const UNWIRED_MARK = '未接线'
 // （prompts 源 + skills 生成物同源），实现锚点 allowlist 清空。
 // DEF-026 棒：30-execute-code#35「机械校验 invoke hats 集合」声称行已加「未接线」止血标注
 // （与 DEF-003 阶段一口径一致 · 接线属阶段二），词表同步扩「机械校验」关键词。
-const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = []
+const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = [
+  // DEF-003 阶段二 T3：to_30 三守卫真接线（dry-run adapter 真求值 · 红→绿钉死）
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'reviews_retention · audit_D5 · task_lint 已接线（PRD_DEF-003 阶段二 T3',
+    evidence: 'src/cli-lifecycle.ts evalGuard（reviews_retention/audit_D5/task_lint 真求值）· test/cli-lifecycle-guards.test.ts',
+  },
+]
 
 function listAssets(dir: string): string[] {
   const out: string[] = []
