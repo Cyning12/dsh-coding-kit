@@ -122,7 +122,7 @@ describe('DEF-013 init/upgrade/check 取值与版本校验（D1 钉 harness-only
         version: string
         from_version: string
       }
-      assert.equal(mf.version, '1.4.0')
+      assert.equal(mf.version, '1.5.0')
       assert.equal(mf.from_version, '1.2.0')
     })
   })
@@ -148,9 +148,9 @@ describe('DEF-013 init/upgrade/check 取值与版本校验（D1 钉 harness-only
     })
   })
 
-  it('T3 等版本回归: manifest 1.4.0 = 包版本 → status 0，含「已是最新」', async () => {
+  it('T3 等版本回归: manifest 1.5.0 = 包版本 → status 0，含「已是最新」', async () => {
     await withTemp(async (dir) => {
-      await seedManifest(dir, '1.4.0')
+      await seedManifest(dir, '1.5.0')
       const r = runCli(['check'], dir)
       assert.equal(r.status, 0, r.combined)
       assert.match(r.combined, /已是最新/)

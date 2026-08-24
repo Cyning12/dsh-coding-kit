@@ -4,13 +4,22 @@
 
 ## [Unreleased]
 
-### Added
+## [1.5.0] - 2026-08-24
 
-- **`refresh-ide-blocks` 子命令**（R-07 · SPEC: PRD_R07_ide_block_rewrite.md）：刷写存量消费者仓 IDE marker 块（`<!-- cyning-harness:begin/end -->`）内滞留的旧 `npx @cyning/harness` 命令字面。默认 dry-run 零写入，`--yes` 才写盘；映射表 A1–A4 自动替换（钉版丢弃记 `dropped_pin`、裸 `harness skills build|check` 防二刷）、B1–B5 仅报告「需人工」；preflight fail-fast（git 脏树 / MIXED 新旧混杂 / MALFORMED 畸形块 / S2 断言闸）exit 2 零写入；写盘前备份至 `.cyning-harness/backups/refresh-ide-blocks/`（保留 5 代），幂等。`upgrade` 完成后若检测到旧字面，追加一行 dry-run 只读提示（不写 IDE 文件、不改 upgrade exit 码）。
+> 主题：**存量 IDE 块刷写 + D5 硬化** —— R-07 落地 `refresh-ide-blocks` 子命令（dry-run 默认 / `--yes` 写盘 / 幂等 / 备份 5 代）；D5 测试制品探测 WARN 过渡兑现 1.3.0 承诺硬化为 FAIL（exit 2）。
 
 ### Changed（行为变更 · 升级必读）
 
-- **D5 WARN 过渡硬化为 FAIL**（DEF-014 过渡结束，兑现 1.3.0 承诺）：`test_strategy=required` 时仅命中旧启发式（pyproject.toml / setup.py / 无 test 步骤的 workflow）的仓，verify / audit 由 WARN exit 0 改为 **FAIL exit 2**；旧启发式探测代码（`hasTestArtifactsLegacy`）删除。迁移：补真实测试制品（`tests/` / `*_test.py` / `*.test.ts` / 含 test 步骤的 CI）即可恢复 PASS。
+> **消费者迁移提示（置顶）**：存量消费者仓 IDE marker 块（`<!-- cyning-harness:begin/end -->`）内若滞留旧 `npx @cyning/harness` 命令字面，可执行 `npx dsh-coding-kit refresh-ide-blocks`（默认 **dry-run 零写入**）一键查看差异，确认后加 `--yes` 刷写（A1–A4 自动映射；写盘前自动备份、保留 5 代；幂等可重跑）。
+
+- **D5 WARN 过渡硬化为 FAIL**（DEF-014 过渡结束，兑现 1.3.0 承诺）：`test_strategy=required` 时仅命中旧启发式（pyproject.toml / setup.py / 无 test 步骤的 workflow）的仓，verify / audit 由 WARN exit 0 改为 **FAIL exit 2**；旧启发式探测代码（`hasTestArtifactsLegacy`）删除。**迁移**：补真实测试制品（`tests/` / `*_test.py` / `*.test.ts` / 含 test 步骤的 CI）即可恢复 PASS。
+
+### Added
+
+- **`refresh-ide-blocks` 子命令**（R-07 · SPEC: PRD_R07_ide_block_rewrite.md）：刷写存量消费者仓 IDE marker 块（`<!-- cyning-harness:begin/end -->`）内滞留的旧 `npx @cyning/harness` 命令字面。默认 dry-run 零写入，`--yes` 才写盘；支持 `--target` / `--json`（schema `dsh-coding-kit/refresh-ide-blocks-report@1`）；映射表 A1–A4 自动替换（钉版丢弃记 `dropped_pin`、裸 `harness skills build|check` 防二刷）、B1–B5 仅报告「需人工」；preflight fail-fast（git 脏树 / MIXED 新旧混杂 / MALFORMED 畸形块 / S2 断言闸）exit 2 零写入；写盘前备份至 `.cyning-harness/backups/refresh-ide-blocks/`（保留 5 代），幂等。marker 块语法规范与 A/B 映射表已入 README。
+- **`upgrade` 内嵌只读提示行**：upgrade 完成后若检测到 IDE 块内旧字面，追加一行 `refresh-ide-blocks` dry-run 提示（不写 IDE 文件、不改 upgrade exit 码）。
+- **`src/cli-refresh-ide-blocks.ts` 模块**：块解析器 + 映射表 + 拒写闸 + 子命令接线。
+- **新增测试**：`test/cli-refresh-ide-blocks.test.ts` —— M01–M19 子命令矩阵 + U1–U12 解析器单测，含 T5 文档 grep 断言（README 子命令节 / 映射表 / adapters 声明）。
 
 ## [1.4.0] - 2026-08-24
 
