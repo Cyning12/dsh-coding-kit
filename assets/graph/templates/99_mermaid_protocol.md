@@ -26,10 +26,12 @@
 
 | 标记 | 语义 | 示例 |
 |------|------|------|
-| `[ok]` | 成功路径 | `validate() --"[ok]"--> save()` |
-| `[err]` | 失败 / 异常 | `parse() --"[err]"--> fallback()` |
-| `[retry=N]` | 重试 | `call_api() --"[retry=3]"--> call_api()` |
-| `[timeout]` | 超时降级 | `fetch() --"[timeout]"--> cache_get()` |
+| `[ok]` | 成功路径 | `validate() -->|"[ok]"| save()` |
+| `[err]` | 失败 / 异常 | `parse() -->|"[err]"| fallback()` |
+| `[retry=N]` | 重试 | `call_api() -->|"[retry=3]"| call_api()` |
+| `[timeout]` | 超时降级 | `fetch() -->|"[timeout]"| cache_get()` |
+
+> 示例采用官方边上文字形态 `A-->|text|B`（见 §7 输出契约）；旧形态 `--"[ok]"-->` 已弃用，IDE 预览不保证可渲染。
 
 ### 1.3 元关系（`::` 命名空间）
 
@@ -49,12 +51,12 @@
 
 | 形状 | 含义 | 示例 |
 |------|------|------|
-| `[[...]]` | 阶段 / 流程块 | `[[Query Phase]]` |
-| `[...]` | 函数 / 操作 | `[process_request]` |
-| `[(...)]` | 数据 / 模型 | `[(UserRecord)]` |
-| `{...}` | 判断 / 路由 | `{authorized?}` |
-| `>...]` | 里程碑 / 文档指针 | `>10_flow_MAIN.md]` |
-| `((...))` | 循环 / 归档 | `((write_log))` |
+| `[["..."]]` | 阶段 / 流程块 | `Q[["Query Phase"]]` |
+| `["..."]` | 函数 / 操作（编译器默认，文本一律加引号） | `step["process_request"]` |
+| `[">..."]` | 文档指针（`>` 前缀保留在引号文本内） | `FLOW_DOC[">10_flow_MAIN.md"]` |
+| `[(...)]` | 数据 / 模型（手写图可用） | `db[(UserRecord)]` |
+| `{...}` | 判断 / 路由（手写图可用） | `gw{authorized?}` |
+| `((...))` | 循环 / 归档（手写图可用） | `log((write_log))` |
 
 ---
 
@@ -107,13 +109,43 @@ edges:
 | `edges[].label` | 边标签 | `"->"` 表示裸执行边 |
 | `edges[].mark` | 元关系标记 | 如 `::triggers`、`::branches` |
 | `edges[].type` | 边类型 | 与 `mark` 命名空间对应 |
-| `edges[].anchors` | 不渲染，写入 table | 代码追溯 |
+| `edges[].anchors` | `%% → path[#Ln|::symbol]` 注释 + 写入 table | 代码追溯 |
 
 ---
 
-## 7. 修订记录
+## 7. IDE 预览兼容 · 编译器输出契约
+
+> 语法真值（改编译器 emit 前必读，禁止凭记忆）：
+> 官网 [Diagram Syntax](https://mermaid.js.org/intro/syntax-reference.html)（注释只认 `%%`）·
+> [Flowchart](https://mermaid.js.org/syntax/flowchart.html)；
+> 本地对照 `mermaid/packages/mermaid/src/docs/syntax/flowchart.md`
+>（§ Links between nodes · § Text on links · § A link with arrow head and text · § Special characters that break syntax · § Comments）。
+
+`graph yaml compile` 生成物 **默认 emit 形态**（Cursor / IDE Markdown 预览与 mermaid-cli 均可渲染）：
+
+| 元素 | 默认输出 | 依据 |
+|------|----------|------|
+| 锚点注释 | `%% → path#Ln`（独立行） | flowchart.md § Comments：注释仅 `%%` 前缀 |
+| 带标签边 | `src -->|"label"| dst` | flowchart.md § A link with arrow head and text：`A-->|text|B` |
+| 裸边 | `src --> dst`（yaml `label: "->"` 或无 label） | flowchart.md § A link with arrow head |
+| 节点 | `id["label"]`（文本一律双引号包裹） | flowchart.md § Special characters that break syntax |
+| 子流程节点 | `id[["label"]]`（文本同样加引号） | 同上 |
+| label 转义 | `"` → `#quot;` · `|` → `#124;` · `#` → `#35;` | flowchart.md § Entity codes to escape characters |
+
+**禁止作为编译器默认输出**（IDE 预览会静默解析失败：节点横排一行、边丢失）：
+
+- `--"label"-->`（旧边形态，非官方推荐）
+- `//` 行注释（非 Mermaid 语法）
+- 含空格 / `()` / `/` / `+` / `>` 等字符却未加引号的节点标签
+
+**消费者升级指引**：升级 dsh-coding-kit 后须重跑 `graph yaml compile`（或 `graph yaml compile --all`）重新生成 `*.md`；手改生成物会被下次编译覆盖。
+
+---
+
+## 8. 修订记录
 
 | 日期 | 说明 |
 |------|------|
 | 2026-06-30 | v3：YAML-first，删除 `.ai.md` 双轨，新增 YAML → Mermaid 映射 |
+| 2026-08-24 | DEF-023：新增 §7 IDE 预览兼容输出契约；§1.2/§2 示例改官方 `-->|"…"|` 与引号节点形态；锚点注释改 `%%` |
 | YYYY-MM-DD | 嵌入用户仓时填写首次版本 |

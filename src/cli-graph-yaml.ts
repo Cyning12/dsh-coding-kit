@@ -327,13 +327,26 @@ export function exportGraphJson(
 }
 
 function formatAnchorComment(anchor: { path?: string; symbol?: string; line?: number }): string {
+  // Mermaid 行注释只认 %%（flowchart.md § Comments；官网 syntax-reference）。
+  // IDE Markdown 预览遇到 // 注释会解析失败，导致整图节点横排、边丢失（DEF-023）。
   const p = anchor.path || ''
   const symbol = anchor.symbol || ''
   const line = anchor.line
   if (!p) return ''
-  if (line != null) return `// → ${p}#L${line}`
-  if (symbol) return `// → ${p}::${symbol}`
-  return `// → ${p}`
+  if (line != null) return `%% → ${p}#L${line}`
+  if (symbol) return `%% → ${p}::${symbol}`
+  return `%% → ${p}`
+}
+
+/**
+ * Mermaid 文本转义（entity code，flowchart.md § Entity codes to escape characters）。
+ * 顺序敏感：先转 #，避免二次转义后续生成的 entity code。
+ */
+function escapeMermaidText(text: string): string {
+  return String(text)
+    .replace(/#/g, '#35;')
+    .replace(/"/g, '#quot;')
+    .replace(/\|/g, '#124;')
 }
 
 function generateMermaid(data: YamlGraph): string {
@@ -342,12 +355,13 @@ function generateMermaid(data: YamlGraph): string {
   const lines = [`flowchart ${direction}`]
   for (const [nid, node] of nodes) {
     const label = node.label || nid
+    // 节点文本一律双引号包裹（flowchart.md § Special characters that break syntax），
+    // 否则含空格 / () / / / + 等字符的标签会让 IDE 预览解析失败（DEF-023）。
+    const text = `"${escapeMermaidText(label)}"`
     let shape: string
-    if (label.startsWith('>')) shape = `[${label}]`
-    else if (label.includes('子流程') || label.endsWith('子流程')) shape = `[[${label}]]`
-    else if (nid === 'Q' || nid === 'E') shape = `[[${label}]]`
-    else if (nid.includes('DOC')) shape = `[>${label}]`
-    else shape = `[${label}]`
+    if (label.includes('子流程') || label.endsWith('子流程')) shape = `[[${text}]]`
+    else if (nid === 'Q' || nid === 'E') shape = `[[${text}]]`
+    else shape = `[${text}]`
     lines.push(`    ${nid}${shape}`)
   }
   lines.push('')
@@ -356,9 +370,12 @@ function generateMermaid(data: YamlGraph): string {
     const dst = e.to
     const mark = e.mark || '->'
     const label = e.label || ''
+    // 带标签边官方形态：src -->|"text"| dst（flowchart.md § A link with arrow head and text）。
+    // yaml 中 label: "->" 表示裸执行边（99_mermaid_protocol.md §6），不渲染文本。
+    let text = label && label !== '->' ? label : ''
+    if (!text && mark && mark !== '->') text = mark
     let edgeLine: string
-    if (label) edgeLine = `    ${src} --"${label}"--> ${dst}`
-    else if (mark && mark !== '->') edgeLine = `    ${src} --"${mark}"--> ${dst}`
+    if (text) edgeLine = `    ${src} -->|"${escapeMermaidText(text)}"| ${dst}`
     else edgeLine = `    ${src} --> ${dst}`
     lines.push(edgeLine)
     for (const a of e.anchors || []) {
