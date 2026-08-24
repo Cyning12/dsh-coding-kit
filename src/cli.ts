@@ -59,7 +59,7 @@ const KNOWN_STATUS_TOKENS = new Set([
 const CLOSE_STATUSES = new Set(['done', 'completed'])
 
 function notDelivered(cmd: string): never {
-  fail(`${cmd} 未交付（verify --spec 不在 1.2.0 范围）。`, 2)
+  fail(`${cmd} 本包未交付（不支持）。`)
 }
 
 async function readPkgVersion(): Promise<string> {
