@@ -1,6 +1,6 @@
 {
   "name": "dsh-coding-kit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "DSH plugin + P0 CLI: ICVO coding standards (Inform · Constrain · Verify · Orchestrate). Plugin does not auto-inject; call apply_coding_standards. CLI: npx dsh-coding-kit.",
   "license": "MIT",
   "author": "Cyning",
@@ -30,7 +30,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "test": "node --test --test-concurrency=1 --experimental-strip-types test/*.test.ts",
     "prepare": "npm run build",
     "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },

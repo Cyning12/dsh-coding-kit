@@ -91,7 +91,9 @@ function usage(version: string): void {
   npx dsh-coding-kit graph yaml compile|check|export …
   npx dsh-coding-kit graph ingest|snapshot|axioms …
   npx dsh-coding-kit sync index [--target PATH]
-  npx dsh-coding-kit skills build|check
+  npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
+  npx dsh-coding-kit skills build [--with-execute-hats]
+  npx dsh-coding-kit skills check
   npx dsh-coding-kit wiki export --json [--target PATH]
   npx dsh-coding-kit task lint-done [--target PATH]
   npx dsh-coding-kit task lint-wiki-delta [--target PATH]

@@ -1,6 +1,16 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
-import { fail, packageRoot } from './cli-shared.ts'
+import { fail, packageRoot, resolveTarget, takeOption } from './cli-shared.ts'
 import { yamlDump, yamlLoad } from './yaml.ts'
 
 export const EXECUTE_TRACK = 'starter-experimental'
@@ -107,20 +117,25 @@ function renderReadme(skills: SkillPrompt[], { withExecuteHats }: { withExecuteH
 ## 执行帽缺席说明
 
 \`harness-30-execute\` / \`harness-40-self-check\`（执行帽）**不在本分发**：其 skill 化须先通过 T1 闸绕开评测（\`eval/t1_gate_bypass/\` S1–S3）。
-评测/维护者可用 \`harness skills build --with-execute-hats\` 本地生成（仅供评测环境，勿装入生产 client）。
+评测/维护者可用 \`npx dsh-coding-kit skills build --with-execute-hats\` 本地生成（仅供评测环境，勿装入生产 client）。
 `
   return `# skills/ · Agent Skills 标准封装（生成物 · 勿手改）
 
-> **本目录由 \`harness skills build\` 生成**；真值 = \`harness/prompts/\` 条文（frontmatter + 正文）。
-> 改动请改条文后重跑 build；\`harness skills check\` 会拦截任何手改 drift。
+> **本目录由 \`npx dsh-coding-kit skills build\` 生成**；真值 = \`harness/prompts/\` 条文（frontmatter + 正文）。
+> 改动请改条文后重跑 build；\`npx dsh-coding-kit skills check\` 会拦截任何手改 drift。
 > 规范：https://agentskills.io/specification
 
 ## 安装（各 client 路径不同 · 复制或软链均可）
 
-| client | 放置路径 |
-|--------|----------|
-| Claude Code | \`<repo>/.claude/skills/\` 或 \`~/.claude/skills/\` |
-| 其他 skills 兼容 client | 见各 client 文档（Cursor / Codex / Copilot / Gemini CLI …） |
+| 路径 | 用途 | 谁写入 |
+|------|------|--------|
+| DSH \`<repo>/.dsh/skills/\` | 消费者 Skill 安装落点 | \`npx dsh-coding-kit skills install\` |
+| DSH \`$HOME/.dsh/skills/\` | 用户级安装落点 | \`npx dsh-coding-kit skills install --global\` |
+| Claude Code \`<repo>/.claude/skills/\` 或 \`~/.claude/skills/\` | Claude skill 目录 | 用户另拷或 \`--out\`；**默认不写** |
+
+\`.dsh/coding-kit\` / \`.coding-kit\` 是规范覆盖（\`apply_coding_standards\` / \`init_coding_kit\`），**不是** skill 目录，禁止当作 install dest。
+
+\`.dsh/skills\` 是本包推荐的 **安装落点**，不是「本仓已验证 DSH 会自动扫描并按需加载」的声明。DSH runtime 发现 / 加载 skill 的规则 **以 DSH 上游文档为准**。本仓库 **未**对照上游源码做扫描验证，**不得**声称已验证自动按需加载。
 
 ## 技能清单
 
@@ -220,15 +235,172 @@ export function checkSkills({
   return { ok: driftErrors.length === 0, errors: driftErrors }
 }
 
+const SKILLS_USAGE = `用法:
+  npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
+  npx dsh-coding-kit skills build [--with-execute-hats]
+  npx dsh-coding-kit skills check
+`
+
+const EXECUTE_HAT_DIRS = new Set(['harness-30-execute', 'harness-40-self-check'])
+
+function posixNorm(absPath: string): string {
+  return path.resolve(absPath).replace(/\\/g, '/')
+}
+
+function isCodingKitDest(absDest: string): boolean {
+  const n = posixNorm(absDest)
+  return (
+    n.endsWith('/.coding-kit') ||
+    n.includes('/.coding-kit/') ||
+    n.endsWith('/.dsh/coding-kit') ||
+    n.includes('/.dsh/coding-kit/')
+  )
+}
+
+function isS2Dest(absDest: string): boolean {
+  const n = posixNorm(absDest)
+  if (n.endsWith('/.dsh/skills') || n.includes('/.dsh/skills/')) return false
+  return (
+    n.endsWith('/docs/tasks') ||
+    n.includes('/docs/tasks/') ||
+    n.endsWith('/invokes/by-task') ||
+    n.includes('/invokes/by-task/') ||
+    n.endsWith('/reviews') ||
+    n.includes('/reviews/')
+  )
+}
+
+function isExecuteHatSkipped(
+  parentDir: string,
+  name: string,
+  withExecuteHats: boolean,
+): boolean {
+  if (withExecuteHats) return false
+  if (EXECUTE_HAT_DIRS.has(name)) return true
+  const skillMd = path.join(parentDir, name, 'SKILL.md')
+  if (!existsSync(skillMd) || !statSync(skillMd).isFile()) return false
+  const { frontmatter } = parseSkillPrompt(readFileSync(skillMd, 'utf8'))
+  return frontmatter?.metadata?.track === EXECUTE_TRACK
+}
+
+function listCopyableSkillDirs(src: string, withExecuteHats: boolean): string[] {
+  return readdirSync(src, { withFileTypes: true })
+    .filter((ent) => ent.isDirectory() && !isExecuteHatSkipped(src, ent.name, withExecuteHats))
+    .map((ent) => ent.name)
+    .sort()
+}
+
+function copySkillsTree({
+  src,
+  dest,
+  force,
+  withExecuteHats,
+}: {
+  src: string
+  dest: string
+  force: boolean
+  withExecuteHats: boolean
+}): { copied: number; skipped: number } {
+  let copied = 0
+  let skipped = 0
+  const visit = (from: string, to: string): void => {
+    mkdirSync(to, { recursive: true })
+    for (const ent of readdirSync(from, { withFileTypes: true }).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    )) {
+      if (ent.isDirectory()) {
+        if (isExecuteHatSkipped(from, ent.name, withExecuteHats)) continue
+        visit(path.join(from, ent.name), path.join(to, ent.name))
+        continue
+      }
+      if (!ent.isFile()) continue
+      const destFile = path.join(to, ent.name)
+      if (existsSync(destFile) && !force) {
+        skipped += 1
+        continue
+      }
+      mkdirSync(path.dirname(destFile), { recursive: true })
+      copyFileSync(path.join(from, ent.name), destFile)
+      copied += 1
+    }
+  }
+  visit(src, dest)
+  return { copied, skipped }
+}
+
+function cmdSkillsInstall(args: string[]): void {
+  const global = args.includes('--global')
+  const force = args.includes('--force')
+  const withExecuteHats = args.includes('--with-execute-hats')
+  let rest = args.filter(
+    (a) => a !== '--global' && a !== '--force' && a !== '--with-execute-hats',
+  )
+  const { value: targetArg, rest: r1 } = takeOption(rest, '--target')
+  rest = r1
+  const { value: outArg, rest: r2 } = takeOption(rest, '--out')
+  rest = r2
+  if (rest.length > 0) fail(`skills install 未知参数: ${rest.join(' ')}\n${SKILLS_USAGE}`)
+  const hasTarget = targetArg !== undefined
+  const hasOut = outArg !== undefined
+  if (global && (hasOut || hasTarget)) {
+    fail(`\`--global\` 与 \`--out\` / \`--target\` 互斥\n${SKILLS_USAGE}`)
+  }
+  if (hasOut && hasTarget) {
+    fail(`\`--out\` 与 \`--target\` 互斥\n${SKILLS_USAGE}`)
+  }
+  if (hasOut && outArg.startsWith('~')) {
+    fail(
+      '`--out` 不得以 ~ 开头（禁止在 cwd 创建名为 ~ 的目录）。请用绝对路径或 --global',
+    )
+  }
+
+  let dest: string
+  if (global) {
+    const home = os.homedir()
+    if (!home) fail('无法解析 homedir（请设置 HOME 或改用 --out 绝对路径）')
+    dest = path.join(home, '.dsh', 'skills')
+  } else if (hasOut) {
+    dest = path.resolve(process.cwd(), outArg)
+  } else {
+    dest = path.join(resolveTarget(process.cwd(), targetArg), '.dsh', 'skills')
+  }
+  dest = path.resolve(dest)
+
+  if (isCodingKitDest(dest)) {
+    fail('拒写：dest 命中 .dsh/coding-kit 或 .coding-kit（规范覆盖目录 ≠ .dsh/skills）')
+  }
+  if (isS2Dest(dest)) {
+    fail('拒写：dest 命中 S2 过程域（docs/tasks/ · reviews/ · invokes/by-task/）')
+  }
+  if (existsSync(dest) && !statSync(dest).isDirectory()) {
+    fail(`dest 已存在且为文件（非目录）: ${dest}`)
+  }
+
+  const src = path.join(packageRoot(), 'assets', 'skills')
+  if (!existsSync(src) || !statSync(src).isDirectory()) {
+    fail('源 assets/skills 缺失。消费者请重装 npm 包；维护者请先执行 skills build')
+  }
+  const skillDirs = listCopyableSkillDirs(src, withExecuteHats)
+  if (skillDirs.length === 0) {
+    fail(
+      '源 assets/skills 无可复制 skill 目录（默认跳过 30/40；可 --with-execute-hats 或先 skills build）',
+    )
+  }
+
+  const { copied, skipped } = copySkillsTree({ src, dest, force, withExecuteHats })
+  console.log(`SKILLS INSTALL: PASS · copied=${copied} skipped=${skipped} → ${dest}`)
+}
+
 export async function cmdSkills(args: string[]): Promise<void> {
   const promptsDir = path.join(packageRoot(), 'assets', 'harness', 'prompts')
   const skillsDir = path.join(packageRoot(), 'assets', 'skills')
   const [sub, ...rest] = args
   if (!sub || sub === '--help' || sub === '-h' || args.includes('--help') || args.includes('-h')) {
-    console.log(`用法:
-  npx dsh-coding-kit skills build [--with-execute-hats]
-  npx dsh-coding-kit skills check
-`)
+    console.log(SKILLS_USAGE)
+    return
+  }
+  if (sub === 'install') {
+    cmdSkillsInstall(rest)
     return
   }
   if (sub === 'build') {
@@ -251,5 +423,5 @@ export async function cmdSkills(args: string[]): Promise<void> {
     if (!r.ok) fail('skills check FAIL', 2)
     return
   }
-  fail(`skills 子命令未知: ${sub ?? '(空)'}\n用法: skills build [--with-execute-hats] · skills check`)
+  fail(`skills 子命令未知: ${sub ?? '(空)'}\n${SKILLS_USAGE}`)
 }

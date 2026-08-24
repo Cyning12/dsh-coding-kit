@@ -1,6 +1,6 @@
 # dsh-coding-kit
 
-**dsh-coding-kit@1.2.0** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI** 与 **G1–G7 过程命令**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
+**dsh-coding-kit@1.2.1** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI** 与 **G1–G7 过程命令**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
 
 > **加载 ≠ 注入。** 安装或加载本插件 **不会** 自动改写 system prompt。`apply()` 只注册工具。必须由你或模型调用 `apply_coding_standards` 之后，后续回合的 runtime context 才会含 `# Coding Standards`。
 
@@ -11,7 +11,7 @@
 | DSH 会话 / 模型调工具 | `dsh plugin add dsh-coding-kit` | 不要只 `npm install`（缺 bundle 层则工具不出现） |
 | Cursor / CI / 存量仓日常闸 | `npx dsh-coding-kit` | 不要把插件 `init_coding_kit` 与 CLI `init` 当成同一入口 |
 
-两条入口同一 npm 包 **`dsh-coding-kit@1.2.0`**。插件面与 CLI 面互不替代。
+两条入口同一 npm 包 **`dsh-coding-kit@1.2.1`**。插件面与 CLI 面互不替代。
 
 ## 入口 A · DSH 插件
 
@@ -74,7 +74,9 @@ npx dsh-coding-kit discipline show [--json]
 npx dsh-coding-kit graph yaml compile|check|export
 npx dsh-coding-kit graph ingest|snapshot|axioms
 npx dsh-coding-kit sync index
-npx dsh-coding-kit skills build|check
+npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
+npx dsh-coding-kit skills build [--with-execute-hats]
+npx dsh-coding-kit skills check
 npx dsh-coding-kit wiki export --json
 npx dsh-coding-kit task lint-done
 npx dsh-coding-kit task lint-wiki-delta
@@ -85,13 +87,57 @@ npx dsh-coding-kit task check --file PATH
 
 ## 从 @cyning/harness 迁移
 
-钉 **dsh-coding-kit@1.2.0** 后可去掉 `@cyning/harness`：
+钉 **dsh-coding-kit@1.2.1** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
 
-1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.2.0`）。
-2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.2.0，`from_version` 记旧号）。
+1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.2.1`）。
+2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.2.1，`from_version` 记旧号）。
 3. CI / 脚本里把 `npx @cyning/harness` 换成 `npx dsh-coding-kit`。
 
-1.2.0 发布前仍允许双包并存；publish 并完成上表后即可卸载旧包。
+Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）。命令一律 `npx dsh-coding-kit`。
+
+### 可复制 Prompt（给存量仓 Agent）
+
+整段粘贴：
+
+````text
+你 = 本仓库维护 Agent。把本仓从 @cyning/harness 迁到 dsh-coding-kit@1.2.1。
+
+最小路径（必须，按序）：
+1. package.json 的 devDependency：删除 @cyning/harness，改为 dsh-coding-kit（钉 1.2.1）。
+2. 在仓根执行：npx dsh-coding-kit upgrade --yes
+   （读旧 .cyning-harness/manifest.json；version 钉 1.2.1，from_version 记旧号；不覆盖 docs/tasks、reviews、invokes/by-task。）
+3. CI 与脚本里所有 npx @cyning/harness 换成 npx dsh-coding-kit。
+命令一律 npx dsh-coding-kit。禁止再写 npx @cyning/harness skills build。
+
+推荐（非必须 · Skill 安装）：
+- 仓内：npx dsh-coding-kit skills install
+  复制 npm 包内已生成 skills（默认不含 30/40）到本仓 .dsh/skills。已有文件默认不覆盖；要覆盖才加 --force。
+- 用户级：npx dsh-coding-kit skills install --global
+  写到 $HOME/.dsh/skills（展开 HOME；不要把 ~ 当成相对路径）。
+
+路径对照（禁止混用）：
+- .dsh/skills 或 $HOME/.dsh/skills = Skill 安装落点（本命令）。
+- .claude/skills 或 ~/.claude/skills = Claude Code 的 skill 目录（本命令默认不写；若你用 Claude 可另拷或 --out）。
+- .dsh/coding-kit 或 .coding-kit = 规范覆盖（apply_coding_standards / init_coding_kit），不是 skill 目录。
+
+安装路径不等于已验证的 DSH 自动扫描。DSH runtime 是否读取 .dsh/skills，以 DSH 上游文档为准。本包未验证、也不声称已验证按需加载。
+
+不要做：GitHub Archive；npm publish / deprecate；让 apply 在加载时自动注入；默认安装 30/40；把 skills 拷进 .dsh/coding-kit。
+````
+
+### 路径对照
+
+| 路径 | 用途 | 谁写入 |
+|------|------|--------|
+| 产品包 `assets/skills` | 生成物真值；`skills check` 对照根 | 维护者 `skills build`（G5 freeze） |
+| `<repo>/.dsh/skills` | 消费者 Skill **安装落点** | `skills install` |
+| `$HOME/.dsh/skills` | 用户级安装落点 | `skills install --global` |
+| `<repo>/.claude/skills` 或 `~/.claude/skills` | Claude Code skill 目录 | 用户另拷或 `--out`；**默认不写** |
+| `<repo>/.dsh/coding-kit` 或 `.coding-kit` | 规范覆盖（standards / wiki） | `init_coding_kit`；**禁止**当作 skill dest |
+
+### 扫描免责
+
+`.dsh/skills` 是本包推荐的 **安装落点**，不是「本仓已验证 DSH 会自动扫描并按需加载」的声明。DSH runtime 发现 / 加载 skill 的规则 **以 DSH 上游文档为准**。本仓库 **未**对照上游源码做扫描验证，**不得**在 README、`--help`、skill README 或迁移 Prompt 中声称已验证自动按需加载。
 
 ## GitHub topic
 
