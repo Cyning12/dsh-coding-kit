@@ -27,7 +27,7 @@ function extractPromptBody(readme: string): string {
 }
 
 describe('D-DOC 1.2.1 README / renderReadme', { concurrency: 1 }, () => {
-  it('D-DOC: README 命令表分列 skills install / build / check；钉 1.5.0 Prompt；路径对照；扫描验证（已对照上游源码）', () => {
+  it('D-DOC: README 命令表分列 skills install / build / check；钉 1.5.1 Prompt；路径对照；扫描验证（已对照上游源码）', () => {
     const readme = readFileSync(README, 'utf8')
     assert.match(readme, /npx dsh-coding-kit skills install/)
     assert.match(readme, /npx dsh-coding-kit skills build/)
@@ -39,7 +39,7 @@ describe('D-DOC 1.2.1 README / renderReadme', { concurrency: 1 }, () => {
     const prompt = extractPromptBody(readme)
     assert.doesNotMatch(prompt, /```/)
     assert.doesNotMatch(prompt, /~~~/)
-    assert.match(prompt, /dsh-coding-kit@1\.5\.0/)
+    assert.match(prompt, /dsh-coding-kit@1\.5\.1/)
     assert.match(prompt, /Minimal path/)
     assert.match(prompt, /npx dsh-coding-kit upgrade --yes/)
     assert.match(prompt, /Commands are always npx dsh-coding-kit/)

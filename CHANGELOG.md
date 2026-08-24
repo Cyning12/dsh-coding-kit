@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-08-24
+
+> 主题：**文档交付入包** —— 默认 README 英文化（中文原版保留为 README.zh-CN.md）+ docs/releases/ 四版连发成效系列档（英文 6 篇）。纯文档发布，无任何代码与行为变更，消费者无需动作。
+
+### Changed
+
+- **默认 README 改为全英文**（PR #9）：README.md 现为英文版；原中文版完整保留为 README.zh-CN.md，两文件顶部互置语言切换链接；GitHub topics 节按仓库实际 topics 修正；两个 README 均随 npm 包发布。
+- 无行为变更：CLI / 插件 / 闸语义与 1.5.0 完全一致，升级无需任何消费者动作。
+
+### Added
+
+- **docs/releases/ 四版连发成效系列档**（PR #10，英文 6 篇）：系列索引（README）+ 执行总览（01 executive summary）、升级前后对比（02 before/after）、缺陷与债台账（03 defects & debt ledger）、工程方法（04 engineering method）、消费者升级指南（05 upgrade guide）。
+
 ## [1.5.0] - 2026-08-24
 
 > 主题：**存量 IDE 块刷写 + D5 硬化** —— R-07 落地 `refresh-ide-blocks` 子命令（dry-run 默认 / `--yes` 写盘 / 幂等 / 备份 5 代）；D5 测试制品探测 WARN 过渡兑现 1.3.0 承诺硬化为 FAIL（exit 2）。

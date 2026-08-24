@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md) | English
 
-**dsh-coding-kit@1.5.0** is a **bundle plugin** for DeepSeek Harness (DSH), shipping a **P0 gate CLI** and the **G1–G7 process commands**. The discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
+**dsh-coding-kit@1.5.1** is a **bundle plugin** for DeepSeek Harness (DSH), shipping a **P0 gate CLI** and the **G1–G7 process commands**. The discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
 
 > **Loading ≠ injecting.** Installing or loading this plugin does **not** automatically rewrite the system prompt. `apply()` only registers tools. Only after you or the model calls `apply_coding_standards` will later turns' runtime context contain `# Coding Standards`.
 
@@ -13,7 +13,7 @@
 | DSH session / model calling tools | `dsh plugin add dsh-coding-kit` | Don't just `npm install` (without the bundle layer the tools won't appear) |
 | Cursor / CI / daily gates on existing repos | `npx dsh-coding-kit` | Don't treat the plugin `init_coding_kit` and the CLI `init` as the same entry |
 
-Both entries ship from the same npm package **`dsh-coding-kit@1.5.0`**. The plugin surface and the CLI surface do not replace each other.
+Both entries ship from the same npm package **`dsh-coding-kit@1.5.1`**. The plugin surface and the CLI surface do not replace each other.
 
 The `@deepseek-ai/cordis` and `@deepseek-ai/dsh-tools` entries in `peerDependencies` are the **DSH host plugin contract** (needed only when the host loads this package as a plugin; not needed for CLI-only use), and are marked **optional** in `peerDependenciesMeta`.
 
@@ -147,10 +147,10 @@ When a task declares `test_strategy=required`, `audit` / `verify` run the D5 har
 
 ## Migrating from @cyning/harness
 
-After pinning **dsh-coding-kit@1.5.0** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
+After pinning **dsh-coding-kit@1.5.1** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
 
-1. Replace the `devDependency` `@cyning/harness` with `dsh-coding-kit` (pin `1.5.0`).
-2. Run `npx dsh-coding-kit upgrade --yes` at the repo root (reads the old `.cyning-harness/manifest.json`; `version` pinned at 1.5.0, `from_version` records the old number).
+1. Replace the `devDependency` `@cyning/harness` with `dsh-coding-kit` (pin `1.5.1`).
+2. Run `npx dsh-coding-kit upgrade --yes` at the repo root (reads the old `.cyning-harness/manifest.json`; `version` pinned at 1.5.1, `from_version` records the old number).
 3. In CI / scripts, replace `npx @cyning/harness` with `npx dsh-coding-kit`.
 
 Skill installation is **recommended, not required** (the minimal path does not depend on DSH scanning skills). Commands are always `npx dsh-coding-kit`.
@@ -164,12 +164,12 @@ If pnpm install still fails on the peer chain (e.g. resolving to an unpublished 
 Paste the whole block:
 
 ````text
-You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to dsh-coding-kit@1.5.0.
+You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to dsh-coding-kit@1.5.1.
 
 Minimal path (required, in order):
-1. package.json devDependency: delete @cyning/harness, replace with dsh-coding-kit (pinned at 1.5.0).
+1. package.json devDependency: delete @cyning/harness, replace with dsh-coding-kit (pinned at 1.5.1).
 2. Run at the repo root: npx dsh-coding-kit upgrade --yes
-   (reads the old .cyning-harness/manifest.json; version pinned at 1.5.0, from_version records the old number; never overwrites docs/tasks, reviews, invokes/by-task.)
+   (reads the old .cyning-harness/manifest.json; version pinned at 1.5.1, from_version records the old number; never overwrites docs/tasks, reviews, invokes/by-task.)
 3. Replace every npx @cyning/harness in CI and scripts with npx dsh-coding-kit.
 Commands are always npx dsh-coding-kit. Never write npx @cyning/harness skills build again.
 
