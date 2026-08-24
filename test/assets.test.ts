@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
@@ -74,7 +74,8 @@ describe('T2/T3/T4 loadMarkdownBundle', { concurrency: 1 }, () => {
       process.chdir(sub)
       const bundle = await loadMarkdownBundle('l1+l2')
       assert.equal(bundle.source, 'override')
-      assert.equal(bundle.root, path.join(dir, '.coding-kit'))
+      // macOS 上 mkdtemp 返回 /var/... 而 chdir 后 cwd 解析为 /private/var/...，统一 realpath 比较
+      assert.equal(bundle.root, path.join(await realpath(dir), '.coding-kit'))
       assert.ok(bundle.markdown.includes('ov root body'))
     })
   })

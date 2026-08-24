@@ -32,12 +32,22 @@ function defaultAssetsRoot(): string {
   return path.join(packageRoot(), 'assets')
 }
 
+// DEF-017: 从 cwd 逐级向上探测 .coding-kit / .dsh/coding-kit，
+// 在最近的含 .git 的祖先目录处截止（git root 内向上查找；无 .git 时查到文件系统根）。
 function userOverrideRoot(): string | undefined {
-  const candidates = [
-    path.join(process.cwd(), '.coding-kit'),
-    path.join(process.cwd(), '.dsh', 'coding-kit'),
-  ]
-  return candidates.find((candidate) => existsSync(candidate))
+  let dir = process.cwd()
+  for (;;) {
+    const candidates = [
+      path.join(dir, '.coding-kit'),
+      path.join(dir, '.dsh', 'coding-kit'),
+    ]
+    const hit = candidates.find((candidate) => existsSync(candidate))
+    if (hit) return hit
+    if (existsSync(path.join(dir, '.git'))) return undefined
+    const parent = path.dirname(dir)
+    if (parent === dir) return undefined
+    dir = parent
+  }
 }
 
 function resolveReadRoot(): { root: string; source: AssetSource } {
@@ -102,21 +112,29 @@ export async function loadMarkdownBundle(profile: Profile): Promise<{
     'Do not ignore these constraints in favor of generic style.',
     '',
   ]
+  // DEF-017: 按文件边界截断——追加下一文件前预算长度，超限则跳过该文件及其余文件；
+  // files 只列实际注入的文件，被略文件可由 root 下全集减去 files 推出。
+  const injectedFiles: string[] = []
+  let truncated = false
   for (const file of files) {
     const rel = path.relative(root, file)
     const body = (await readFile(file, 'utf8')).trim()
+    const candidate = [...parts, `## ${rel}`, '', body, ''].join('\n')
+    if (candidate.length > MAX_INJECT_CHARS) {
+      truncated = true
+      break
+    }
     parts.push(`## ${rel}`, '', body, '')
+    injectedFiles.push(rel)
   }
 
   let markdown = parts.join('\n')
-  let truncated = false
-  if (markdown.length > MAX_INJECT_CHARS) {
-    markdown = `${markdown.slice(0, MAX_INJECT_CHARS)}\n\n<!-- truncated at ${MAX_INJECT_CHARS} chars -->\n`
-    truncated = true
+  if (truncated) {
+    markdown = `${markdown}\n\n<!-- truncated at ${MAX_INJECT_CHARS} chars -->\n`
   }
   return {
     markdown,
-    files: files.map((abs) => path.relative(root, abs)),
+    files: injectedFiles,
     truncated,
     source,
     root,
@@ -189,7 +207,7 @@ export function apply(ctx: Context): void {
       profile: {
         type: 'string',
         enum: ['l1', 'l1+l2', 'full'],
-        description: 'l1 = L1 + wiki; l1+l2 = all standards + wiki (default); full = same as l1+l2 in v0.1.',
+        description: 'l1 = L1 + wiki; l1+l2 = all standards + wiki (default); full: currently equivalent to l1+l2, reserved for extended bundles.',
       },
       persist: {
         type: 'boolean',

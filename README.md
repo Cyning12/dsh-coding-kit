@@ -46,12 +46,26 @@ dsh --profile web --dump-config
 
 可选参数：`profile=l1|l1+l2|full`（默认 `l1+l2`）；`persist=false` 表示只在当轮工具结果里给出正文。
 
+profile 档语义：
+
+| 档 | 内容 |
+|----|------|
+| `l1` | L1 规范 + coding_wiki |
+| `l1+l2`（默认） | 全部 standards + coding_wiki |
+| `full` | **当前版本等价于 `l1+l2`**；保留枚举值，为后续扩展 bundle（差异化注入内容）预留 |
+
+**override 根查找规则（自 1.3.0）**：`apply_coding_standards` 从当前工作目录逐级向上探测 `.coding-kit` 与 `.dsh/coding-kit`，在最近的含 `.git` 的祖先目录（git root）处截止——monorepo 子目录启动 DSH 也能命中仓根 override；git root 之外的更上层目录不会被误吸。无 `.git` 时向上查找到文件系统根。工具输出的 `source=override|package` 与 `root=` 行可观测实际命中。
+
+注入内容超 24k 字符时按**文件边界**截断：截断点只落在文件之间，不会注入半份文件；被略文件可由 `root` 下全集减去工具输出的 `files` 列表推出，且 `truncated=true` 附截断标记。
+
 ### 初始化项目模板（插件面）
 
 初始化走工具 **`init_coding_kit`**（不是 CLI `init`）。
 
 对话：**请把 coding-kit 模板初始化到本项目** → 模型调用 `init_coding_kit`。  
 之后修改 `.coding-kit/`，再调用 `apply_coding_standards`（`source=override`）。`init_coding_kit` 不覆盖已有文件。
+
+注意（读写根口径不对称，自 1.3.0 明示）：**读取面**（`apply_coding_standards`）向上查找到 git root；**写入面**（`init_coding_kit`）仍写入当前工作目录。请在**仓根**对话中调用 `init_coding_kit`，避免在 monorepo 子目录里初始化后读取面却命中仓根。
 
 部分 IDE / yaml-language-server 会把根目录 `cordis.patch.yml` 当成 RFC6902 JSON Patch，报缺 `op` / `path` / `value`。这是误报，可忽略；该文件必须保持 `- insert`，不要改成 JSON Patch。
 
