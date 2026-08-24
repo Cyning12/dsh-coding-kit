@@ -372,6 +372,13 @@ function cmdSkillsInstall(args: string[]): void {
   if (isS2Dest(dest)) {
     fail('拒写：dest 命中 S2 过程域（docs/tasks/ · reviews/ · invokes/by-task/）')
   }
+  // DEBT R-05：第四拒写分支——dest 命中产品包自身 assets/skills（安装源 ≠ 安装落点），
+  // 含其子目录；判定基准与下方 src 同根（packageRoot()/assets/skills）。
+  const packageSkillsRoot = posixNorm(path.join(packageRoot(), 'assets', 'skills'))
+  const destNorm = posixNorm(dest)
+  if (destNorm === packageSkillsRoot || destNorm.startsWith(`${packageSkillsRoot}/`)) {
+    fail('拒写：dest 命中产品包自身 assets/skills（安装源 ≠ 安装落点，会自我覆盖发布资产）')
+  }
   if (existsSync(dest) && !statSync(dest).isDirectory()) {
     fail(`dest 已存在且为文件（非目录）: ${dest}`)
   }
