@@ -157,11 +157,11 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
   it('R-HELP README: 完成态 1.5.0；双入口；加载≠注入；钉版后可去旧包', async () => {
     const readme = await readFile(path.join(KIT, 'README.md'), 'utf8')
     assert.match(readme, /dsh-coding-kit@1\.5\.0/)
-    assert.match(readme, /加载\s*≠\s*注入/)
+    assert.match(readme, /Loading\s*≠\s*injecting/)
     assert.match(readme, /apply_coding_standards/)
     assert.match(readme, /dsh plugin add/)
     assert.match(readme, /npx dsh-coding-kit/)
-    assert.match(readme, /去掉 `@cyning\/harness`/)
+    assert.match(readme, /drop `@cyning\/harness`/)
     assert.match(readme, /devDependency/)
     assert.match(readme, /upgrade --yes/)
     assert.equal(/dsh init --coding-kit/.test(readme), false)

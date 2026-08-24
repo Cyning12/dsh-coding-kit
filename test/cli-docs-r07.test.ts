@@ -17,7 +17,7 @@ describe('R-07 T5 文档（V10）', () => {
     assert.match(README, /dry-run/)
     assert.match(README, /docs\/tasks\//, 'README 子命令节须声明 S2 拒写')
     assert.match(README, /cyning-harness-local:begin/, 'README 子命令节须声明 local 块不改写')
-    assert.match(README, /回滚/, 'README 子命令节须含回滚说明')
+    assert.match(README, /rollback/, 'README 子命令节须含回滚说明')
     // §4 映射表入产品文档（DEC-R07-EVAL 先行条件）
     assert.match(README, /A1/)
     assert.match(README, /B5/)
