@@ -21,7 +21,13 @@ import {
   STATUS_RE,
   takeOption,
 } from './cli-shared.ts'
-import { findReview, lintTaskFile, PLACEHOLDER_RE, runTestCheck } from './cli-checks.ts'
+import {
+  checkPre30InvokeHats,
+  findReview,
+  lintTaskFile,
+  PLACEHOLDER_RE,
+  runTestCheck,
+} from './cli-checks.ts'
 import { cmdStatus, cmdTimeline } from './cli-status.ts'
 import { cmdSync } from './cli-sync.ts'
 import { cmdTaskCheck, cmdTaskLintDone, cmdTaskLintWikiDelta } from './cli-task-extra.ts'
@@ -347,7 +353,7 @@ async function cmdAudit(args: string[]): Promise<void> {
 async function cmdVerify(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(
-      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json] [--allow-no-review]',
+      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json] [--allow-no-review] [--allow-invoke-gap]',
     )
     return
   }
@@ -360,10 +366,12 @@ async function cmdVerify(args: string[]): Promise<void> {
   const { value: specFile, rest: r3 } = takeOption(rest, '--spec')
   rest = r3
   if (specFile) notDelivered('verify --spec')
-  // DEF-003 阶段二 T4：--allow-no-review 真生效（R<n> 审查文硬闸豁免 · 留痕）；
-  // 其余 --allow-* 仍走 DEF-011 fail-fast（--allow-invoke-gap 属 T5 范围）
+  // DEF-003 阶段二 T4/T5：--allow-no-review / --allow-invoke-gap 真生效（硬闸豁免 · 留痕）；
+  // 其余 --allow-* 仍走 DEF-011 fail-fast（--allow-lint-fail 等归 DEF-011 交接清单）
   const allowNoReview = rest.includes('--allow-no-review')
   rest = rest.filter((a) => a !== '--allow-no-review')
+  const allowInvokeGap = rest.includes('--allow-invoke-gap')
+  rest = rest.filter((a) => a !== '--allow-invoke-gap')
   if (rest.length > 0) fail(`verify 未知参数: ${rest.join(' ')}`)
   const target = resolveTarget(process.cwd(), targetArg)
   if (!taskFile) fail('verify 须指定 --task FILE（1.1.0 P0 子集）')
@@ -422,6 +430,22 @@ async function cmdVerify(args: string[]): Promise<void> {
     waived.push('missing R<n> review（--allow-no-review 豁免）')
     if (!json) {
       console.log('verify: 留痕 · 缺 R<n> 审查文 · --allow-no-review 豁免生效（仍须补审并由维护者签 HG-AUDIT-R1）')
+    }
+  }
+  // DEF-003 阶段二 T5：pre-30 invoke hats 硬闸（required ∩ {10,20,00} · cli-checks 单一实现源，
+  // 与 task close 帽集合检查同口径；缺 40 不挡 30 · minimal 无 preRequired 不挡）
+  const invoke = checkPre30InvokeHats(target, abs)
+  if (!invoke.ok && !allowInvokeGap) {
+    if (json) emitJson(true)
+    else console.log(`VERIFY: BLOCKED · missing pre-30 invoke hats: ${invoke.missing.join(',')} · ${label}`)
+    fail('', 2)
+  }
+  if (!invoke.ok && allowInvokeGap) {
+    waived.push(`missing pre-30 invoke hats: ${invoke.missing.join(',')}（--allow-invoke-gap 豁免）`)
+    if (!json) {
+      console.log(
+        `verify: 留痕 · 缺 pre-30 invoke hats: ${invoke.missing.join(',')}（${invoke.source}）· --allow-invoke-gap 豁免生效（仍须补落 invoke 快照）`,
+      )
     }
   }
   if (json) emitJson(false, waived)

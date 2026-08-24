@@ -95,13 +95,15 @@ async function seedFixtures(dir: string): Promise<void> {
   await writeRel(dir, PENDING_REL, taskMd({ slug: 'flags_pending', audit: 'pending', draft: 'pending' }))
   // DEF-003 T4：verify 查 R<n> 审查文存在性（approved task 须配审查文才 PASS）
   await writeRel(dir, 'docs/harness/reviews/task_flags_ok_audit_R1_2026-08-20.md', '# R1 fixture')
+  // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+  await writeRel(dir, 'docs/harness/invokes/by-task/flags_ok/invoke_20260801_10_flags_ok.md', '# invoke 10 fixture')
 }
 
 describe('DEF-011 verify/gate-check 旗标不再静默吞（D1 fail-fast · D2 --json 最小接通 · D3 拒绝）', { concurrency: 1 }, () => {
   // D1/D3: 无实现语义的旗标一律 exit 1，不再被 filter 丢弃
   // DEF-003 T4：--allow-no-review 已真生效（豁免 R<n> 审查文硬闸 · 见 cli-verify-review.test.ts），移出拒绝清单
+  // DEF-003 T5：--allow-invoke-gap 已真生效（豁免 pre-30 invoke hats 硬闸 · 见 cli-verify-invoke-hats.test.ts），移出拒绝清单
   const VERIFY_REJECTED: string[][] = [
-    ['--allow-invoke-gap'],
     ['--allow-lint-fail'],
     ['--agent-hint'],
     ['--graph'],

@@ -14,7 +14,7 @@
 
 **冲突**：task 表 `pending` 且声称 `approved` → **拒开工**（不得采信聊天）。
 
-**pre-30 invoke（旧包 v2.14+ 史实 · dsh-coding-kit@1.2.x 未接线）**：旧包 `verify` 报 `missing pre-30 invoke hats` → **拒开工**——该硬闸本包未实现（`--allow-invoke-gap` 无豁免语义），接线计划见 PRD_DEF-003 阶段二；当前以 task 人工闸表与 invoke 留档人工核对为准。
+**pre-30 invoke（v2.14+ 硬闸 · 本包已接线）**：`verify` 报 `missing pre-30 invoke hats` → **拒开工**——本包已接线（src/cli.ts cmdVerify · checkPre30InvokeHats · PRD_DEF-003 阶段二 T5 · test/cli-verify-invoke-hats.test.ts 钉死 · `--allow-invoke-gap` 豁免留痕）；人工闸表核对口径不变。
 
 **结论**：**拒开工** — task 表真值未满足 30 条件。
 

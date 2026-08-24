@@ -80,6 +80,8 @@ const REVIEW_REL = 'docs/harness/reviews/task_vr_ok_audit_R1_2026-08-20.md'
 
 async function seedTask(dir: string, rel = TASK_REL, slug = 'vr_ok'): Promise<void> {
   await writeRel(dir, rel, taskMd(slug))
+  // DEF-003 T5：verify 查 pre-30 invoke hats（default required=10,30,40 · ∩{10,20,00}={10} 须落盘才 PASS）
+  await writeRel(dir, `docs/harness/invokes/by-task/${slug}/invoke_20260801_10_${slug}.md`, '# invoke 10 fixture')
 }
 
 // DEF-003 阶段二 T4：verify 对 R<n> 审查文存在性机械强制（FRAGMENT_30_gate_verify_v1_zh.md#16）。
