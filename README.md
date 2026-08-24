@@ -1,80 +1,82 @@
 # dsh-coding-kit
 
-**dsh-coding-kit@1.5.0** 是 DeepSeek Harness（DSH）的 **bundle 插件**，并带 **P0 闸 CLI** 与 **G1–G7 过程命令**。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
+[简体中文](README.zh-CN.md) | English
 
-> **加载 ≠ 注入。** 安装或加载本插件 **不会** 自动改写 system prompt。`apply()` 只注册工具。必须由你或模型调用 `apply_coding_standards` 之后，后续回合的 runtime context 才会含 `# Coding Standards`。
+**dsh-coding-kit@1.5.0** is a **bundle plugin** for DeepSeek Harness (DSH), shipping a **P0 gate CLI** and the **G1–G7 process commands**. The discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
 
-## 选哪条入口
+> **Loading ≠ injecting.** Installing or loading this plugin does **not** automatically rewrite the system prompt. `apply()` only registers tools. Only after you or the model calls `apply_coding_standards` will later turns' runtime context contain `# Coding Standards`.
 
-| 你是谁 | 入口 | 不要用 |
-|--------|------|--------|
-| DSH 会话 / 模型调工具 | `dsh plugin add dsh-coding-kit` | 不要只 `npm install`（缺 bundle 层则工具不出现） |
-| Cursor / CI / 存量仓日常闸 | `npx dsh-coding-kit` | 不要把插件 `init_coding_kit` 与 CLI `init` 当成同一入口 |
+## Which entry to choose
 
-两条入口同一 npm 包 **`dsh-coding-kit@1.5.0`**。插件面与 CLI 面互不替代。
+| Who you are | Entry | Do NOT |
+|-------------|-------|--------|
+| DSH session / model calling tools | `dsh plugin add dsh-coding-kit` | Don't just `npm install` (without the bundle layer the tools won't appear) |
+| Cursor / CI / daily gates on existing repos | `npx dsh-coding-kit` | Don't treat the plugin `init_coding_kit` and the CLI `init` as the same entry |
 
-`peerDependencies` 中的 `@deepseek-ai/cordis` 与 `@deepseek-ai/dsh-tools` 是 **DSH 宿主插件契约**（仅宿主加载本包为插件时需要；CLI-only 不需要），已在 `peerDependenciesMeta` 标为 **optional**。
+Both entries ship from the same npm package **`dsh-coding-kit@1.5.0`**. The plugin surface and the CLI surface do not replace each other.
 
-## 入口 A · DSH 插件
+The `@deepseek-ai/cordis` and `@deepseek-ai/dsh-tools` entries in `peerDependencies` are the **DSH host plugin contract** (needed only when the host loads this package as a plugin; not needed for CLI-only use), and are marked **optional** in `peerDependenciesMeta`.
 
-优先 npm（预构建，无需 allowBuilds）：
+## Entry A · DSH plugin
+
+Prefer npm (prebuilt, no allowBuilds needed):
 
 ```bash
 dsh plugin --profile web add dsh-coding-kit
 ```
 
-备选：从 GitHub 安装（需 Node 构建；pnpm 10+ 可能要 allowBuilds）：
+Fallback: install from GitHub (needs a Node build; pnpm 10+ may require allowBuilds):
 
 ```bash
 dsh plugin --profile web add github:Cyning12/dsh-coding-kit#main
 ```
 
-### 确认层
+### Confirmation layer
 
 ```bash
 dsh --profile web --dump-config
 ```
 
-安装成功后，profile 的 `package.json` 会出现依赖 `dsh-coding-kit`，且 `dsh.profile.bundles` 含该包名。用户一般不必手写 bundles；`dsh plugin add` 会维护。
+After a successful install, the profile's `package.json` will show the `dsh-coding-kit` dependency, and `dsh.profile.bundles` will contain the package name. Users generally don't need to hand-edit bundles; `dsh plugin add` maintains them.
 
-### 激活与调用
+### Activation and invocation
 
-1. 用该 profile 启动 DSH（例如 `dsh --profile web` / `dsh --profile web web`）。
-2. 在对话中说：**请应用 coding standards**（或「按 coding-kit 规范写代码」）。
-3. 模型应调用工具 `apply_coding_standards`。
-4. 成功后后续回合的 runtime context 含 `# Coding Standards`。
+1. Start DSH with that profile (e.g. `dsh --profile web` / `dsh --profile web web`).
+2. Say in the conversation: **Please apply the coding standards** (or "write code per the coding-kit standards").
+3. The model should call the `apply_coding_standards` tool.
+4. On success, later turns' runtime context contains `# Coding Standards`.
 
-可选参数：`profile=l1|l1+l2|full`（默认 `l1+l2`）；`persist=false` 表示只在当轮工具结果里给出正文。
+Optional parameters: `profile=l1|l1+l2|full` (default `l1+l2`); `persist=false` returns the body only in the current tool result.
 
-profile 档语义：
+Profile tier semantics:
 
-| 档 | 内容 |
-|----|------|
-| `l1` | L1 规范 + coding_wiki |
-| `l1+l2`（默认） | 全部 standards + coding_wiki |
-| `full` | **当前版本等价于 `l1+l2`**；保留枚举值，为后续扩展 bundle（差异化注入内容）预留 |
+| Tier | Content |
+|------|---------|
+| `l1` | L1 standards + coding_wiki |
+| `l1+l2` (default) | all standards + coding_wiki |
+| `full` | **equivalent to `l1+l2` in the current version**; the enum value is reserved for future bundle extensions (differentiated injected content) |
 
-**override 根查找规则（自 1.3.0）**：`apply_coding_standards` 从当前工作目录逐级向上探测 `.coding-kit` 与 `.dsh/coding-kit`，在最近的含 `.git` 的祖先目录（git root）处截止——monorepo 子目录启动 DSH 也能命中仓根 override；git root 之外的更上层目录不会被误吸。无 `.git` 时向上查找到文件系统根。工具输出的 `source=override|package` 与 `root=` 行可观测实际命中。
+**Override root lookup rule (since 1.3.0)**: `apply_coding_standards` probes upward from the current working directory for `.coding-kit` and `.dsh/coding-kit`, stopping at the nearest ancestor directory containing `.git` (the git root) — so starting DSH from a monorepo subdirectory still hits the repo-root override, and directories above the git root are never picked up by mistake. Without `.git`, lookup continues to the filesystem root. The tool output's `source=override|package` and `root=` lines make the actual hit observable.
 
-注入内容超 24k 字符时按**文件边界**截断：截断点只落在文件之间，不会注入半份文件；被略文件可由 `root` 下全集减去工具输出的 `files` 列表推出，且 `truncated=true` 附截断标记。
+When injected content exceeds 24k characters it is truncated at **file boundaries**: the cut only falls between files, never injecting half a file; skipped files can be derived from the full set under `root` minus the tool output's `files` list, and `truncated=true` carries the truncation marker.
 
-### 初始化项目模板（插件面）
+### Initializing the project template (plugin surface)
 
-初始化走工具 **`init_coding_kit`**（不是 CLI `init`）。
+Initialization goes through the **`init_coding_kit`** tool (not the CLI `init`).
 
-对话：**请把 coding-kit 模板初始化到本项目** → 模型调用 `init_coding_kit`。  
-之后修改 `.coding-kit/`，再调用 `apply_coding_standards`（`source=override`）。`init_coding_kit` 不覆盖已有文件。
+Conversation: **Please initialize the coding-kit templates into this project** → the model calls `init_coding_kit`.  
+Then edit `.coding-kit/` and call `apply_coding_standards` again (`source=override`). `init_coding_kit` never overwrites existing files.
 
-注意（读写根口径不对称，自 1.3.0 明示）：**读取面**（`apply_coding_standards`）向上查找到 git root；**写入面**（`init_coding_kit`）仍写入当前工作目录。请在**仓根**对话中调用 `init_coding_kit`，避免在 monorepo 子目录里初始化后读取面却命中仓根。
+Note (asymmetric read/write roots, made explicit in 1.3.0): the **read side** (`apply_coding_standards`) looks up to the git root; the **write side** (`init_coding_kit`) still writes into the current working directory. Call `init_coding_kit` from a **repo-root** conversation, to avoid initializing in a monorepo subdirectory while the read side hits the repo root.
 
-部分 IDE / yaml-language-server 会把根目录 `cordis.patch.yml` 当成 RFC6902 JSON Patch，报缺 `op` / `path` / `value`。这是误报，可忽略；该文件必须保持 `- insert`，不要改成 JSON Patch。
+Some IDEs / yaml-language-server treat the root `cordis.patch.yml` as an RFC6902 JSON Patch and report missing `op` / `path` / `value`. This is a false positive and can be ignored; the file must keep the `- insert` form — do not convert it to JSON Patch.
 
-## 入口 B · CLI（Cursor / CI）
+## Entry B · CLI (Cursor / CI)
 
-P0 闸与 G1–G7（**1.2.0 已交付**）：
+P0 gates and G1–G7 (**delivered in 1.2.0**):
 
 ```bash
-npx dsh-coding-kit init [--preset NAME] [--yes]   # NAME 词表: harness-only（唯一合法值）
+npx dsh-coding-kit init [--preset NAME] [--yes]   # NAME vocabulary: harness-only (the only legal value)
 npx dsh-coding-kit upgrade --yes
 npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
 npx dsh-coding-kit check
@@ -100,117 +102,117 @@ npx dsh-coding-kit task lint-wiki-delta
 npx dsh-coding-kit task check --file PATH
 ```
 
-`init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
+`init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`).
 
-### refresh-ide-blocks（R-07 · 存量 IDE 块旧命令字面刷写）
+### refresh-ide-blocks (R-07 · literal refresh of stale commands in existing IDE blocks)
 
-旧包 `@cyning/harness` 时代 wizard marker merge 嵌入的 IDE 块（`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`）内可能滞留旧命令字面。`refresh-ide-blocks` 仅在这类 **product marker 块体内** 做白名单字面替换：
+IDE blocks embedded by the wizard marker merge in the old `@cyning/harness` era (`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`) may still hold stale command literals. `refresh-ide-blocks` performs whitelisted literal replacement only inside such **product marker block bodies**:
 
-- **默认 dry-run**：无旗标（或显式 `--dry-run`）只扫描 + 报告，零写入，exit 0；`--yes` 才写盘。
-- **发现面（冻结白名单）**：仓根 `AGENTS.md`、`CLAUDE.md`、`.cursor/rules/*.mdc`（单层）。发现面之外的文件即使含 marker 也不处理。
-- **映射表（冻结 · 仅块体内生效）**：
+- **Dry-run by default**: with no flag (or an explicit `--dry-run`) it only scans + reports — zero writes, exit 0; only `--yes` writes to disk.
+- **Discovery surface (frozen whitelist)**: repo-root `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/*.mdc` (single level). Files outside the discovery surface are not processed even if they contain markers.
+- **Mapping table (frozen · effective only inside block bodies)**:
 
-  | 组 | 规则 | 行为 |
-  |----|------|------|
-  | A1 | `npx @cyning/harness` → `npx dsh-coding-kit` | 自动替换，子命令与参数原样保留 |
-  | A2 | `npx @cyning/harness@<version>` → `npx dsh-coding-kit` | 自动替换，钉版整体丢弃（报告记 dropped_pin） |
-  | A3 | `npx --yes @cyning/harness[@<version>]` → `npx --yes dsh-coding-kit` | 自动替换，`--yes` 保留、钉版丢弃 |
-  | A4 | 裸 bin 形态 `harness skills build` / `harness skills check` → `npx dsh-coding-kit skills build` / `npx dsh-coding-kit skills check` | 自动替换（行前缀已含 `npx dsh-coding-kit` 时防二刷） |
-  | B1–B5 | `CYNING_HARNESS` / `--with-scripts` / `wizard/` 路径 / `harness:<name>` script 名 / 其他裸 `@cyning/harness` 引用 | **仅报告「需人工」，不替换** |
+  | Group | Rule | Behavior |
+  |-------|------|----------|
+  | A1 | `npx @cyning/harness` → `npx dsh-coding-kit` | auto-replaced; subcommand and arguments preserved verbatim |
+  | A2 | `npx @cyning/harness@<version>` → `npx dsh-coding-kit` | auto-replaced; the version pin is dropped entirely (report records dropped_pin) |
+  | A3 | `npx --yes @cyning/harness[@<version>]` → `npx --yes dsh-coding-kit` | auto-replaced; `--yes` kept, pin dropped |
+  | A4 | bare-bin forms `harness skills build` / `harness skills check` → `npx dsh-coding-kit skills build` / `npx dsh-coding-kit skills check` | auto-replaced (re-run guard when the line prefix already contains `npx dsh-coding-kit`) |
+  | B1–B5 | `CYNING_HARNESS` / `--with-scripts` / `wizard/` paths / `harness:<name>` script names / other bare `@cyning/harness` references | **reported as "manual only", never replaced** |
 
-- **纪律**：marker 行与块外内容字节不动；`<!-- cyning-harness-local:begin -->` 块永不改写；`docs/tasks/`、`docs/harness/reviews/`、`docs/harness/invokes/by-task/`（S2）一律拒写。
-- **preflight（--yes 专用 fail-fast，exit 2 零写入）**：git 脏树 / 单文件新旧字面混杂（MIXED）/ marker 配对畸形（MALFORMED）/ S2 断言闸任一命中即拒写。
-- **备份与回滚**：--yes 写盘前原字节备份到 `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/`（保留最近 5 代）；回滚首选 `git checkout -- <path>`，非 git 仓用备份 cp 回。
-- **幂等**：已刷写文件再次运行 A 组命中 0，`files_written=0`、字节不变、exit 0。
-- `--json` 输出单行机器报告（schema `dsh-coding-kit/refresh-ide-blocks-report@1`）。
+- **Discipline**: marker lines and out-of-block content stay byte-untouched; `<!-- cyning-harness-local:begin -->` blocks are never rewritten; `docs/tasks/`, `docs/harness/reviews/`, `docs/harness/invokes/by-task/` (S2) are always write-refused.
+- **preflight (--yes-only fail-fast, exit 2, zero writes)**: a dirty git tree / mixed old-and-new literals in one file (MIXED) / malformed marker pairing (MALFORMED) / any S2 assertion gate hit → refuse to write.
+- **Backup and rollback**: before `--yes` writes, the original bytes are backed up to `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/` (keeping the latest 5 generations); for rollback prefer `git checkout -- <path>`, or copy back from the backup in non-git repos.
+- **Idempotent**: re-running on already-refreshed files yields 0 group-A hits, `files_written=0`, unchanged bytes, exit 0.
+- `--json` prints a single-line machine report (schema `dsh-coding-kit/refresh-ide-blocks-report@1`).
 
-### D5 测试制品探测边界（audit / verify · test_strategy=required）
+### D5 test-artifact detection boundary (audit / verify · test_strategy=required)
 
-`audit` / `verify` 在 task 声明 `test_strategy=required` 时执行 D5 强检查：目标仓须存在**真实测试制品**，否则 exit 2。D5 是制品探测，不执行测试命令。探测口径（自 1.3.0 收紧）：
+When a task declares `test_strategy=required`, `audit` / `verify` run the D5 hard check: the target repo must contain **real test artifacts**, otherwise exit 2. D5 is artifact detection — it does not execute test commands. Detection scope (tightened in 1.3.0):
 
-**强信号探针（存在即 PASS）**
+**Strong-signal probes (presence = PASS)**
 
-- 目录：`test/` `tests/` `spec/` `specs/` `__tests__/`
-- 配置文件：`jest.config.{js,ts}` `vitest.config.{js,ts}` `playwright.config.{js,ts}` `cypress.config.js` `pytest.ini`
-- 测试文件名（仓根起 3 层内）：`*.(test|spec).(js|ts|mjs|cjs)`、`*_test.py`、`test_*.py`
+- Directories: `test/` `tests/` `spec/` `specs/` `__tests__/`
+- Config files: `jest.config.{js,ts}` `vitest.config.{js,ts}` `playwright.config.{js,ts}` `cypress.config.js` `pytest.ini`
+- Test file names (within 3 levels of the repo root): `*.(test|spec).(js|ts|mjs|cjs)`, `*_test.py`, `test_*.py`
 
-**CI 探测**：`.github/workflows/` 下 `*.yml|*.yaml` 逐一读文本，命中以下任一 test 步骤模式才算有 CI 测试：`pytest` `vitest` `jest` `npm (run )?test` `pnpm (run )?test` `yarn test` `node --test` `go test` `cargo test` `tox` `unittest`，或 step `name:` 含 `test`。
+**CI detection**: every `*.yml|*.yaml` under `.github/workflows/` is read as text; CI counts as having tests only if it hits one of these test-step patterns: `pytest` `vitest` `jest` `npm (run )?test` `pnpm (run )?test` `yarn test` `node --test` `go test` `cargo test` `tox` `unittest`, or a step `name:` containing `test`.
 
-**已知误判面与逃生口**
+**Known false positives and the escape hatch**
 
-- `pyproject.toml` / `setup.py` 存在**不再**视为测试制品（任意现代 Python 仓都有，与有无测试无关）。
-- 纯 lint / 纯部署 workflow（无 test 步骤）不再放行。
-- 探测深度为仓根起 3 层；monorepo 更深层或自定义测试命令（如 `make test`）不命中白名单时，在仓内放任一强信号文件（如 `tests/` 目录、`*_test.py`）即可。
-- **WARN 过渡已硬化（1.5.0）**：1.3.0–1.4.0 期间「新探测失败但旧启发式通过 → `D5: WARN 过渡` exit 0 不阻塞」的过渡分支已删除；自 1.5.0 起上述情形一律 **FAIL**（verify BLOCKED / audit FAIL，exit 2）。升级前请在仓内补真实测试制品（如 `tests/`、`*_test.py`、`*.test.ts` 或含 test 步骤的 CI）。
+- `pyproject.toml` / `setup.py` are **no longer** treated as test artifacts (every modern Python repo has them, regardless of whether tests exist).
+- Pure lint / pure deploy workflows (no test step) no longer pass.
+- Detection depth is 3 levels from the repo root; for deeper monorepo layouts or custom test commands (e.g. `make test`) that miss the whitelist, drop any strong-signal file into the repo (e.g. a `tests/` directory, `*_test.py`).
+- **WARN transition hardened (1.5.0)**: the transitional branch from 1.3.0–1.4.0 — "new detection fails but the old heuristic passes → `D5: WARN transition` exit 0, non-blocking" — has been removed; since 1.5.0 that situation is always a **FAIL** (verify BLOCKED / audit FAIL, exit 2). Before upgrading, add real test artifacts to the repo (e.g. `tests/`, `*_test.py`, `*.test.ts`, or CI with a test step).
 
-## 从 @cyning/harness 迁移
+## Migrating from @cyning/harness
 
-钉 **dsh-coding-kit@1.5.0** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
+After pinning **dsh-coding-kit@1.5.0** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
 
-1. 把 `devDependency` `@cyning/harness` 换成 `dsh-coding-kit`（钉 `1.5.0`）。
-2. 在仓根执行 `npx dsh-coding-kit upgrade --yes`（读旧 `.cyning-harness/manifest.json`；`version` 钉 1.5.0，`from_version` 记旧号）。
-3. CI / 脚本里把 `npx @cyning/harness` 换成 `npx dsh-coding-kit`。
+1. Replace the `devDependency` `@cyning/harness` with `dsh-coding-kit` (pin `1.5.0`).
+2. Run `npx dsh-coding-kit upgrade --yes` at the repo root (reads the old `.cyning-harness/manifest.json`; `version` pinned at 1.5.0, `from_version` records the old number).
+3. In CI / scripts, replace `npx @cyning/harness` with `npx dsh-coding-kit`.
 
-Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）。命令一律 `npx dsh-coding-kit`。
+Skill installation is **recommended, not required** (the minimal path does not depend on DSH scanning skills). Commands are always `npx dsh-coding-kit`.
 
 ### FAQ · pnpm peer
 
-若 pnpm 安装仍因 peer 链失败（例如解析到未公开发布的宿主包）：在仓根设 `auto-install-peers=false`（或单次 `pnpm add -D dsh-coding-kit --config.auto-install-peers=false`）。即使 **1.2.2** 已将 cordis / dsh-tools 标为 optional，也建议保留此兜底。
+If pnpm install still fails on the peer chain (e.g. resolving to an unpublished host package): set `auto-install-peers=false` at the repo root (or one-shot `pnpm add -D dsh-coding-kit --config.auto-install-peers=false`). Even though **1.2.2** already marked cordis / dsh-tools as optional, keeping this fallback is recommended.
 
-### 可复制 Prompt（给存量仓 Agent）
+### Copy-paste Prompt (for agents maintaining existing repos)
 
-整段粘贴：
+Paste the whole block:
 
 ````text
-你 = 本仓库维护 Agent。把本仓从 @cyning/harness 迁到 dsh-coding-kit@1.5.0。
+You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to dsh-coding-kit@1.5.0.
 
-最小路径（必须，按序）：
-1. package.json 的 devDependency：删除 @cyning/harness，改为 dsh-coding-kit（钉 1.5.0）。
-2. 在仓根执行：npx dsh-coding-kit upgrade --yes
-   （读旧 .cyning-harness/manifest.json；version 钉 1.5.0，from_version 记旧号；不覆盖 docs/tasks、reviews、invokes/by-task。）
-3. CI 与脚本里所有 npx @cyning/harness 换成 npx dsh-coding-kit。
-命令一律 npx dsh-coding-kit。禁止再写 npx @cyning/harness skills build。
+Minimal path (required, in order):
+1. package.json devDependency: delete @cyning/harness, replace with dsh-coding-kit (pinned at 1.5.0).
+2. Run at the repo root: npx dsh-coding-kit upgrade --yes
+   (reads the old .cyning-harness/manifest.json; version pinned at 1.5.0, from_version records the old number; never overwrites docs/tasks, reviews, invokes/by-task.)
+3. Replace every npx @cyning/harness in CI and scripts with npx dsh-coding-kit.
+Commands are always npx dsh-coding-kit. Never write npx @cyning/harness skills build again.
 
-推荐（非必须 · Skill 安装）：
-- 仓内：npx dsh-coding-kit skills install
-  复制 npm 包内已生成 skills（默认不含 30/40）到本仓 .dsh/skills。已有文件默认不覆盖；要覆盖才加 --force。
-- 用户级：npx dsh-coding-kit skills install --global
-  写到 $HOME/.dsh/skills（展开 HOME；不要把 ~ 当成相对路径）。
+Recommended (not required · skill installation):
+- In-repo: npx dsh-coding-kit skills install
+  Copies the pre-generated skills from the npm package (excluding 30/40 by default) into this repo's .dsh/skills. Existing files are not overwritten by default; add --force to overwrite.
+- User-level: npx dsh-coding-kit skills install --global
+  Writes to $HOME/.dsh/skills (HOME is expanded; do not treat ~ as a relative path).
 
-路径对照（禁止混用）：
-- .dsh/skills 或 $HOME/.dsh/skills = Skill 安装落点（本命令）。
-- .claude/skills 或 ~/.claude/skills = Claude Code 的 skill 目录（本命令默认不写；若你用 Claude 可另拷或 --out）。
-- .dsh/coding-kit 或 .coding-kit = 规范覆盖（apply_coding_standards / init_coding_kit），不是 skill 目录。
+Path reference (never mix them up):
+- .dsh/skills or $HOME/.dsh/skills = skill installation target (this command).
+- .claude/skills or ~/.claude/skills = Claude Code's skill directory (this command does not write there by default; if you use Claude, copy separately or use --out).
+- .dsh/coding-kit or .coding-kit = standards override (apply_coding_standards / init_coding_kit), NOT a skill directory.
 
-已验证（对照 DSH 上游源码）：DSH runtime 自动扫描本仓 .dsh/skills 与 $HOME/.dsh/skills 并按需加载。skill 形态为 <name>/SKILL.md 目录包或 <name>.md 平铺文件，frontmatter 必填 name/description；证据锚点见 README「扫描验证」节。
+Verified (against DSH upstream source): the DSH runtime automatically scans this repo's .dsh/skills and $HOME/.dsh/skills and loads them on demand. A skill is a <name>/SKILL.md directory package or a flat <name>.md file; frontmatter must include name/description; evidence anchors are in the README "Scan verification" section.
 
-不要做：GitHub Archive；npm publish / deprecate；让 apply 在加载时自动注入；默认安装 30/40；把 skills 拷进 .dsh/coding-kit。
+Do NOT: GitHub Archive; npm publish / deprecate; make apply auto-inject at load time; install 30/40 by default; copy skills into .dsh/coding-kit.
 ````
 
-### 路径对照
+### Path reference
 
-| 路径 | 用途 | 谁写入 |
-|------|------|--------|
-| 产品包 `assets/skills` | 生成物真值；`skills check` 对照根 | 维护者 `skills build`（G5 freeze） |
-| `<repo>/.dsh/skills` | 消费者 Skill **安装落点** | `skills install` |
-| `$HOME/.dsh/skills` | 用户级安装落点 | `skills install --global` |
-| `<repo>/.claude/skills` 或 `~/.claude/skills` | Claude Code skill 目录 | 用户另拷或 `--out`；**默认不写** |
-| `<repo>/.dsh/coding-kit` 或 `.coding-kit` | 规范覆盖（standards / wiki） | `init_coding_kit`；**禁止**当作 skill dest |
+| Path | Purpose | Written by |
+|------|---------|------------|
+| Product package `assets/skills` | source of truth for generated artifacts; the comparison root of `skills check` | maintainer `skills build` (G5 freeze) |
+| `<repo>/.dsh/skills` | consumer skill **installation target** | `skills install` |
+| `$HOME/.dsh/skills` | user-level installation target | `skills install --global` |
+| `<repo>/.claude/skills` or `~/.claude/skills` | Claude Code skill directory | user copies separately or uses `--out`; **not written by default** |
+| `<repo>/.dsh/coding-kit` or `.coding-kit` | standards override (standards / wiki) | `init_coding_kit`; **forbidden** as a skill dest |
 
-### 扫描验证（已对照 DSH 上游源码）
+### Scan verification (checked against DSH upstream source)
 
-**已验证（2026-08-22 · 对照 DSH 上游源码 deepseek-harness@141eb6f，即 dsh 0.1.0-rc.8）**：DSH runtime **会自动扫描** `<repo>/.dsh/skills` 与 `$HOME/.dsh/skills` 并 **按需加载**，二者正是本包 `skills install` 的两个 **安装落点**。证据锚点：
+**Verified (2026-08-22 · against DSH upstream source deepseek-harness@141eb6f, i.e. dsh 0.1.0-rc.8)**: the DSH runtime **automatically scans** `<repo>/.dsh/skills` and `$HOME/.dsh/skills` and **loads them on demand** — these are exactly the two **installation targets** of this package's `skills install`. Evidence anchors:
 
-- `packages/skill/skill-filesystem/src/index.ts:246` —— 扫描 `<projectRoot>/.dsh/skills`（source=`project-dsh`，rank 100）；同文件 `:253` —— 扫描 `<dshHome>/skills`（`$DSH_HOME` 或 `~/.dsh`，source=`user-dsh`，rank 400）。
-- `docs/subsystems/skills.md`「Local discovery priority」表同口径（rank 100/400 两行）；加载机制：skill 摘要注入会话 catalog，模型经 `skill({ name })` 工具按需拉取正文（该文档「Session catalog and tool contract」节）。
+- `packages/skill/skill-filesystem/src/index.ts:246` — scans `<projectRoot>/.dsh/skills` (source=`project-dsh`, rank 100); same file `:253` — scans `<dshHome>/skills` (`$DSH_HOME` or `~/.dsh`, source=`user-dsh`, rank 400).
+- `docs/subsystems/skills.md` "Local discovery priority" table says the same (the rank 100/400 rows); loading mechanism: skill summaries are injected into the session catalog, and the model pulls the full body on demand via the `skill({ name })` tool (the "Session catalog and tool contract" section of that document).
 
-结构与 frontmatter 要求（同源码）：目录包 `<name>/SKILL.md` 或平铺 `<name>.md`（index.ts:724-728）；frontmatter 必填 `name`/`description`，`name` 须 kebab-case（index.ts:810-816）；projectRoot = 最近含 `.git` 的祖先目录（index.ts:937-947）。
+Structure and frontmatter requirements (same source): directory package `<name>/SKILL.md` or flat `<name>.md` (index.ts:724-728); frontmatter must include `name`/`description`, and `name` must be kebab-case (index.ts:810-816); projectRoot = the nearest ancestor directory containing `.git` (index.ts:937-947).
 
-注意：扫描/加载是 **DSH runtime 的行为契约**，随上游版本演进；以上锚点对应 0.1.0-rc.8。本包职责止于把 skill 写入正确落点并保持 frontmatter 合法（`skills check`）。
+Note: scanning/loading is a **behavioral contract of the DSH runtime** and evolves with upstream versions; the anchors above correspond to 0.1.0-rc.8. This package's responsibility ends at writing skills to the correct target and keeping frontmatter valid (`skills check`).
 
-## GitHub topic
+## GitHub topics
 
-本仓库 GitHub topic 含 **`dsh-plugin`**（DSH 官方发现机制，无应用商店）与 **`deepseek-harness`**。
+This repository's current GitHub topics: **`deepseek-harness`**, **`dsh-plugins`**, **`dsh`**. DSH's official discovery tag is **`dsh-plugin`** (see upstream deepseek-harness `README.md` and `CONTRIBUTING.md`; there is no app store); this repo does not currently carry that topic, but the npm keywords in `package.json` do include `dsh-plugin` and `deepseek-harness`.
 
 ## License
 

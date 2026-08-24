@@ -53,7 +53,7 @@ describe('1.2.2 E2 adapters + README FAQ', { concurrency: 1 }, () => {
     assert.equal(/1\.2\.1\.1/.test(readme), false)
     assert.match(readme, /auto-install-peers=false/)
     assert.match(readme, /peerDependenciesMeta|optional/)
-    assert.match(readme, /DSH 宿主插件契约|宿主插件契约/)
+    assert.match(readme, /DSH host plugin contract|host plugin contract/)
 
     const m = readme.match(/````text\r?\n([\s\S]*?)\r?\n````/)
     assert.ok(m && m[1] !== undefined, '须含外层 ≥4 反引号 + text Prompt')
@@ -61,7 +61,7 @@ describe('1.2.2 E2 adapters + README FAQ', { concurrency: 1 }, () => {
     assert.doesNotMatch(prompt, /```/)
     assert.doesNotMatch(prompt, /~~~/)
     assert.match(prompt, /dsh-coding-kit@1\.5\.0/)
-    assert.match(prompt, /version 钉 1\.5\.0/)
+    assert.match(prompt, /version pinned at 1\.5\.0/)
   })
 
   it('D8: npm pack --dry-run 不含 SPEC.md；filename 含 1.5.0', () => {
