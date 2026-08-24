@@ -16,20 +16,9 @@ const VERSION_RE = /v2\.\d+\+/
 const CLAIM_RE = /硬闸|机械强制|机械闸|已接线/
 const UNWIRED_MARK = '未接线'
 
-const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = [
-  // verify --spec 在本包 fail-loud 未交付（src/cli.ts#62,#399 notDelivered exit 2），
-  // 非静默虚闸；「机械闸」声称的止血标注归后续棒（本棒 DEF-003 六锚点不含此行）。
-  {
-    file: 'assets/harness/prompts/20-spec-audit.md',
-    lineIncludes: '**v2.8+ 机械闸**',
-    evidence: 'src/cli.ts#62,#399 · verify --spec fail-loud exit 2',
-  },
-  {
-    file: 'assets/skills/harness-20-spec-audit/SKILL.md',
-    lineIncludes: '**v2.8+ 机械闸**',
-    evidence: '生成物 · 同源 src/cli.ts#62,#399 fail-loud',
-  },
-]
+// DEF-005 棒已处理：20-spec-audit「verify --spec 机械闸」声称行已加「未接线」止血标注
+// （prompts 源 + skills 生成物同源），实现锚点 allowlist 清空。
+const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = []
 
 function listAssets(dir: string): string[] {
   const out: string[] = []

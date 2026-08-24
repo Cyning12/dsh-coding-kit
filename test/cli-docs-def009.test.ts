@@ -32,12 +32,6 @@ const EXEMPTIONS: Array<{ file: string; target: string; owner: string }> = [
   { file: 'assets/skills/harness-10-task/SKILL.md', target: './10-spec-requirements.md', owner: '待登记 · skills 姊妹帽悬空指针' },
   { file: 'assets/skills/harness-20-spec-audit/SKILL.md', target: './20-task-audit.md', owner: '待登记 · skills 姊妹帽悬空指针' },
   { file: 'assets/skills/harness-20-task-audit/SKILL.md', target: './20-spec-audit.md', owner: '待登记 · skills 姊妹帽悬空指针' },
-  // DEF-005 名下：discipline-coverage.yaml 注释引旧仓 rethink 文档（DEF-005 T2 重盘时移除本条）
-  {
-    file: 'assets/harness/discipline-coverage.yaml',
-    target: 'docs/rethink/2026-07-mechanization-rate/03_coverage_matrix.md',
-    owner: 'DEF-005',
-  },
 ]
 
 interface Hit {

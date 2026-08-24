@@ -1,41 +1,46 @@
 # Discipline coverage · Starter 子集机械化率资产（方向一）
 #
 # 运行时真值：本文件（随 npm 包分发）。
-# 历史叙事：docs/rethink/2026-07-mechanization-rate/03_coverage_matrix.md
+# 历史叙事：私仓 rethink 文档 03_coverage_matrix.md（2026-07 mechanization-rate · 不随包分发）
 # 维护：新闸合入时更新 statements[].status / gaps[] / as_of_package_version
 # 禁止：把本文件当「每周全量重盘」流程；不做 audit --discipline UI（本波）
+# status 口径（DEF-005 重盘 · as_of = 本包实接线）：
+#   mechanical  = 机制在本包 src/ 已接线（mechanism 带锚点）
+#   partial     = 有机制但覆盖不全
+#   prompt-only = 无机制，仅条文约束
+#   not_wired   = 声称的机制在本包未接线（旧包机制名仅见于「旧包史实」notes · 接线计划见 PRD_DEF-003 阶段二）
 
 version: "1"
-as_of_package_version: "2.23.0"
+as_of_package_version: "1.2.3"
 scope: "Starter · harness/prompts （10/22/30/40 + FRAGMENT）+ TEMPLATE_invoke"
-source_audit: "rethink/2026-07-mechanization-rate · 02 转录 + 03 聚合 · 状态已按 G1–G4/N1–N4 刷新（非第二轮通读盘点）"
+source_audit: "私仓 rethink 2026-07 mechanization-rate 转录聚合 · 2026-08-24 按 dsh-coding-kit 1.2.3 src/ 逐条重盘（DEF-005 机制台账）"
 
 gaps:
   - id: WIKI-DELTA
     title: wiki_delta close 闸 + 晋升指针 + wiki export
-    status: closed
-    closed_in: "2.18.0"
-    note: "SPEC-experience-wiki-feedback_loop · 缺字段 BLOCK"
+    status: not_wired
+    closed_in: null
+    note: "task lint-wiki-delta（src/cli-task-extra.ts#305）与 wiki export（src/cli.ts#97）本包已接线；close_wiki_delta close 闸未接线 · 旧包史实（@cyning/harness 2.18.0 closed · SPEC-experience-wiki-feedback_loop）· 接线计划见 PRD_DEF-003 阶段二"
   - id: G1
     title: task md 结构 lint
     status: closed
-    closed_in: "2.3.0"
-    note: "task lint E1–E7"
+    closed_in: "1.1.0"
+    note: "task lint E1–E7 本包已接线（src/cli.ts#430-511）· 旧包史实（@cyning/harness 2.3.0）"
   - id: G2
     title: reviews 留档闸
-    status: closed
-    closed_in: "2.5.0"
-    note: "verify --task + close 检查 6；N4 全量 2.9.0"
+    status: not_wired
+    closed_in: null
+    note: "findReview 仅 status 使用（src/cli-status.ts#70）；verify/close 无 reviews 闸 · 旧包史实（@cyning/harness 2.5.0 · N4 全量 2.9.0）· 接线计划见 PRD_DEF-003 阶段二"
   - id: G3
     title: 文本纪律（绝对路径）
     status: closed
-    closed_in: "2.3.0"
-    note: "E6；invoke 预写 approved grep 仍缓做"
+    closed_in: "1.1.0"
+    note: "task lint E6 本包已接线（src/cli.ts#481-485）· 旧包史实（@cyning/harness 2.3.0）；invoke 预写 approved grep 仍缓做"
   - id: G4
     title: 思考轮结构
-    status: closed
-    closed_in: "2.6.0"
-    note: "task lint E8–E10 / W4–W5"
+    status: not_wired
+    closed_in: null
+    note: "本包仅 W4 warn-only（src/cli.ts#498-503）；旧包 E8–E10 / W5 未随包 · 旧包史实（@cyning/harness 2.6.0）· 接线计划见 PRD_DEF-003 阶段二"
   - id: G6
     title: git 行为层
     status: deferred
@@ -50,34 +55,34 @@ gaps:
     title: verify --task lint → block
     status: deferred
     closed_in: null
-    note: "现 warn-only（2.7.0）· 须 FAIL 率下降"
+    note: "本包 verify 不含 lint 步（src/cli.ts#381-428）· 旧包史实（@cyning/harness warn-only 2.7.0）· 须 FAIL 率下降"
   - id: SPEC-reviews
     title: SPEC 审查文闸
-    status: closed
-    closed_in: "2.8.0"
-    note: "verify --spec"
+    status: not_wired
+    closed_in: null
+    note: "verify --spec 本包 fail-loud 未交付（src/cli.ts#62,#399 · exit 2）· 旧包史实（@cyning/harness 2.8.0）· 接线计划见 PRD_DEF-003 阶段二"
   - id: FULL-reviews
     title: 裸 verify 全量 reviews + 双路径
-    status: closed
-    closed_in: "2.9.0"
-    note: "N4"
+    status: not_wired
+    closed_in: null
+    note: "verify 须 --task 且不查 reviews（src/cli.ts#402）· 旧包史实（@cyning/harness N4 2.9.0）· 接线计划见 PRD_DEF-003 阶段二"
   - id: LIFECYCLE-ENGINE
     title: lifecycle dry-run 最小引擎
     status: closed
-    closed_in: "2.10.0"
-    note: "Epic T2 · 旁路报告"
+    closed_in: "1.1.0"
+    note: "lifecycle dry-run 本包已接线（src/cli-lifecycle.ts）· 旧包史实（@cyning/harness 2.10.0 · Epic T2 旁路报告）"
   - id: INVOKE-HATS
     title: 多帽 invoke 留档集合闸
-    status: closed
-    closed_in: "2.12.0"
-    note: "close evaluateInvokeHatsRetention · default 10,30,40"
+    status: not_wired
+    closed_in: null
+    note: "close 无 invoke 集合闸（src/cli.ts#535-607 仅 slug/自检/验收/状态四项）；task lint-done 仅 slug 级（src/cli-task-extra.ts#282）· 旧包史实（@cyning/harness 2.12.0 · default 10,30,40）· 接线计划见 PRD_DEF-003 阶段二"
 
 statements:
   - id: A1
     source: 30-execute-code.md
     summary: HG pending → 拒开工、禁改码
     status: mechanical
-    mechanism: "M1 gate-check + M2 verify"
+    mechanism: "gate-check + verify（src/cli.ts#325,#381 · 1.1.0 P0 子集 · 须 --task）"
     gap: null
     notes: null
     mechanism_quality: null
@@ -85,7 +90,7 @@ statements:
     source: 30-execute-code.md
     summary: 开工前首输出 GATE_VERIFY 闸扫描表
     status: partial
-    mechanism: "M2 提供判定；Agent 是否先输出表无检查"
+    mechanism: "verify 提供判定（src/cli.ts#381-428）；Agent 是否先输出表无检查"
     gap: null
     notes: null
     mechanism_quality: null
@@ -93,7 +98,7 @@ statements:
     source: 30-execute-code.md
     summary: 真值在 task 表；声称 vs 表 pending → STOP
     status: partial
-    mechanism: "M1/M2 读表"
+    mechanism: "gate-check/verify 读 task 闸表（src/cli.ts#204-248）"
     gap: null
     notes: "用户声称侧不可机械"
     mechanism_quality: null
@@ -101,7 +106,7 @@ statements:
     source: 30-execute-code.md
     summary: test_strategy required → 先可失败测试再改实现
     status: partial
-    mechanism: "M3 D5 探测测试文件存在"
+    mechanism: "audit/verify D5 探测测试文件存在（src/cli.ts#270-322）"
     gap: null
     notes: "先红后绿顺序无机制 · mechanism_quality 预留"
     mechanism_quality: null
@@ -109,41 +114,41 @@ statements:
     source: 30-execute-code.md
     summary: 运行验证命令 + 回填自检结论
     status: mechanical
-    mechanism: "M5 非占位符检查"
+    mechanism: "task close 自检结论非占位符检查（src/cli.ts#556-566）"
     gap: G7
     notes: "命令真跑过仍靠 40 诚实"
     mechanism_quality: null
   - id: A6
     source: 30-execute-code.md
     summary: invoke 快照落盘 by-task/<slug>/（按 required_invoke_hats 集合）
-    status: mechanical
-    mechanism: "M5 close evaluateInvokeHatsRetention + M6 lint-done"
+    status: partial
+    mechanism: "task lint-done（src/cli-task-extra.ts#282 · slug 级存在性）；帽集合覆盖闸未接线"
     gap: null
-    notes: "v2.12.0 默认 10,30,40；profile minimal/full；--allow-invoke-gap；v2.12.1 前缀 hat run"
+    notes: "旧包史实（@cyning/harness · close 集合闸 evaluateInvokeHatsRetention · v2.12.0 默认 10,30,40 · profile minimal/full · v2.12.1 前缀 hat run）· 本包未接线 · 接线计划见 PRD_DEF-003 阶段二"
     mechanism_quality: null
   - id: A7
     source: 30-execute-code.md
     summary: 归档只能 task close PASS 后进行
     status: mechanical
-    mechanism: "M5"
+    mechanism: "task close（src/cli.ts#535-607）"
     gap: null
-    notes: "手动 mv 旁路由 M6 兜底"
+    notes: "手动 mv 旁路由 task lint-done 兜底（src/cli-task-extra.ts#282）"
     mechanism_quality: null
   - id: A8
     source: 30-execute-code.md
     summary: HG-GRAPH-MODULES pending → 禁改码
     status: mechanical
-    mechanism: "M1 gate-check --graph"
+    mechanism: "gate-check 默认检查 HG-GRAPH-MODULES pending → blocked（src/cli.ts#238-241）"
     gap: null
-    notes: null
+    notes: "--graph 旗标被吞无语义（src/cli.ts#326 · DEF-011）；该检查为默认行为非旗标触发"
     mechanism_quality: null
   - id: A9
     source: 30-execute-code.md
     summary: 缺验收/failure_paths/必读 → 仅输出阻塞清单
     status: mechanical
-    mechanism: "task lint E1–E7（G1 · v2.3.0）"
+    mechanism: "task lint E1–E7（src/cli.ts#430-511）"
     gap: G1
-    notes: "02 原 ❌ · 已刷新"
+    notes: "02 原 ❌ · 已刷新（G1 本包已接线）"
     mechanism_quality: null
   - id: A10
     source: 30-execute-code.md
@@ -157,7 +162,7 @@ statements:
     source: 40-self-check.md
     summary: 逐条对照验收标准标记 pass/fail
     status: partial
-    mechanism: "M5 查无未勾选"
+    mechanism: "task close 查无未勾选（src/cli.ts#567-574）"
     gap: null
     notes: null
     mechanism_quality: null
@@ -173,7 +178,7 @@ statements:
     source: 40-self-check.md
     summary: 必须回填自检结论（执行者）
     status: mechanical
-    mechanism: "M5"
+    mechanism: "task close 自检结论回填闸（src/cli.ts#556-566）"
     gap: null
     notes: null
     mechanism_quality: null
@@ -196,18 +201,18 @@ statements:
   - id: C1
     source: 22-task-audit.md
     summary: 必须落盘 reviews task_*_audit_R*
-    status: mechanical
-    mechanism: "findReview · verify/close（G2 · v2.5+；全量 v2.9）"
+    status: not_wired
+    mechanism: "本包未接线（findReview 仅 status 使用 · src/cli-status.ts#70）"
     gap: G2
-    notes: "02 原 ❌ · 已刷新；内容质量仍 prompt-only"
+    notes: "旧包史实（@cyning/harness · verify/close reviews 闸 G2 v2.5+ · 全量 N4 v2.9）· 接线计划见 PRD_DEF-003 阶段二；内容质量仍 prompt-only"
     mechanism_quality: null
   - id: C2
     source: 22-task-audit.md
     summary: HG-AUDIT-R1 pending 时禁止附 30 Prompt
-    status: partial
-    mechanism: "存在性闸；审查文内容无检查"
+    status: not_wired
+    mechanism: "本包未接线（无 reviews 存在性闸）"
     gap: G2
-    notes: null
+    notes: "旧包史实（@cyning/harness · 存在性闸随 G2）· 接线计划见 PRD_DEF-003 阶段二；审查文内容无检查"
     mechanism_quality: null
   - id: C3
     source: 22-task-audit.md
@@ -229,31 +234,31 @@ statements:
     source: 10-requirements.md
     summary: task 必含验收/failure_paths/非范围/依赖
     status: mechanical
-    mechanism: "task lint（G1）"
+    mechanism: "task lint E3/E4（src/cli.ts#458-466）"
     gap: G1
-    notes: "02 原 ❌ · 已刷新"
+    notes: "02 原 ❌ · 已刷新（G1 本包已接线）"
     mechanism_quality: null
   - id: D2
     source: 10-requirements.md
     summary: 不写绝对本机路径
     status: mechanical
-    mechanism: "task lint E6（G3）"
+    mechanism: "task lint E6（src/cli.ts#481-485）"
     gap: G3
-    notes: "02 原 ❌ · 已刷新"
+    notes: "02 原 ❌ · 已刷新（G3 本包已接线）"
     mechanism_quality: null
   - id: D3
     source: 10-requirements.md
     summary: 预置 R0–R5 + 思考轮控制表
-    status: mechanical
-    mechanism: "task lint E8–E10（G4 · 条件触发）"
+    status: not_wired
+    mechanism: "本包未接线（仅 W4 warn-only · src/cli.ts#498-503）"
     gap: G4
-    notes: "02 原 ❌ · 已刷新；内容质量仍 20 帽"
+    notes: "旧包史实（@cyning/harness · task lint E8–E10 条件触发）· 接线计划见 PRD_DEF-003 阶段二；内容质量仍 20 帽"
     mechanism_quality: null
   - id: D4
     source: 10-requirements.md
     summary: 缺验收/failure_paths → 仅输出阻塞清单
     status: mechanical
-    mechanism: "task lint（G1）"
+    mechanism: "task lint E3/E4（src/cli.ts#458-466）"
     gap: G1
     notes: null
     mechanism_quality: null
@@ -269,17 +274,17 @@ statements:
     source: FRAGMENT_30
     summary: 用户确认 approved = 须核验非事实
     status: partial
-    mechanism: "M2 读表"
+    mechanism: "verify 读 task 闸表（src/cli.ts#204-248）"
     gap: null
     notes: null
     mechanism_quality: null
   - id: F1
     source: TEMPLATE_invoke.md
     summary: 落盘路径 by-task/<task_slug>/ 且帽子集合覆盖
-    status: mechanical
-    mechanism: "M5 evaluateInvokeHatsRetention / M6"
+    status: partial
+    mechanism: "task lint-done（src/cli-task-extra.ts#282 · slug 级）；帽集合覆盖闸未接线"
     gap: null
-    notes: "v2.12.0+ 文件名 hat token · 合并 30_40 可双计 · v2.12.1 前缀 run 防 slug 误计"
+    notes: "旧包史实（@cyning/harness · evaluateInvokeHatsRetention · v2.12.0 文件名 hat token · 合并 30_40 可双计 · v2.12.1 前缀 run 防 slug 误计）· 本包未接线 · 接线计划见 PRD_DEF-003 阶段二"
     mechanism_quality: null
   - id: F2
     source: TEMPLATE_invoke.md
@@ -298,18 +303,18 @@ statements:
     notes: null
     mechanism_quality: null
   - id: SK1
-    source: SPEC-agent-skills-packaging_v1（v2.23.0 · Agent Skills 封装）
+    source: SPEC-agent-skills-packaging_v1（旧包史实 @cyning/harness v2.23.0 · Agent Skills 封装）
     summary: skills/ 为纯生成物 · 条文改正文未重跑 build → skills check 挡
     status: mechanical
-    mechanism: "skills check drift 闸 + test/skills.test.js（含测试内模拟 drift 必 fail）"
+    mechanism: "skills check drift 闸（src/cli-skills.ts#227-235,#416-423）+ test/cli-docs-121.test.ts（生成物==落盘断言）+ test/cli-skills-install.test.ts"
     gap: null
     notes: "非条文纪律 · 新机制登记（格式纪律机械闸）"
     mechanism_quality: null
   - id: SK2
-    source: SPEC-agent-skills-packaging_v1（v2.23.0）
+    source: SPEC-agent-skills-packaging_v1（旧包史实 @cyning/harness v2.23.0）
     summary: 30/40 执行帽不进 skills 默认分发（T1 评测判死 · eval_t1_gate_bypass 20260806）
     status: mechanical
-    mechanism: "generateSkills track=starter-experimental 过滤 + 默认集断言（build --with-execute-hats 仅评测通道）"
+    mechanism: "generateSkills track=starter-experimental 过滤（src/cli-skills.ts#16,#159,#283）+ 默认集断言（skills build --with-execute-hats 仅评测通道）"
     gap: null
     notes: "隔离编码进构建默认值 · 非文档呼吁"
     mechanism_quality: null

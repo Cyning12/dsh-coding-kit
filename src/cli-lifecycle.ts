@@ -115,6 +115,7 @@ function formatDisciplineShow(data: DisciplineData): string {
     lines.push(`- [${s.status}] ${s.id}: ${sum}`)
   }
   lines.push('', '注: SoT = assets/harness/discipline-coverage.yaml · show 只读')
+  lines.push('注: status 口径 = 本包实接线（not_wired = 声称但本包未接线 · 旧包机制见 yaml notes）')
   return lines.join('\n')
 }
 
