@@ -16,8 +16,9 @@ const VERSION_RE = /v2\.\d+\+/
 const CLAIM_RE = /硬闸|机械强制|机械闸|机械校验|已接线/
 const UNWIRED_MARK = '未接线'
 
-// DEF-005 棒已处理：20-spec-audit「verify --spec 机械闸」声称行已加「未接线」止血标注
-// （prompts 源 + skills 生成物同源），实现锚点 allowlist 清空。
+// DEF-005 棒已处理：20-spec-audit「verify --spec 机械闸」声称行曾加「未接线」止血标注；
+// PRD_DEF-003 后续棒已真接线（verify --spec 真闸 · findSpecReview 单一实现源），
+// prompts 源 + skills 生成物同步转「已接线」锚点（见 allowlist 末三条）。
 // DEF-026 棒：30-execute-code#35「机械校验 invoke hats 集合」声称行已加「未接线」止血标注
 // （与 DEF-003 阶段一口径一致 · 接线属阶段二），词表同步扩「机械校验」关键词。
 const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence: string }> = [
@@ -59,6 +60,22 @@ const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence
     file: 'assets/harness/lifecycle.yaml',
     lineIncludes: 'required 硬闸 · v2.17+ · 本包已接线',
     evidence: 'src/cli-checks.ts evalCloseExperience · test/cli-task-close-guards.test.ts',
+  },
+  // PRD_DEF-003 后续棒：verify --spec 真闸交付 + to_00 spec_reviews_retention 接线（红→绿钉死）
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'spec_reviews_retention 已接线（verify --spec 真闸交付',
+    evidence: 'src/cli-checks.ts findSpecReview/evalSpecReviewsRetention + src/cli-lifecycle.ts evalGuard · test/cli-verify-spec.test.ts',
+  },
+  {
+    file: 'assets/harness/prompts/20-spec-audit.md',
+    lineIncludes: '本包已接线**：`verify --spec` 真闸',
+    evidence: 'src/cli.ts verifySpecMode + src/cli-checks.ts findSpecReview · test/cli-verify-spec.test.ts',
+  },
+  {
+    file: 'assets/skills/harness-20-spec-audit/SKILL.md',
+    lineIncludes: '本包已接线**：`verify --spec` 真闸',
+    evidence: '同（prompts 源 + skills 生成物副本同源更新 · skills check 无 drift）',
   },
 ]
 
@@ -130,7 +147,7 @@ describe('D-DOC 1.2.4 DEF-003 · 资产声称必须接线或明示未接线', { 
       const body = readFileSync(path.join(KIT, rel), 'utf8')
       assert.equal(body.includes(UNWIRED_MARK), false, `${rel} 已全接线 · 不得残留未接线标注`)
     }
-    // 仍未接线残留（close_wiki_promotion · to_00 spec_reviews_retention）：止血标注须在
+    // 仍未接线残留（仅 close_wiki_promotion · to_00 spec_reviews_retention 后续棒已接线）：止血标注须在
     for (const rel of [
       'assets/harness/lifecycle.yaml',
     ]) {

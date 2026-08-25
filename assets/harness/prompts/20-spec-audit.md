@@ -27,7 +27,7 @@ metadata:
 - 判定：`pass` | `conditional_pass` | `fail` · 建议 **HG-SPEC-SIGNOFF**（**不**代签）
 - **轻量路径**：10-spec 思考轮已充分时，单轮 R1 即可
 - 通过 → 建议 00 起草 task；**不**附 30 Prompt
-- **v2.8+ 机械闸**（**本包未接线**：`verify --spec` fail-loud 未交付 exit 2 · src/cli.ts#62,#399 · 旧包史实 · 接线计划见 PRD_DEF-003 阶段二）：旧包口径为 00 前跑 `npx dsh-coding-kit verify --spec <SPEC路径> [--workspace-root <Projects>]`——机器只查审查文**存在性**；缺失 exit 2。豁免：`--allow-no-spec-review` · bugfix / `skip_spec_audit`
+- **v2.8+ 机械闸**（**本包已接线**：`verify --spec` 真闸 · findSpecReview src/cli-checks.ts 单一实现源 · PRD_DEF-003 后续棒 · test/cli-verify-spec.test.ts 钉死）：00 前跑 `npx dsh-coding-kit verify --spec <SPEC路径>`——机器只查审查文**存在性**（`docs/harness/reviews` 或 `reviews/` 命中 `spec_<slug>_audit_R<n>_*` / `*_ACCEPT_R<n>_*`）；缺失 `VERIFY: BLOCKED · missing spec R<n> review` exit 2。豁免：`--allow-no-spec-review`（留痕）· bugfix / `skip_spec_audit`（旧包 `--workspace-root` 双仓根旗标本包不支持）
 
 ## 禁止什么
 

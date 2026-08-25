@@ -6,7 +6,7 @@
 # v2.13+ close：close_self_check · close_acceptance · close_slug · close_status 已接线；close_invoke · close_review 已接线（PRD_DEF-003 阶段二 T6 · src/cli-checks.ts evalCloseGuard · test/cli-task-close-guards.test.ts 钉死）；close_wiki_promotion 未接线（见 v2.18 行）
 # v2.17+ close 增补：close_graph_delta · close_kpi · close_experience —— 已接线（PRD_DEF-003 阶段二 T6 · 同 T6 锚点）；未接线残留仅 close_wiki_promotion
 # v2.18+ close 增补：close_wiki_delta 已接线（PRD_DEF-003 阶段二 T6）；close_wiki_promotion —— 未接线（旧包 v2.x 史实 · 接线计划见 PRD_DEF-003 后续棒）
-#   （to_00 / spec_reviews_retention 未接线 · verify --spec 本包未交付 · dry-run 明示「未接线」）
+# v2.19+ to_00：spec_reviews_retention 已接线（verify --spec 真闸交付 · src/cli-checks.ts findSpecReview/evalSpecReviewsRetention 单一实现源 · PRD_DEF-003 后续棒 · test/cli-verify-spec.test.ts 钉死）；未接线残留仅 close_wiki_promotion
 # 只读展示：npx dsh-coding-kit lifecycle show [--json]
 # 本包未附带 JSON Schema（旧 schema 指针已移除 · DEF-009）
 
@@ -29,6 +29,7 @@ transitions:
     to: signed
     hat: "00"
     description: "SPEC 签收后起草 task（verify --spec 聚合 · v2.8+）"
+    # 守卫接线真值（本包）：spec_reviews_retention 已接线（dry-run 真求值 · --task 携带待签收 SPEC 路径 · 与 verify --spec 同一实现源）
     guards:
       - id: spec_reviews_retention
         command_or_check: "verify --spec · findSpecReview（v2.8+）"
