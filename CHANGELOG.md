@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+> 主题：**verify --spec 真闸交付** —— 消灭最后一个「明示未交付」命令面：`verify --spec` 从 notDelivered（exit 1）改为 SPEC 审查文存在性真闸；lifecycle dry-run `to_00` 的 `spec_reviews_retention` 守卫同步接线（PRD_DEF-003 后续棒）。
+
+### Added
+
+- **`verify --spec FILE` 真闸**（SPEC→00 前查审查文存在性 · 语义映射旧包 @cyning/harness@2.24.0 `verifySpecTarget`/`findSpecReview`/`shouldSkipSpecAudit`）：仅查审查文存在性，不跑 gate-check / D5 / lint（与 --task 模式分离）；审查文扫描 `docs/harness/reviews` 与 `reviews/` 双路径（与 findReview 布局一致），命名兼容 `spec_<slug>_audit_R<n>_*`（推荐）/ `spec_<slug>_ACCEPT_R<n>_*` / `task_<slug>_spec_ACCEPT_R<n>_*`；slug 取元信息 `spec_slug`，回退文件名去 `SPEC[-_]` 前缀与 `_v<n>` 后缀。缺失 → `VERIFY: BLOCKED · missing spec R<n> review` exit 2；`--allow-no-spec-review`（canonical · lifecycle.yaml 登记）与 `--allow-no-review`（别名）真豁免留痕（文本 + JSON `waived[]`，与 T4 口径一致）；`bugfix` / `skip_spec_audit` 元信息豁免 → PASS。`--task` 与 `--spec` 互斥（exit 1）；`--spec` 文件不存在 → exit 1（用法错误）。
+- **lifecycle dry-run `to_00` `spec_reviews_retention` 真求值**：--task 在该转移下携带待签收 SPEC 路径（与 verify --spec 同一实现源 src/cli-checks.ts `evalSpecReviewsRetention`）；缺审查文 → fail 挡（blocked exit 2），`--allow-no-spec-review` 转 warn 留痕；未接线残留仅 `close_wiki_promotion`。
+
+### Changed（行为变更 · 升级必读）
+
+- `verify --spec` 不再是「本包未交付」exit 1：缺审查文的 SPEC 现在 **BLOCKED exit 2**（此前调用方只会得到未交付提示）。过渡期可用 `--allow-no-spec-review` 豁免（留痕，不免除补审义务）。
+- 与旧包差异：① 目录布局与本包 findReview 同口径扫双路径（旧包仅 `docs/harness/reviews`）；② 旧包 `--workspace-root` 双仓根旗标本包不支持（DEF-011 fail-fast 清单既有钉死）。
+
 ## [1.5.2] - 2026-08-24
 
 > 主题：**提示面改善 · 迁移语义与只读报告** —— DEF-028：`check` 对跨产品线迁移输出迁移语义与 upgrade 建议，不再误报降级；DEF-029：`refresh-ide-blocks` 对发现面内无 marker 文件做旧字面只读扫描并仅报告（`plain_mentions`）；README 补强 K2/K5。纯提示面改善，exit 码不变。

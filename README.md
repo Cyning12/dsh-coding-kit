@@ -81,6 +81,7 @@ npx dsh-coding-kit upgrade --yes
 npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
 npx dsh-coding-kit check
 npx dsh-coding-kit verify --task <task.md>
+npx dsh-coding-kit verify --spec <SPEC.md>   # SPEC-to-00 review-existence gate (mutually exclusive with --task)
 npx dsh-coding-kit gate-check --task <task.md>
 npx dsh-coding-kit audit --task <task.md>
 npx dsh-coding-kit task lint --file <task.md>
