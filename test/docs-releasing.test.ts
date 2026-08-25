@@ -27,7 +27,7 @@ describe('DEF-001 T5 · RELEASING.md 发版 checklist 制度化', { concurrency:
       ['⑤ npm version + tag', /npm version/],
       ['⑥ PR 合并 + CI 绿', /CI[\s\S]{0,40}绿|绿[\s\S]{0,40}CI/],
       ['⑦ npm pack --dry-run 检查', /npm pack --dry-run/],
-      ['⑧ npm publish 仅人执行', /npm publish[\s\S]{0,80}仅人|仅人[\s\S]{0,80}npm publish/],
+      ['⑧ npm publish 仅人执行', /⑧ npm publish（仅人）/],
       ['⑨ publish 后 npm view 核验 + 过程档状态更新', /npm view/],
     ]
     let prev = -1

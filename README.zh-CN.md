@@ -214,6 +214,10 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 
 注意：扫描/加载是 **DSH runtime 的行为契约**，随上游版本演进；以上锚点对应 0.1.0-rc.8。本包职责止于把 skill 写入正确落点并保持 frontmatter 合法（`skills check`）。
 
+## 发版（维护者）
+
+发布流程见 [RELEASING.md](RELEASING.md) —— publish 前硬步骤 checklist（先 commit 后 publish · 四门全绿 · 版本钉同步 · pack 干跑核对 · 仅人 publish；DEF-001 教训制度化）。
+
 ## GitHub topic
 
 本仓库当前 GitHub topics：**`dsh-plugin`**（DSH 官方发现机制 tag，见上游 deepseek-harness `README.md` 与 `CONTRIBUTING.md`；无应用商店）、**`deepseek-harness`**、**`dsh-plugins`**、**`dsh`**。`package.json` 的 npm keywords 同样含 `dsh-plugin` 与 `deepseek-harness`。
