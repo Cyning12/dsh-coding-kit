@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **DEF-028 · `check` 跨产品线迁移提示**（反馈 K1）：`manifest.version` 高于包版本且 `manifest.from_version` 非 null（从旧 `@cyning/harness` 产品线迁来）时，输出「跨产品线迁移：`@cyning/harness X → dsh-coding-kit Y`（跨产品线版本号不可比）」并建议 `npx dsh-coding-kit upgrade --yes`，不再误报「可能为降级安装」；`from_version` 为 null 时保持原三向判定文案。exit 码不变（恒 0）。
+- **DEF-029 · `refresh-ide-blocks` 无 marker 文件仅报告**（反馈 K4）：发现面（`AGENTS.md` / `CLAUDE.md` / `.cursor/rules/*.mdc`）内 0 product 块文件现用 A/B 组同一组正则做**只读扫描**（A4 防二刷同适用），命中入报告——人类表新增「无 marker 检出（仅报告，不刷写）」段，`--json` 新增 top-level `plain_mentions: [{path, rule, count}]` 与 `totals.plain_mentions`（schema 保持 `dsh-coding-kit/refresh-ide-blocks-report@1`，向后兼容增量）。**绝不改写**这些文件（写盘路径结构上不含它们），dry-run 与 `--yes` 均报告，exit 码与 preflight fail-fast 语义不变。
+
+### Docs
+
+- **README 双语补强**（反馈 K2/K5）：`refresh-ide-blocks` 节注明 preflight 脏树判定为 `git status --porcelain` 语义（untracked 文件计入，`--yes` 前请先 commit 或 `git stash -u`）；备份节建议消费者将 `.cyning-harness/backups/` 加入 `.gitignore`（备份为本机回滚用，不入库）。
+
 ## [1.5.1] - 2026-08-24
 
 > 主题：**文档交付入包** —— 默认 README 英文化（中文原版保留为 README.zh-CN.md）+ docs/releases/ 四版连发成效系列档（英文 6 篇）。纯文档发布，无任何代码与行为变更，消费者无需动作。

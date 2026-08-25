@@ -104,6 +104,8 @@ npx dsh-coding-kit task check --file PATH
 
 `init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
 
+`check` 对 `manifest.version` 与包版本做三向比较（已是最新 / 可升级 / 高于）。自 1.5.2 起，当 manifest 带非 null `from_version`（即从旧 `@cyning/harness` 产品线迁来）时，「高于」分支输出跨产品线迁移语义（`@cyning/harness X → dsh-coding-kit Y`——跨产品线版本号不可比）并建议 `npx dsh-coding-kit upgrade --yes`，不再误报「可能为降级安装」；`from_version` 为 null 时保留原三向文案。exit 码不变（恒 0）。
+
 ### refresh-ide-blocks（R-07 · 存量 IDE 块旧命令字面刷写）
 
 旧包 `@cyning/harness` 时代 wizard marker merge 嵌入的 IDE 块（`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`）内可能滞留旧命令字面。`refresh-ide-blocks` 仅在这类 **product marker 块体内** 做白名单字面替换：
@@ -121,10 +123,11 @@ npx dsh-coding-kit task check --file PATH
   | B1–B5 | `CYNING_HARNESS` / `--with-scripts` / `wizard/` 路径 / `harness:<name>` script 名 / 其他裸 `@cyning/harness` 引用 | **仅报告「需人工」，不替换** |
 
 - **纪律**：marker 行与块外内容字节不动；`<!-- cyning-harness-local:begin -->` 块永不改写；`docs/tasks/`、`docs/harness/reviews/`、`docs/harness/invokes/by-task/`（S2）一律拒写。
-- **preflight（--yes 专用 fail-fast，exit 2 零写入）**：git 脏树 / 单文件新旧字面混杂（MIXED）/ marker 配对畸形（MALFORMED）/ S2 断言闸任一命中即拒写。
-- **备份与回滚**：--yes 写盘前原字节备份到 `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/`（保留最近 5 代）；回滚首选 `git checkout -- <path>`，非 git 仓用备份 cp 回。
+- **preflight（--yes 专用 fail-fast，exit 2 零写入）**：git 脏树 / 单文件新旧字面混杂（MIXED）/ marker 配对畸形（MALFORMED）/ S2 断言闸任一命中即拒写。脏树判定采用 `git status --porcelain` 语义——**untracked 文件也计入脏树**，`--yes` 前请先 commit 或 `git stash -u`。
+- **备份与回滚**：--yes 写盘前原字节备份到 `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/`（保留最近 5 代）；回滚首选 `git checkout -- <path>`，非 git 仓用备份 cp 回。备份仅供本机回滚——建议消费者将 `.cyning-harness/backups/` 加入 `.gitignore`（不入库）。
+- **无 marker 文件（仅报告，绝不改写）**：发现面内 0 product 块文件用 A/B 组同一组正则做只读扫描，命中入人类报告「无 marker 检出（仅报告，不刷写）」段与 --json top-level `plain_mentions: [{path, rule, count}]` 字段（schema 保持 `@1`，向后兼容增量）；不触发 preflight fail-fast，不改 exit 码。
 - **幂等**：已刷写文件再次运行 A 组命中 0，`files_written=0`、字节不变、exit 0。
-- `--json` 输出单行机器报告（schema `dsh-coding-kit/refresh-ide-blocks-report@1`）。
+- `--json` 输出单行机器报告（schema `dsh-coding-kit/refresh-ide-blocks-report@1`；自 1.5.2 起向后兼容增量含 `plain_mentions` / `totals.plain_mentions`）。
 
 ### D5 测试制品探测边界（audit / verify · test_strategy=required）
 
