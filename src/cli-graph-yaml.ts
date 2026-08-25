@@ -62,6 +62,8 @@ export function validateGraphYaml(data: YamlGraph | null | undefined, filePath: 
   if (data.schema_version != null && data.schema_version !== SCHEMA_VERSION) {
     errors.push(`schema_version 建议为 ${SCHEMA_VERSION}，实际为 ${data.schema_version}`)
   }
+  // DEF-032③：声明值（data.graph_id）为 graph_id 唯一真值源，须为裸 slug（禁 /）；
+  // 路径命名空间 id（如 l0/00_main）仅作输入兼容定位（allGraphIds / --graph-id），不参与校验与输出。
   if (data.graph_id != null && !/^[a-zA-Z0-9_]+$/.test(String(data.graph_id))) {
     errors.push(`graph_id 非法: ${data.graph_id}`)
   }
@@ -275,13 +277,16 @@ export function buildGraphPayload(
     const data = loadYaml(yamlPath)
     const validationErrors = validateGraphYaml(data, yamlPath)
     if (validationErrors.length > 0) throw new GraphYamlError(validationErrors.join('\n'))
+    // DEF-032①（D2）：graph_id 真值源 = yaml 声明值（如 00_main）；
+    // 路径命名空间 id（如 l0/00_main）仅作输入兼容定位，不写入输出。
+    const declaredId = data.graph_id != null ? String(data.graph_id) : graphId
     graphs.push({
-      id: graphId,
+      id: declaredId,
       title: data.title,
       source_yaml_path: path.relative(inputRoot, yamlPath).replace(/\\/g, '/'),
     })
     for (const n of data.nodes || []) {
-      nodes.push({ id: n.id, label: n.label, graph_id: graphId })
+      nodes.push({ id: n.id, label: n.label, graph_id: declaredId })
     }
     for (const e of data.edges || []) {
       const { mark, type, sync, label } = edgeToGraphV2(e)
@@ -293,7 +298,7 @@ export function buildGraphPayload(
         sync,
         label,
         anchors: normalizeAnchors(e.anchors),
-        graph_id: graphId,
+        graph_id: declaredId,
       })
     }
   }
@@ -519,12 +524,14 @@ export function checkGraph(
   if (validationErrors.length > 0) throw new GraphYamlError(validationErrors.join('\n'))
   if (!existsSync(graphJsonPath)) return { ok: false, diff: `graph.json 不存在: ${graphJsonPath}` }
   const graphJson = loadGraphJson(graphJsonPath)
+  // DEF-032②（D3）：与 export 同一 id 真值源（yaml 声明值），路径 id 仅作输入兼容定位。
+  const declaredId = yamlData.graph_id != null ? String(yamlData.graph_id) : graphId
   const jsonNodes = ((graphJson?.nodes as { id?: string; graph_id?: string }[]) || []).filter(
-    (n) => n?.graph_id === graphId,
+    (n) => n?.graph_id === declaredId,
   )
   const jsonEdges = (
     (graphJson?.edges as { graph_id?: string; from?: string; to?: string; mark?: string; type?: string }[]) || []
-  ).filter((e) => e?.graph_id === graphId && 'from' in e && 'to' in e)
+  ).filter((e) => e?.graph_id === declaredId && 'from' in e && 'to' in e)
   const yamlNodes = new Map((yamlData.nodes || []).map((n) => [n.id || '', n]))
   const yamlNodeIds = new Set(yamlNodes.keys())
   const jsonNodeIds = new Set(jsonNodes.map((n) => n.id || ''))
