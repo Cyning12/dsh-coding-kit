@@ -3,7 +3,8 @@ import path from 'node:path'
 import { fail, findGate, packageRoot, parseHumanGates, resolveTarget, takeOption } from './cli-shared.ts'
 // DEF-003 阶段二 T3：dry-run 守卫 adapter 复用 cli-checks 单一实现源（与 verify / status 同口径）
 // DEF-003 阶段二 T6：close_* 守卫复用 cli-checks evalCloseGuard（与 task close 同一实现源）
-import { evalCloseGuard, findReview, lintTaskFile, runTestCheck } from './cli-checks.ts'
+// PRD_DEF-003 后续棒：to_00 spec_reviews_retention 复用 cli-checks evalSpecReviewsRetention（与 verify --spec 同一实现源）
+import { evalCloseGuard, evalSpecReviewsRetention, findReview, lintTaskFile, runTestCheck } from './cli-checks.ts'
 import { yamlLoad } from './yaml.ts'
 
 type LifecycleData = {
@@ -193,9 +194,12 @@ function evalGuard(
         detail: `lint FAIL: ${r.errors.map((e) => `${e.rule} ${e.message}`).join('；')}`,
       }
     }
+    // PRD_DEF-003 后续棒：to_00 的 --task 携带待签收 SPEC 路径（非 task 文件 · 守卫 note「不挂 verify --task」）
+    case 'spec_reviews_retention':
+      return evalSpecReviewsRetention(ctx.target, ctx.absTask, ctx.content)
     default:
       // DEF-003 阶段二 T6：close_* 守卫与 task close 同一实现源（cli-checks evalCloseGuard）；
-      // 未登记守卫（close_wiki_promotion / spec_reviews_retention）仍返回 null → 明示未接线
+      // 未登记守卫（仅 close_wiki_promotion）仍返回 null → 明示未接线
       return evalCloseGuard(guardId, ctx.absTask, ctx.content)
   }
 }
