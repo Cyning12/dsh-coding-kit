@@ -69,7 +69,7 @@ describe('DEF-010 子命令 --help 分发（D1 方案 A：仅 argv[0] 拦截）'
   // D2 推荐口径：无 help 分支命令补兜底——--help 打印各自用法并 exit 0，不触发真实业务逻辑
   const FALLBACK_HELP: Array<[string[], RegExp]> = [
     [['task', '--help'], /task lint --file/],
-    [['verify', '--help'], /verify \[--target PATH\] \[--task FILE\]/],
+    [['verify', '--help'], /verify \[--target PATH\] \[--task FILE \| --spec FILE\]/],
     [['gate-check', '--help'], /gate-check \[--target PATH\] \[--task FILE\]/],
     [['audit', '--help'], /audit \[--target PATH\] \[--task FILE\]/],
     [['init', '--help'], /init \[--preset/],

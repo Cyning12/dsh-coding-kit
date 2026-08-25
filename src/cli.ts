@@ -26,9 +26,11 @@ import {
   checkPre30InvokeHats,
   evalCloseGuard,
   findReview,
+  findSpecReview,
   lintTaskFile,
   PLACEHOLDER_RE,
   runTestCheck,
+  shouldSkipSpecAudit,
 } from './cli-checks.ts'
 import { cmdStatus, cmdTimeline } from './cli-status.ts'
 import { cmdSync } from './cli-sync.ts'
@@ -60,10 +62,6 @@ const CLOSE_GUARD_ORDER = [
 // init --preset 合法词表（DEF-013 D1：当前唯一合法值；新增 preset 须先扩展此常量）
 const VALID_PRESETS = ['harness-only'] as const
 
-function notDelivered(cmd: string): never {
-  fail(`${cmd} 本包未交付（不支持）。`)
-}
-
 async function readPkgVersion(): Promise<string> {
   if (process.env.HARNESS_VERSION) return process.env.HARNESS_VERSION
   const raw = await readFile(path.join(packageRoot(), 'package.json'), 'utf8')
@@ -81,7 +79,7 @@ function usage(version: string): void {
   npx dsh-coding-kit upgrade [--target PATH] [--yes]
   npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
   npx dsh-coding-kit check [--target PATH]
-  npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json]
+  npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json]
   npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]
   npx dsh-coding-kit audit [--target PATH] [--task FILE]
   npx dsh-coding-kit task lint --file PATH
@@ -382,10 +380,70 @@ async function cmdAudit(args: string[]): Promise<void> {
   if (!gateOk || !test.ok) fail('ICVO audit 未通过', 2)
 }
 
+// PRD_DEF-003 后续棒：verify --spec 真闸（SPEC→00 前查审查文存在性 · 消灭最后一个 notDelivered 命令面）。
+// 语义映射旧包 @cyning/harness@2.24.0 lib/verify.js verifySpecTarget（差异见 cli-checks.ts findSpecReview 注释与 PR body）：
+//   · 仅查审查文存在性，不跑 gate-check / audit D5 / task lint（与 --task 模式分离）
+//   · bugfix / skip_spec_audit 元信息豁免（shouldSkipSpecAudit）→ PASS
+//   · 缺失 → VERIFY: BLOCKED · missing spec R<n> review · exit 2
+//   · --allow-no-spec-review（canonical · lifecycle.yaml 登记）/ --allow-no-review（别名）真豁免 · 留痕（文本 + JSON waived[]，与 T4 口径一致）
+async function verifySpecMode(
+  target: string,
+  specFile: string,
+  opts: { json: boolean; allowNoSpecReview: boolean; allowNoReview: boolean },
+): Promise<void> {
+  const abs = resolveTaskPath(target, specFile)
+  const label = path.basename(abs)
+  const emitJson = (blocked: boolean, extra?: { waived?: string[]; skipped?: string }): void => {
+    console.log(
+      JSON.stringify(
+        {
+          command: 'verify',
+          target,
+          spec: specFile,
+          blocked,
+          verdict: blocked ? 'BLOCKED' : 'PASS',
+          ...(extra?.skipped ? { skipped: extra.skipped } : {}),
+          ...(extra?.waived && extra.waived.length > 0 ? { waived: extra.waived } : {}),
+        },
+        null,
+        2,
+      ),
+    )
+  }
+  if (!existsSync(abs)) fail(`错误: 未找到 --spec 文件 ${abs}`)
+  const content = await readFile(abs, 'utf8')
+  if (shouldSkipSpecAudit(content)) {
+    if (opts.json) emitJson(false, { skipped: 'bugfix / skip_spec_audit' })
+    else {
+      console.log('verify: INFO · skip SPEC review gate（bugfix / skip_spec_audit）')
+      console.log(`VERIFY: PASS · ${label}`)
+    }
+    return
+  }
+  const allowFlag = opts.allowNoSpecReview ? '--allow-no-spec-review' : opts.allowNoReview ? '--allow-no-review' : null
+  const reviewFound = findSpecReview(target, abs, content)
+  if (!reviewFound && !allowFlag) {
+    if (opts.json) emitJson(true)
+    else console.log(`VERIFY: BLOCKED · missing spec R<n> review · ${label}`)
+    fail('', 2)
+  }
+  const waived: string[] = []
+  if (!reviewFound && allowFlag) {
+    waived.push(`missing spec R<n> review（${allowFlag} 豁免）`)
+    if (!opts.json) {
+      console.log(
+        `verify: 留痕 · 缺 spec R<n> 审查文 · ${allowFlag} 豁免生效（仍须补审并由维护者签 HG-SPEC-SIGNOFF）`,
+      )
+    }
+  }
+  if (opts.json) emitJson(false, { waived })
+  else console.log(`VERIFY: PASS · ${label}`)
+}
+
 async function cmdVerify(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(
-      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE] [--json] [--allow-no-review] [--allow-invoke-gap]',
+      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json] [--allow-no-review] [--allow-invoke-gap] [--allow-no-spec-review]',
     )
     return
   }
@@ -397,16 +455,24 @@ async function cmdVerify(args: string[]): Promise<void> {
   rest = r2
   const { value: specFile, rest: r3 } = takeOption(rest, '--spec')
   rest = r3
-  if (specFile) notDelivered('verify --spec')
   // DEF-003 阶段二 T4/T5：--allow-no-review / --allow-invoke-gap 真生效（硬闸豁免 · 留痕）；
+  // PRD_DEF-003 后续棒：--allow-no-spec-review 真生效（verify --spec 豁免 · 留痕）；
   // 其余 --allow-* 仍走 DEF-011 fail-fast（--allow-lint-fail 等归 DEF-011 交接清单）
   const allowNoReview = rest.includes('--allow-no-review')
   rest = rest.filter((a) => a !== '--allow-no-review')
   const allowInvokeGap = rest.includes('--allow-invoke-gap')
   rest = rest.filter((a) => a !== '--allow-invoke-gap')
+  const allowNoSpecReview = rest.includes('--allow-no-spec-review')
+  rest = rest.filter((a) => a !== '--allow-no-spec-review')
   if (rest.length > 0) fail(`verify 未知参数: ${rest.join(' ')}`)
   const target = resolveTarget(process.cwd(), targetArg)
-  if (!taskFile) fail('verify 须指定 --task FILE（1.1.0 P0 子集）')
+  // --task 与 --spec 互斥（旧包 lib/cli.js#487-491 语义 · exit 1 用法错误）
+  if (taskFile && specFile) fail('verify：--task 与 --spec 互斥')
+  if (specFile) {
+    await verifySpecMode(target, specFile, { json, allowNoSpecReview, allowNoReview })
+    return
+  }
+  if (!taskFile) fail('verify 须指定 --task FILE 或 --spec FILE')
   const abs = resolveTaskPath(target, taskFile)
   const label = path.basename(abs)
   const emitJson = (blocked: boolean, waived?: string[]): void => {

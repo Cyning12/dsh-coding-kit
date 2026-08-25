@@ -21,7 +21,7 @@ const CLI_TS = path.join(KIT, 'src', 'cli.ts')
 const NOT_WIRED_MECHANISMS: string[] = [
   'evaluateInvokeHatsRetention', // src/ 0 命中（旧包 close 集合闸）
   'test/skills.test.js', // 文件不存在（现行为 test/cli-*.test.ts）
-  'verify --spec', // fail-loud 未交付（src/cli.ts#62,#399）
+  // 'verify --spec' 已合入（PRD_DEF-003 后续棒 · src/cli.ts verifySpecMode 真闸）→ 按台账纪律移出名单
   '--graph', // gate-check/verify 吞旗标（src/cli.ts#326,#384 · DEF-011）
   'E8', 'E9', 'E10', // task lint 无 E8–E10（现行 E1–E7 + W1–W4 · src/cli.ts#430-511）
 ]

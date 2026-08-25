@@ -58,9 +58,9 @@ gaps:
     note: "本包 verify 不含 lint 步（src/cli.ts#381-428）· 旧包史实（@cyning/harness warn-only 2.7.0）· 须 FAIL 率下降"
   - id: SPEC-reviews
     title: SPEC 审查文闸
-    status: not_wired
-    closed_in: null
-    note: "verify --spec 本包 fail-loud 未交付（src/cli.ts#62,#399 · exit 2）· 旧包史实（@cyning/harness 2.8.0）· 接线计划见 PRD_DEF-003 阶段二"
+    status: closed
+    closed_in: "unreleased"
+    note: "verify --spec 本包已接线（src/cli.ts verifySpecMode · findSpecReview src/cli-checks.ts 单一实现源 · 缺失 exit 2 BLOCKED · --allow-no-spec-review 豁免留痕 · PRD_DEF-003 后续棒）· 旧包史实（@cyning/harness 2.8.0）"
   - id: FULL-reviews
     title: 裸 verify 全量 reviews + 双路径
     status: not_wired

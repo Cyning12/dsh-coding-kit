@@ -307,7 +307,8 @@ export function evalCloseWikiDelta(absTask: string, content: string): CloseGuard
 }
 
 // close 守卫注册表（lifecycle.yaml#71-111 登记顺序）：未登记 id → null（= 未接线 · 调用方明示，
-// R-TRUTH-1 禁止第三态；当前残留：close_wiki_promotion · spec_reviews_retention）。
+// R-TRUTH-1 禁止第三态；当前残留仅 close_wiki_promotion · to_00 spec_reviews_retention 已接线，
+// 实现见本文件 evalSpecReviewsRetention（verify --spec 同一实现源 · PRD_DEF-003 后续棒））。
 export function evalCloseGuard(
   guardId: string,
   absTask: string,
@@ -359,6 +360,82 @@ const KNOWN_STATUS_TOKENS = new Set([
 ])
 // 自检结论占位符（draft 期合法 · close 前须回填）；cmdTaskClose 亦用
 export const PLACEHOLDER_RE = /^（[^）]*(回填|待填)[^）]*）$/
+
+// ==== verify --spec / spec_reviews_retention（PRD_DEF-003 后续棒 · 单一实现源） ====
+// 语义映射旧包 @cyning/harness@2.24.0 lib/task-meta.js findSpecReview / shouldSkipSpecAudit /
+// extractSpecSlug（lib/verify.js verifySpecTarget 消费）。与旧包差异（PR body 对照）：
+//   ① 目录布局与 findReview 同口径扫 docs/harness/reviews 与 reviews/ 双路径（旧包仅 docs/harness/reviews）；
+//   ② 旧包 --workspace-root 第二仓根旗标本包不支持（DEF-011 fail-fast 清单既有钉死）。
+
+// SPEC slug 推导：Harness 元信息表 spec_slug 优先；回退文件名去 SPEC[-_] 前缀与 _v<n> 版本后缀。
+export function extractSpecSlug(specFile: string, content: string): string {
+  const meta = content ? parseHarnessMeta(content) : {}
+  if (meta.spec_slug) return meta.spec_slug
+  let base = path.basename(specFile, '.md')
+  base = base.replace(/^SPEC[-_]/i, '')
+  base = base.replace(/_v\d+$/, '')
+  return base
+}
+
+// bugfix / 显式跳过 10-spec 审计：不要求 SPEC 审查文（lifecycle.yaml to_00 守卫 note 同口径）。
+// 只认元信息表 / 文首 track 行——避免命中正文里对规则的说明文字（旧包口径逐字映射）。
+export function shouldSkipSpecAudit(content: string): boolean {
+  if (!content) return false
+  const meta = parseHarnessMeta(content)
+  if (String(meta.skip_spec_audit ?? '').toLowerCase() === 'true') return true
+  if (String(meta.track ?? '').toLowerCase() === 'bugfix') return true
+  if (/^>\s*\*\*track\*\*[：:]\s*`?bugfix\b/im.test(content)) return true
+  return false
+}
+
+// SPEC 的 R<n> 审查文存在性（verify --spec 与 lifecycle dry-run to_00 同口径）：
+// 扫描 docs/harness/reviews 与 reviews/ 双路径（与 findReview 布局一致），命名兼容旧包三模式
+//   1. spec_<slug>_audit_R<n>_*.md（推荐）
+//   2. spec_<slug>_ACCEPT_R<n>_*.md
+//   3. task_<slug>_spec_ACCEPT_R<n>_*.md
+export function findSpecReview(target: string, specFile: string, content: string): boolean {
+  const dirs = [path.join(target, 'docs/harness/reviews'), path.join(target, 'reviews')]
+  const stripVer = (s: string) => s.replace(/_v\d+$/, '')
+  const slugNorm = normalizeSlug(stripVer(extractSpecSlug(specFile, content)))
+  const PATTERNS = [
+    /^spec_(.+?)_audit_R\d+_.*\.md$/i,
+    /^spec_(.+?)_ACCEPT_R\d+_.*\.md$/i,
+    /^task_(.+?)_spec_ACCEPT_R\d+_.*\.md$/i,
+  ]
+  for (const reviewsDir of dirs) {
+    if (!existsSync(reviewsDir)) continue
+    for (const name of readdirSync(reviewsDir)) {
+      for (const RE of PATTERNS) {
+        const m = name.match(RE)
+        if (!m) continue
+        if (normalizeSlug(stripVer(m[1])) === slugNorm) return true
+        break
+      }
+    }
+  }
+  return false
+}
+
+// spec_reviews_retention（lifecycle.yaml to_00 登记 · severity=block · allow=--allow-no-spec-review）：
+// dry-run 的 --task 在该转移下携带待签收 SPEC 路径（非 task 文件 · 守卫 note「不挂 verify --task」）。
+export function evalSpecReviewsRetention(
+  target: string,
+  absSpec: string,
+  content: string,
+): CloseGuardOutcome {
+  if (shouldSkipSpecAudit(content)) {
+    return { status: 'pass', detail: 'skip SPEC review gate（bugfix / skip_spec_audit 元信息豁免）' }
+  }
+  return findSpecReview(target, absSpec, content)
+    ? {
+        status: 'pass',
+        detail: 'spec R<n> 审查文存在（docs/harness/reviews 或 reviews/ 命中 spec_*_audit_R<n>_* / *_ACCEPT_R<n>_*）',
+      }
+    : {
+        status: 'fail',
+        detail: 'missing spec R<n> review（docs/harness/reviews 与 reviews/ 均无 · 或 --allow-no-spec-review 豁免）',
+      }
+}
 
 // R<n> 审查文存在性（DEF-003 T4 真值源）：扫描 docs/harness/reviews 与 reviews/ 双路径，
 // 文件名口径 task_<slug>_audit_R<n>_*.md（slug 去 _v<n> 版本后缀）。
