@@ -393,14 +393,23 @@ function generateMermaid(data: YamlGraph): string {
   lines.push('    classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px')
   lines.push('    classDef doc fill:#fff8e1,stroke:#ff6f00,stroke-width:1px')
   lines.push('    classDef infra fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px')
-  const phaseNodes = [...nodes.keys()].filter((n) =>
-    ['Q', 'E', 'U1', 'U2', 'RAG', 'T2S', 'RPC', 'FTS'].includes(n),
-  )
-  const docNodes = [...nodes.keys()].filter((n) => n.includes('DOC'))
-  const infraNodes = [...nodes.keys()].filter((n) => ['AUTH', 'EV_TYPES'].includes(n))
-  if (phaseNodes.length) lines.push(`    class ${phaseNodes.join(',')} phase`)
-  if (docNodes.length) lines.push(`    class ${docNodes.join(',')} doc`)
-  if (infraNodes.length) lines.push(`    class ${infraNodes.join(',')} infra`)
+  // DEF-033（R6）：class 段以 nodes[].kind 为真值源（kind→class 映射，同 generateNodeTable 的 kind 读取）；
+  // 无 kind（或未知 kind）时保留 id 推断作兜底（历史行为，仅供未标注 kind 的旧 yaml）。
+  const KIND_TO_CLASS: Record<string, string> = { flow: 'phase', struct: 'doc', external: 'infra' }
+  const classGroups: Record<string, string[]> = { phase: [], doc: [], infra: [] }
+  for (const [nid, node] of nodes) {
+    let cls = node.kind ? KIND_TO_CLASS[node.kind] : undefined
+    if (!cls) {
+      // 兜底：id 推断（无 kind 或未知 kind 时）
+      if (['Q', 'E', 'U1', 'U2', 'RAG', 'T2S', 'RPC', 'FTS'].includes(nid)) cls = 'phase'
+      else if (nid.includes('DOC')) cls = 'doc'
+      else if (['AUTH', 'EV_TYPES'].includes(nid)) cls = 'infra'
+    }
+    if (cls) classGroups[cls].push(nid)
+  }
+  if (classGroups.phase.length) lines.push(`    class ${classGroups.phase.join(',')} phase`)
+  if (classGroups.doc.length) lines.push(`    class ${classGroups.doc.join(',')} doc`)
+  if (classGroups.infra.length) lines.push(`    class ${classGroups.infra.join(',')} infra`)
   return lines.join('\n')
 }
 
