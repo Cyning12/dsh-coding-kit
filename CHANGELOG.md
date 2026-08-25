@@ -16,6 +16,7 @@
 
 ### Changed（行为变更 · 升级必读）
 
+- **`invoke_retention_profile=full` 帽集合修正（与旧包 2.24.0 口径校对）**：旧包 `INVOKE_RETENTION_PROFILES.full=['00','10','20','30','40','CLOSE']`（lib/task-meta.js · CHANGELOG v2.12 · USER_GUIDE 三处同源）；本包 1.4.0 Wave B 曾解释性定义为 `10,20,22,30,40,50,00,CLOSE`（多列 22/50），经校对**不一致**，已按旧包口径修正为 `10,20,30,40,00,CLOSE`。影响面：`profile=full` 的 task close / verify pre-30 不再要求 22/50 invoke 快照（**放宽**，此前因缺 22/50 被 BLOCKED 的 task 现在可通过；required 集合收窄不破坏已齐套 task）。22/50 仍是合法 hat token（显式 `required_invoke_hats` 与合并文件名照计）。
 - `verify --spec` 不再是「本包未交付」exit 1：缺审查文的 SPEC 现在 **BLOCKED exit 2**（此前调用方只会得到未交付提示）。过渡期可用 `--allow-no-spec-review` 豁免（留痕，不免除补审义务）。
 - 与旧包差异：① 目录布局与本包 findReview 同口径扫双路径（旧包仅 `docs/harness/reviews`）；② 旧包 `--workspace-root` 双仓根旗标本包不支持（DEF-011 fail-fast 清单既有钉死）。
 

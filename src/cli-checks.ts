@@ -34,7 +34,9 @@ export function extractHatsFromInvokeName(name: string): string[] {
 }
 
 // required 集合解析：显式 required_invoke_hats 优先于 invoke_retention_profile；
-// 缺省 default=10,30,40 · minimal=30 · full=全帽（含 CLOSE）；未知 profile 按 default 计并留痕于 source。
+// 缺省 default=10,30,40 · minimal=30 · full=10,20,30,40,00,CLOSE（与旧包 2.24.0 口径已核对一致：
+// lib/task-meta.js INVOKE_RETENTION_PROFILES · 不含 22/50 · 1.6.0 修正前曾多列 22/50）；
+// 未知 profile 按 default 计并留痕于 source。
 export function resolveRequiredInvokeHats(meta: Record<string, string>): {
   required: string[]
   source: string
@@ -51,7 +53,7 @@ export function resolveRequiredInvokeHats(meta: Record<string, string>): {
   if (profile === 'minimal') return { required: ['30'], source: 'invoke_retention_profile=minimal' }
   if (profile === 'full') {
     return {
-      required: ['10', '20', '22', '30', '40', '50', '00', 'CLOSE'],
+      required: ['10', '20', '30', '40', '00', 'CLOSE'],
       source: 'invoke_retention_profile=full',
     }
   }

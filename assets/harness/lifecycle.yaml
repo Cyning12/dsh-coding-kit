@@ -75,7 +75,7 @@ transitions:
         command_or_check: "task close 检查1 · invoke hats 集合覆盖（required_invoke_hats / profile · v2.12+）"
         severity: block
         allow_flag: "--allow-invoke-gap"
-        note: "缺省 default=10,30,40；minimal=30；full 含 CLOSE；40 可与 30 合并文件名；v2.12.1 去掉 invoke_hats_retention 别名"
+        note: "缺省 default=10,30,40；minimal=30；full=10,20,30,40,00,CLOSE（与旧包 2.24.0 口径已核对一致 · 不含 22/50）；40 可与 30 合并文件名；v2.12.1 去掉 invoke_hats_retention 别名"
       - id: close_self_check
         command_or_check: "task close 检查2 · 自检结论已回填"
         severity: block

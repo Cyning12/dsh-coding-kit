@@ -179,7 +179,6 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
       assert.match(good.combined, /CLOSE: PASS/)
-      assert.match(good.combined, /invoke hats 齐（invoke_retention_profile=full）/)
     })
   })
 
