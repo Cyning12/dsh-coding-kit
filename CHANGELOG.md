@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-08-24
+
+> 主题：**提示面改善 · 迁移语义与只读报告** —— DEF-028：`check` 对跨产品线迁移输出迁移语义与 upgrade 建议，不再误报降级；DEF-029：`refresh-ide-blocks` 对发现面内无 marker 文件做旧字面只读扫描并仅报告（`plain_mentions`）；README 补强 K2/K5。纯提示面改善，exit 码不变。
+
 ### Fixed
 
 - **DEF-028 · `check` 跨产品线迁移提示**（反馈 K1）：`manifest.version` 高于包版本且 `manifest.from_version` 非 null（从旧 `@cyning/harness` 产品线迁来）时，输出「跨产品线迁移：`@cyning/harness X → dsh-coding-kit Y`（跨产品线版本号不可比）」并建议 `npx dsh-coding-kit upgrade --yes`，不再误报「可能为降级安装」；`from_version` 为 null 时保持原三向判定文案。exit 码不变（恒 0）。
@@ -12,6 +16,10 @@
 ### Docs
 
 - **README 双语补强**（反馈 K2/K5）：`refresh-ide-blocks` 节注明 preflight 脏树判定为 `git status --porcelain` 语义（untracked 文件计入，`--yes` 前请先 commit 或 `git stash -u`）；备份节建议消费者将 `.cyning-harness/backups/` 加入 `.gitignore`（备份为本机回滚用，不入库）。
+
+### 消费者提示
+
+- 无强制动作：DEF-028 / DEF-029 均为提示面改善，exit 码与写盘语义不变；`--json` 消费者可忽略新增 `plain_mentions` 字段（向后兼容增量）。
 
 ## [1.5.1] - 2026-08-24
 
