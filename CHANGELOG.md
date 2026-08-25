@@ -5,11 +5,14 @@
 ## [Unreleased]
 
 > 主题：**verify --spec 真闸交付** —— 消灭最后一个「明示未交付」命令面：`verify --spec` 从 notDelivered（exit 1）改为 SPEC 审查文存在性真闸；lifecycle dry-run `to_00` 的 `spec_reviews_retention` 守卫同步接线（PRD_DEF-003 后续棒）。
+>
+> 本波增补（1.6.0 Wave B）：**close_wiki_promotion 接线**（最后一个未接线守卫 · 未接线残留清零）· **full profile 帽集合与旧包 2.24.0 口径校对** · **RELEASING.md 发版 checklist**（DEF-001 T5 制度化）。
 
 ### Added
 
 - **`verify --spec FILE` 真闸**（SPEC→00 前查审查文存在性 · 语义映射旧包 @cyning/harness@2.24.0 `verifySpecTarget`/`findSpecReview`/`shouldSkipSpecAudit`）：仅查审查文存在性，不跑 gate-check / D5 / lint（与 --task 模式分离）；审查文扫描 `docs/harness/reviews` 与 `reviews/` 双路径（与 findReview 布局一致），命名兼容 `spec_<slug>_audit_R<n>_*`（推荐）/ `spec_<slug>_ACCEPT_R<n>_*` / `task_<slug>_spec_ACCEPT_R<n>_*`；slug 取元信息 `spec_slug`，回退文件名去 `SPEC[-_]` 前缀与 `_v<n>` 后缀。缺失 → `VERIFY: BLOCKED · missing spec R<n> review` exit 2；`--allow-no-spec-review`（canonical · lifecycle.yaml 登记）与 `--allow-no-review`（别名）真豁免留痕（文本 + JSON `waived[]`，与 T4 口径一致）；`bugfix` / `skip_spec_audit` 元信息豁免 → PASS。`--task` 与 `--spec` 互斥（exit 1）；`--spec` 文件不存在 → exit 1（用法错误）。
-- **lifecycle dry-run `to_00` `spec_reviews_retention` 真求值**：--task 在该转移下携带待签收 SPEC 路径（与 verify --spec 同一实现源 src/cli-checks.ts `evalSpecReviewsRetention`）；缺审查文 → fail 挡（blocked exit 2），`--allow-no-spec-review` 转 warn 留痕；未接线残留仅 `close_wiki_promotion`。
+- **lifecycle dry-run `to_00` `spec_reviews_retention` 真求值**：--task 在该转移下携带待签收 SPEC 路径（与 verify --spec 同一实现源 src/cli-checks.ts `evalSpecReviewsRetention`）；缺审查文 → fail 挡（blocked exit 2），`--allow-no-spec-review` 转 warn 留痕；未接线残留仅 `close_wiki_promotion`（本波已接线 · 见下条）。
+- **task close `close_wiki_promotion` 真闸接线**（最后一个未接线守卫 · PRD_DEF-003 后续棒 · 语义映射旧包 @cyning/harness@2.24.0 `evaluateWikiPromotionPointer`）：`experience_capture=required` 且 `wiki_delta=path` 时，`### 经验总结` 节须含晋升指针（`coding_wiki` / `wiki_promoted:` / `Wiki:` / 与 `wiki_delta` 相同子串），缺 → `CLOSE: BLOCKED` 点名守卫 id（exit 2）；豁免与 `wiki_delta` 共用 `--allow-wiki-gap`（真豁免留痕 · 旧包同口径降旗面）。跳过口径与旧包逐字对齐：未声明 `experience_capture` / ≠required / 无 `wiki_delta`（缺字段由 `close_wiki_delta` 挡）/ `wiki_delta=none|n/a` → 不闸。`lifecycle dry-run` 同口径真求值（src/cli-checks.ts `evalCloseWikiPromotion` 单一实现源 · `evalCloseGuard` 登记）；lifecycle.yaml / 30-execute-code / discipline-coverage「未接线」标注同步转「已接线」，**未接线残留清零**（dry-run `unevaluated_count: 0`）。与旧包差异：经验节标题沿用本包既有约定 `### 经验总结`（同 evalCloseExperience 抽取口径；旧包额外兼容 Experience/经验/lessons 标题）。
 
 ### Changed（行为变更 · 升级必读）
 

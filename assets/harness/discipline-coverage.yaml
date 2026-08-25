@@ -18,9 +18,9 @@ source_audit: "私仓 rethink 2026-07 mechanization-rate 转录聚合 · 2026-08
 gaps:
   - id: WIKI-DELTA
     title: wiki_delta close 闸 + 晋升指针 + wiki export
-    status: not_wired
-    closed_in: null
-    note: "task lint-wiki-delta（src/cli-task-extra.ts#305）与 wiki export（src/cli.ts#97）本包已接线；close_wiki_delta close 闸未接线 · 旧包史实（@cyning/harness 2.18.0 closed · SPEC-experience-wiki-feedback_loop）· 接线计划见 PRD_DEF-003 阶段二"
+    status: closed
+    closed_in: "unreleased"
+    note: "task lint-wiki-delta（src/cli-task-extra.ts）与 wiki export（src/cli.ts）本包已接线；close_wiki_delta close 闸已接线（PRD_DEF-003 阶段二 T6 · src/cli-checks.ts evalCloseWikiDelta）；close_wiki_promotion 晋升指针闸已接线（PRD_DEF-003 后续棒 · src/cli-checks.ts evalCloseWikiPromotion 对照旧包 @cyning/harness@2.24.0 evaluateWikiPromotionPointer · 豁免与 wiki_delta 共用 --allow-wiki-gap · test/cli-task-close-guards.test.ts 钉死）· 旧包史实（@cyning/harness 2.18.0 closed · SPEC-experience-wiki-feedback_loop）"
   - id: G1
     title: task md 结构 lint
     status: closed
