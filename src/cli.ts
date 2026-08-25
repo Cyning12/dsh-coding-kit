@@ -45,8 +45,8 @@ type Manifest = {
   upgraded_at: string
 }
 
-// DEF-003 阶段二 T6：close 守卫求值顺序（lifecycle.yaml#71-111 登记序；
-// close_wiki_promotion 未接线不在列 · dry-run 明示 unevaluated）
+// DEF-003 阶段二 T6 + PRD_DEF-003 后续棒：close 守卫求值顺序（lifecycle.yaml close 转移登记序；
+// 十一项全部已接线 · close_wiki_promotion 后续棒接入）
 const CLOSE_GUARD_ORDER = [
   'close_invoke',
   'close_self_check',
@@ -58,6 +58,7 @@ const CLOSE_GUARD_ORDER = [
   'close_kpi',
   'close_experience',
   'close_wiki_delta',
+  'close_wiki_promotion',
 ]
 // init --preset 合法词表（DEF-013 D1：当前唯一合法值；新增 preset 须先扩展此常量）
 const VALID_PRESETS = ['harness-only'] as const
@@ -614,6 +615,7 @@ async function cmdTaskClose(args: string[]): Promise<void> {
     close_kpi: allowKpiGap ? '--allow-kpi-gap' : undefined,
     close_experience: allowExperienceGap ? '--allow-experience-gap' : undefined,
     close_wiki_delta: allowWikiGap ? '--allow-wiki-gap' : undefined,
+    close_wiki_promotion: allowWikiGap ? '--allow-wiki-gap' : undefined,
   }
   // DEF-003 阶段二 T6：close 守卫逐项真求值（cli-checks evalCloseGuard 单一实现源 ·
   // 与 lifecycle dry-run 同口径；缺项即拒 close 并指明守卫 id；warn 级不挡但留痕）

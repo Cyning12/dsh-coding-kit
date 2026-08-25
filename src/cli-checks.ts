@@ -34,7 +34,9 @@ export function extractHatsFromInvokeName(name: string): string[] {
 }
 
 // required 集合解析：显式 required_invoke_hats 优先于 invoke_retention_profile；
-// 缺省 default=10,30,40 · minimal=30 · full=全帽（含 CLOSE）；未知 profile 按 default 计并留痕于 source。
+// 缺省 default=10,30,40 · minimal=30 · full=10,20,30,40,00,CLOSE（与旧包 2.24.0 口径已核对一致：
+// lib/task-meta.js INVOKE_RETENTION_PROFILES · 不含 22/50 · 1.6.0 修正前曾多列 22/50）；
+// 未知 profile 按 default 计并留痕于 source。
 export function resolveRequiredInvokeHats(meta: Record<string, string>): {
   required: string[]
   source: string
@@ -51,7 +53,7 @@ export function resolveRequiredInvokeHats(meta: Record<string, string>): {
   if (profile === 'minimal') return { required: ['30'], source: 'invoke_retention_profile=minimal' }
   if (profile === 'full') {
     return {
-      required: ['10', '20', '22', '30', '40', '50', '00', 'CLOSE'],
+      required: ['10', '20', '30', '40', '00', 'CLOSE'],
       source: 'invoke_retention_profile=full',
     }
   }
@@ -306,9 +308,63 @@ export function evalCloseWikiDelta(absTask: string, content: string): CloseGuard
   return { status: 'pass', detail: `wiki_delta 路径存在（${raw}）` }
 }
 
-// close 守卫注册表（lifecycle.yaml#71-111 登记顺序）：未登记 id → null（= 未接线 · 调用方明示，
-// R-TRUTH-1 禁止第三态；当前残留仅 close_wiki_promotion · to_00 spec_reviews_retention 已接线，
-// 实现见本文件 evalSpecReviewsRetention（verify --spec 同一实现源 · PRD_DEF-003 后续棒））。
+// close_wiki_promotion（PRD_DEF-003 后续棒 · 语义映射旧包 @cyning/harness@2.24.0
+// lib/close-loop-gates.js evaluateWikiPromotionPointer）：仅 experience_capture=required 且
+// wiki_delta=path 时闸 —— ### 经验总结 节须含晋升指针（coding_wiki / wiki_promoted: / Wiki: /
+// 与 wiki_delta 相同子串）。跳过口径（pass · 与旧包逐字对齐）：未声明 experience_capture /
+// ≠required / 无 wiki_delta（缺字段由 close_wiki_delta 挡）/ wiki_delta=none|n/a。
+// 豁免旗标与 wiki_delta 共用 --allow-wiki-gap（lifecycle.yaml 登记 · 旧包同口径降旗面）。
+// 与旧包差异：经验节标题沿用本包既有约定 ### 经验总结（同 evalCloseExperience 单一抽取口径；
+// 旧包额外兼容 Experience/经验/lessons 标题）。
+const WIKI_PROMO_LITERAL_RE = /^(none|n\/a)$/i
+export function evalCloseWikiPromotion(absTask: string, content: string): CloseGuardOutcome {
+  const meta = parseHarnessMeta(content)
+  const expMode = (meta.experience_capture ?? '').trim()
+  if (!expMode) {
+    return { status: 'pass', detail: '未声明 experience_capture · 跳过 wiki 晋升指针' }
+  }
+  if (expMode.toLowerCase() !== 'required') {
+    return {
+      status: 'pass',
+      detail: `experience_capture=${expMode}（非 required · 跳过 wiki 晋升指针）`,
+    }
+  }
+  const wikiRaw = (meta.wiki_delta ?? '').trim()
+  if (!wikiRaw) {
+    return { status: 'pass', detail: '无 wiki_delta · 晋升指针由 close_wiki_delta 处理' }
+  }
+  if (WIKI_PROMO_LITERAL_RE.test(wikiRaw)) {
+    return { status: 'pass', detail: `wiki_delta=${wikiRaw} · 不要求经验节 wiki 指针` }
+  }
+  const section = extractSection(content, '### 经验总结', '\n##')
+  if (!section) {
+    return {
+      status: 'fail',
+      detail:
+        'experience_capture=required 且 wiki_delta=path 时须有经验节并含 wiki 指针' +
+        '（或 --allow-wiki-gap 豁免）',
+    }
+  }
+  const rel = wikiRaw.replace(/^\.\/+/, '').replace(/\\/g, '/')
+  const ok =
+    /coding_wiki/i.test(section) ||
+    /wiki_promoted\s*[:：]/i.test(section) ||
+    /(?:^|\n)\s*Wiki\s*[:：]/im.test(section) ||
+    (rel !== '' && section.includes(rel))
+  if (!ok) {
+    return {
+      status: 'fail',
+      detail:
+        '经验节缺 wiki 晋升指针（须含 coding_wiki 路径 / wiki_promoted: / Wiki: /' +
+        ' 或与 wiki_delta 相同子串 · 或 --allow-wiki-gap 豁免）',
+    }
+  }
+  return { status: 'pass', detail: '经验节含 wiki 晋升指针' }
+}
+
+// close 守卫注册表（lifecycle.yaml close 转移登记顺序）：未登记 id → null（= 未接线 · 调用方明示，
+// R-TRUTH-1 禁止第三态；登记守卫全部已接线 —— close_wiki_promotion 于 PRD_DEF-003 后续棒接线，
+// to_00 spec_reviews_retention 实现见本文件 evalSpecReviewsRetention（verify --spec 同一实现源））。
 export function evalCloseGuard(
   guardId: string,
   absTask: string,
@@ -335,6 +391,8 @@ export function evalCloseGuard(
       return evalCloseExperience(content)
     case 'close_wiki_delta':
       return evalCloseWikiDelta(absTask, content)
+    case 'close_wiki_promotion':
+      return evalCloseWikiPromotion(absTask, content)
     default:
       return null
   }

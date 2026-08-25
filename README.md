@@ -214,6 +214,10 @@ Structure and frontmatter requirements (same source): directory package `<name>/
 
 Note: scanning/loading is a **behavioral contract of the DSH runtime** and evolves with upstream versions; the anchors above correspond to 0.1.0-rc.8. This package's responsibility ends at writing skills to the correct target and keeping frontmatter valid (`skills check`).
 
+## Releasing (maintainers)
+
+Release process: see [RELEASING.md](RELEASING.md) — hard pre-publish checklist (commit-before-publish · four green gates · version pins · pack dry-run · human-only publish; institutionalizes the DEF-001 lesson).
+
 ## GitHub topics
 
 This repository's current GitHub topics: **`dsh-plugin`** (DSH's official discovery tag — see upstream deepseek-harness `README.md` and `CONTRIBUTING.md`; there is no app store), **`deepseek-harness`**, **`dsh-plugins`**, **`dsh`**. The npm keywords in `package.json` likewise include `dsh-plugin` and `deepseek-harness`.

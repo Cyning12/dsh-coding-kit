@@ -198,8 +198,8 @@ function evalGuard(
     case 'spec_reviews_retention':
       return evalSpecReviewsRetention(ctx.target, ctx.absTask, ctx.content)
     default:
-      // DEF-003 阶段二 T6：close_* 守卫与 task close 同一实现源（cli-checks evalCloseGuard）；
-      // 未登记守卫（仅 close_wiki_promotion）仍返回 null → 明示未接线
+      // DEF-003 阶段二 T6 + 后续棒：close_* 守卫与 task close 同一实现源（cli-checks evalCloseGuard ·
+      // 登记守卫全部已接线）；未来新增登记未接线时仍返回 null → 明示未接线（R-TRUTH-1 第三态面保留）
       return evalCloseGuard(guardId, ctx.absTask, ctx.content)
   }
 }
