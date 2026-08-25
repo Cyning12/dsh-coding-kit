@@ -62,6 +62,8 @@ export function validateGraphYaml(data: YamlGraph | null | undefined, filePath: 
   if (data.schema_version != null && data.schema_version !== SCHEMA_VERSION) {
     errors.push(`schema_version 建议为 ${SCHEMA_VERSION}，实际为 ${data.schema_version}`)
   }
+  // DEF-032③：声明值（data.graph_id）为 graph_id 唯一真值源，须为裸 slug（禁 /）；
+  // 路径命名空间 id（如 l0/00_main）仅作输入兼容定位（allGraphIds / --graph-id），不参与校验与输出。
   if (data.graph_id != null && !/^[a-zA-Z0-9_]+$/.test(String(data.graph_id))) {
     errors.push(`graph_id 非法: ${data.graph_id}`)
   }
@@ -204,19 +206,20 @@ function edgeToGraphV2(edge: YamlEdge): { mark: string; type: string; sync: bool
       inferredType = 'has_metadata'
     } else if (mark === '~>') {
       baseMark = '~>'
-      baseLabel = ''
+      // DEF-031（D1）：拓扑协议标记作为边属性呈现，不丢弃 label 文本
+      baseLabel = label
       inferredType = 'async_calls'
     } else if (mark === '?>') {
       baseMark = '?>'
-      baseLabel = ''
+      baseLabel = label
       inferredType = 'condition'
     } else if (mark.startsWith('::')) {
       baseMark = mark
-      baseLabel = ''
+      baseLabel = label
       inferredType = mark.slice(2) || 'meta'
     } else if (mark.startsWith('[') && mark.endsWith(']')) {
       baseMark = mark
-      baseLabel = ''
+      baseLabel = label
       inferredType = 'depends_on'
     } else if (mark === '->') {
       baseMark = '->'
@@ -274,13 +277,16 @@ export function buildGraphPayload(
     const data = loadYaml(yamlPath)
     const validationErrors = validateGraphYaml(data, yamlPath)
     if (validationErrors.length > 0) throw new GraphYamlError(validationErrors.join('\n'))
+    // DEF-032①（D2）：graph_id 真值源 = yaml 声明值（如 00_main）；
+    // 路径命名空间 id（如 l0/00_main）仅作输入兼容定位，不写入输出。
+    const declaredId = data.graph_id != null ? String(data.graph_id) : graphId
     graphs.push({
-      id: graphId,
+      id: declaredId,
       title: data.title,
       source_yaml_path: path.relative(inputRoot, yamlPath).replace(/\\/g, '/'),
     })
     for (const n of data.nodes || []) {
-      nodes.push({ id: n.id, label: n.label, graph_id: graphId })
+      nodes.push({ id: n.id, label: n.label, graph_id: declaredId })
     }
     for (const e of data.edges || []) {
       const { mark, type, sync, label } = edgeToGraphV2(e)
@@ -292,7 +298,7 @@ export function buildGraphPayload(
         sync,
         label,
         anchors: normalizeAnchors(e.anchors),
-        graph_id: graphId,
+        graph_id: declaredId,
       })
     }
   }
@@ -387,14 +393,23 @@ function generateMermaid(data: YamlGraph): string {
   lines.push('    classDef phase fill:#e1f5fe,stroke:#01579b,stroke-width:2px')
   lines.push('    classDef doc fill:#fff8e1,stroke:#ff6f00,stroke-width:1px')
   lines.push('    classDef infra fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px')
-  const phaseNodes = [...nodes.keys()].filter((n) =>
-    ['Q', 'E', 'U1', 'U2', 'RAG', 'T2S', 'RPC', 'FTS'].includes(n),
-  )
-  const docNodes = [...nodes.keys()].filter((n) => n.includes('DOC'))
-  const infraNodes = [...nodes.keys()].filter((n) => ['AUTH', 'EV_TYPES'].includes(n))
-  if (phaseNodes.length) lines.push(`    class ${phaseNodes.join(',')} phase`)
-  if (docNodes.length) lines.push(`    class ${docNodes.join(',')} doc`)
-  if (infraNodes.length) lines.push(`    class ${infraNodes.join(',')} infra`)
+  // DEF-033（R6）：class 段以 nodes[].kind 为真值源（kind→class 映射，同 generateNodeTable 的 kind 读取）；
+  // 无 kind（或未知 kind）时保留 id 推断作兜底（历史行为，仅供未标注 kind 的旧 yaml）。
+  const KIND_TO_CLASS: Record<string, string> = { flow: 'phase', struct: 'doc', external: 'infra' }
+  const classGroups: Record<string, string[]> = { phase: [], doc: [], infra: [] }
+  for (const [nid, node] of nodes) {
+    let cls = node.kind ? KIND_TO_CLASS[node.kind] : undefined
+    if (!cls) {
+      // 兜底：id 推断（无 kind 或未知 kind 时）
+      if (['Q', 'E', 'U1', 'U2', 'RAG', 'T2S', 'RPC', 'FTS'].includes(nid)) cls = 'phase'
+      else if (nid.includes('DOC')) cls = 'doc'
+      else if (['AUTH', 'EV_TYPES'].includes(nid)) cls = 'infra'
+    }
+    if (cls) classGroups[cls].push(nid)
+  }
+  if (classGroups.phase.length) lines.push(`    class ${classGroups.phase.join(',')} phase`)
+  if (classGroups.doc.length) lines.push(`    class ${classGroups.doc.join(',')} doc`)
+  if (classGroups.infra.length) lines.push(`    class ${classGroups.infra.join(',')} infra`)
   return lines.join('\n')
 }
 
@@ -518,12 +533,14 @@ export function checkGraph(
   if (validationErrors.length > 0) throw new GraphYamlError(validationErrors.join('\n'))
   if (!existsSync(graphJsonPath)) return { ok: false, diff: `graph.json 不存在: ${graphJsonPath}` }
   const graphJson = loadGraphJson(graphJsonPath)
+  // DEF-032②（D3）：与 export 同一 id 真值源（yaml 声明值），路径 id 仅作输入兼容定位。
+  const declaredId = yamlData.graph_id != null ? String(yamlData.graph_id) : graphId
   const jsonNodes = ((graphJson?.nodes as { id?: string; graph_id?: string }[]) || []).filter(
-    (n) => n?.graph_id === graphId,
+    (n) => n?.graph_id === declaredId,
   )
   const jsonEdges = (
     (graphJson?.edges as { graph_id?: string; from?: string; to?: string; mark?: string; type?: string }[]) || []
-  ).filter((e) => e?.graph_id === graphId && 'from' in e && 'to' in e)
+  ).filter((e) => e?.graph_id === declaredId && 'from' in e && 'to' in e)
   const yamlNodes = new Map((yamlData.nodes || []).map((n) => [n.id || '', n]))
   const yamlNodeIds = new Set(yamlNodes.keys())
   const jsonNodeIds = new Set(jsonNodes.map((n) => n.id || ''))

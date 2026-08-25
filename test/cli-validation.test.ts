@@ -213,3 +213,27 @@ describe('DEF-028 check 跨产品线迁移语义（from_version 非 null + 版�
     })
   })
 })
+
+describe('DEF-030 check 跨产品线判据收窄（仅旧包 2.x 产品线 from_version 走迁移文案；kit 线 1.x 回落降级语义）', { concurrency: 1 }, () => {
+  it('D30-1: version=2.24.0 + from_version=2.20.0（旧包 2.x 产品线）→ 跨产品线迁移文案', async () => {
+    await withTemp(async (dir) => {
+      await seedManifest(dir, '2.24.0', '2.20.0')
+      const r = runCli(['check'], dir)
+      assert.equal(r.status, 0, r.combined)
+      assert.match(r.combined, /跨产品线迁移/, r.combined)
+      assert.match(r.combined, /npx dsh-coding-kit upgrade --yes/, '迁移分支须建议 upgrade')
+      assert.doesNotMatch(r.combined, /降级安装/, '旧产品线迁移不得报降级警告')
+    })
+  })
+
+  it('D30-2: version=1.7.0 + from_version=1.5.1（kit 线 1.x）→ 回落原「可能为降级安装」语义，不走迁移文案', async () => {
+    await withTemp(async (dir) => {
+      await seedManifest(dir, '1.7.0', '1.5.1')
+      const r = runCli(['check'], dir)
+      assert.equal(r.status, 0, r.combined)
+      assert.match(r.combined, /高于包版本（可能为降级安装）/, r.combined)
+      assert.doesNotMatch(r.combined, /跨产品线迁移/, 'kit 线 from_version 不得走迁移分支')
+      assert.doesNotMatch(r.combined, /upgrade --yes/, '降级分支不得建议 upgrade')
+    })
+  })
+})

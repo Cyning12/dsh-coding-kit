@@ -119,6 +119,12 @@ function nowUtc(): string {
 
 // 数值三元组比较（x.y.z）：-1 a<b · 0 相等 · 1 a>b。
 // 限制：不支持 pre-release 形态（如 1.2.2-beta.1）；遇非纯数字段按「不等且方向未知」归 -1（维持旧版可升级提示），版本历史均为纯 x.y.z，未来引入 pre-release 再升级比较器。
+// DEF-030：旧包 @cyning/harness 产品线版本形态词表（2.x 系列）。
+// from_version 属 kit 线（1.x）时不算跨产品线迁移，回落原「降级安装」语义。
+function isLegacyHarnessLineVersion(version: string): boolean {
+  return /^2\./.test(version.trim())
+}
+
 function compareVersion(a: string, b: string): number {
   if (a === b) return 0
   const pa = a.split('.').map((p) => Number.parseInt(p, 10))
@@ -238,8 +244,9 @@ async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
   } else if (cmp < 0) {
     console.log('状态: 可升级')
     console.log('建议: npx dsh-coding-kit upgrade --yes')
-  } else if (manifest.from_version != null) {
-    // DEF-028：from_version 非 null = 从旧产品线迁来，跨产品线版本号不可比，输出迁移语义而非降级警告
+  } else if (manifest.from_version != null && isLegacyHarnessLineVersion(manifest.from_version)) {
+    // DEF-028：from_version 属旧包产品线（2.x 系列）= 从旧产品线迁来，跨产品线版本号不可比，输出迁移语义而非降级警告
+    // DEF-030：判据收窄——kit 线（1.x）from_version 不走本分支，回落下方「降级安装」语义
     console.log(
       `状态: 跨产品线迁移：@cyning/harness ${manifest.version} → dsh-coding-kit ${pkgVersion}（跨产品线版本号不可比）`,
     )

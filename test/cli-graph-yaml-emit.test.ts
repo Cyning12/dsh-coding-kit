@@ -136,3 +136,38 @@ describe('DEF-023 generateMermaid IDE 预览兼容', { concurrency: 1 }, () => {
     }
   })
 })
+
+describe('DEF-033 generateMermaid class 按 nodes[].kind（R6 · 无 kind 时 id 推断兜底）', { concurrency: 1 }, () => {
+  const KIND_FIXTURE = {
+    graph_id: 't_kind',
+    title: 'DEF-033 kind fixture',
+    nodes: [
+      { id: 'step_a', label: '流程节点', kind: 'flow' },
+      { id: 'model_x', label: '结构节点', kind: 'struct' },
+      { id: 'svc_y', label: '外部服务', kind: 'external' },
+      { id: 'Q', label: 'id 在白名单但 kind=external', kind: 'external' },
+      { id: 'Z_DOC', label: '无 kind 文档节点（id 兜底）' },
+      { id: 'plain', label: '无 kind 无推断' },
+    ],
+    edges: [{ from: 'step_a', to: 'model_x', label: '->' }],
+  }
+  const block = mermaidBlock(generateMarkdown(KIND_FIXTURE))
+
+  it('kind=flow/struct/external 分别落 phase/doc/infra（不依赖 id 白名单）', () => {
+    assert.ok(block.includes('class step_a phase'), 'kind=flow → phase（id 不在旧白名单也须落 class）')
+    assert.ok(block.includes('class svc_y,Q infra'), 'kind=external → infra')
+  })
+
+  it('kind 优先于 id 白名单：Q 标 kind=external 不得落 phase', () => {
+    const phaseLine = block.split('\n').find((l) => /\bclass\b.*\bphase$/.test(l)) || ''
+    assert.equal(phaseLine.trim(), 'class step_a phase', 'phase 行仅含 kind=flow 节点')
+    assert.ok(!/\bQ\b/.test(phaseLine), 'Q（kind=external）不得出现在 phase 行')
+  })
+
+  it('无 kind 时保留 id 推断兜底（Z_DOC → doc），无 kind 无推断不落 class', () => {
+    assert.ok(block.includes('class model_x,Z_DOC doc'), 'struct + id 兜底 DOC → doc')
+    for (const line of block.split('\n')) {
+      if (/^\s*class\s/.test(line)) assert.ok(!/\bplain\b/.test(line), 'plain 不得落任何 class')
+    }
+  })
+})
