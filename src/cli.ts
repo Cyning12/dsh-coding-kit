@@ -239,6 +239,12 @@ async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
   } else if (cmp < 0) {
     console.log('状态: 可升级')
     console.log('建议: npx dsh-coding-kit upgrade --yes')
+  } else if (manifest.from_version != null) {
+    // DEF-028：from_version 非 null = 从旧产品线迁来，跨产品线版本号不可比，输出迁移语义而非降级警告
+    console.log(
+      `状态: 跨产品线迁移：@cyning/harness ${manifest.version} → dsh-coding-kit ${pkgVersion}（跨产品线版本号不可比）`,
+    )
+    console.log('建议: npx dsh-coding-kit upgrade --yes')
   } else {
     console.log('状态: manifest 版本高于包版本（可能为降级安装）')
     console.log('建议: 核对接入来源（manifest 由更高版本 CLI 写入）')
