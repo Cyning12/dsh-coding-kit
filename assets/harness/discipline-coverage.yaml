@@ -11,7 +11,7 @@
 #   not_wired   = 声称的机制在本包未接线（旧包机制名仅见于「旧包史实」notes · 接线计划见 PRD_DEF-003 阶段二）
 
 version: "1"
-as_of_package_version: "1.6.0"
+as_of_package_version: "1.6.1"
 scope: "Starter · harness/prompts （10/22/30/40 + FRAGMENT）+ TEMPLATE_invoke"
 source_audit: "私仓 rethink 2026-07 mechanization-rate 转录聚合 · 2026-08-24 按 dsh-coding-kit 1.2.3 src/ 逐条重盘（DEF-005 机制台账）"
 
