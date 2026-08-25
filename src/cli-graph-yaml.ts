@@ -204,19 +204,20 @@ function edgeToGraphV2(edge: YamlEdge): { mark: string; type: string; sync: bool
       inferredType = 'has_metadata'
     } else if (mark === '~>') {
       baseMark = '~>'
-      baseLabel = ''
+      // DEF-031（D1）：拓扑协议标记作为边属性呈现，不丢弃 label 文本
+      baseLabel = label
       inferredType = 'async_calls'
     } else if (mark === '?>') {
       baseMark = '?>'
-      baseLabel = ''
+      baseLabel = label
       inferredType = 'condition'
     } else if (mark.startsWith('::')) {
       baseMark = mark
-      baseLabel = ''
+      baseLabel = label
       inferredType = mark.slice(2) || 'meta'
     } else if (mark.startsWith('[') && mark.endsWith(']')) {
       baseMark = mark
-      baseLabel = ''
+      baseLabel = label
       inferredType = 'depends_on'
     } else if (mark === '->') {
       baseMark = '->'
