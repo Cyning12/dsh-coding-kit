@@ -4,9 +4,11 @@
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-08-25
+
 > 主题：**graph 面行为修正 · 判据收窄** —— DEF-030~033（ops-desk-api 1.5.2 实战反馈 D1/D2/D3/R6/K7）：export 保留全部 mark 边 label、graph_id 统一以 yaml 声明值为真值源（export 与 check 互认）、Mermaid class 段消费 nodes[].kind、check 跨产品线迁移判据收窄至旧包 2.x 词表。exit 码不变。
 >
-> **消费者提示（置顶）**：export 输出的 graph_id（命名空间 → 声明值）与边 label（空 → 保留）属**修正性变更**；依赖旧 export 输出的消费方需重跑 `npx dsh-coding-kit graph yaml export`。
+> **消费者提示（置顶）**：export 输出的 graph_id（`l0/00_main` → `00_main`，命名空间 → 声明值）与边 label（空 → 保留）属**修正性变更**；依赖旧 export 输出的消费方需重跑 `npx dsh-coding-kit graph yaml export`；exit 码与写盘路径不变。
 
 ### Fixed
 
