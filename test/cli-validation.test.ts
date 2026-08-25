@@ -42,7 +42,11 @@ async function withTemp(fn: (dir: string) => Promise<void>): Promise<void> {
   }
 }
 
-async function seedManifest(dir: string, version: string): Promise<void> {
+async function seedManifest(
+  dir: string,
+  version: string,
+  fromVersion: string | null = null,
+): Promise<void> {
   const abs = path.join(dir, '.cyning-harness', 'manifest.json')
   await mkdir(path.dirname(abs), { recursive: true })
   await writeFile(
@@ -52,7 +56,7 @@ async function seedManifest(dir: string, version: string): Promise<void> {
         version,
         preset: 'harness-only',
         ide: [],
-        from_version: null,
+        from_version: fromVersion,
         upgraded_at: '2026-01-01T00:00:00Z',
       },
       null,
@@ -165,6 +169,47 @@ describe('DEF-013 init/upgrade/check 取值与版本校验（D1 钉 harness-only
         assert.equal(r.status, 0, r.combined)
         assert.match(r.combined, new RegExp(`${cmd} \\[`))
       }
+    })
+  })
+})
+
+describe('DEF-028 check 跨产品线迁移语义（from_version 非 null + 版本高于 → 迁移文案，不再误报降级；exit 码不变）', { concurrency: 1 }, () => {
+  it('D28-1: version=2.24.0 + from_version=2.24.0（旧包迁来）→ 跨产品线迁移文案、建议 upgrade、无降级警告', async () => {
+    await withTemp(async (dir) => {
+      await seedManifest(dir, '2.24.0', '2.24.0')
+      const r = runCli(['check'], dir)
+      assert.equal(r.status, 0, r.combined)
+      assert.match(r.combined, /跨产品线迁移/, r.combined)
+      assert.match(r.combined, /@cyning\/harness 2\.24\.0/, r.combined)
+      assert.match(r.combined, /dsh-coding-kit 1\.5\.1/, r.combined)
+      assert.match(r.combined, /npx dsh-coding-kit upgrade --yes/, '迁移分支须建议 upgrade')
+      assert.doesNotMatch(r.combined, /降级安装/, '跨产品线迁移场景不得报降级警告')
+    })
+  })
+
+  it('D28-2: version=2.24.0 + from_version=null → 保留原「可能为降级安装」三向判定', async () => {
+    await withTemp(async (dir) => {
+      await seedManifest(dir, '2.24.0')
+      const r = runCli(['check'], dir)
+      assert.equal(r.status, 0, r.combined)
+      assert.match(r.combined, /高于包版本（可能为降级安装）/, r.combined)
+      assert.doesNotMatch(r.combined, /跨产品线迁移/, 'from_version=null 不得走迁移分支')
+      assert.doesNotMatch(r.combined, /upgrade --yes/, '降级分支不得建议 upgrade')
+    })
+  })
+
+  it('D28-3: from_version 非 null 但版本相等/低于 → 走原「已是最新 / 可升级」分支', async () => {
+    await withTemp(async (dir) => {
+      await seedManifest(dir, '1.5.1', '1.2.0')
+      const r1 = runCli(['check'], dir)
+      assert.equal(r1.status, 0, r1.combined)
+      assert.match(r1.combined, /已是最新/, r1.combined)
+      assert.doesNotMatch(r1.combined, /跨产品线迁移/)
+      await seedManifest(dir, '1.2.0', '1.1.0')
+      const r2 = runCli(['check'], dir)
+      assert.equal(r2.status, 0, r2.combined)
+      assert.match(r2.combined, /可升级/, r2.combined)
+      assert.doesNotMatch(r2.combined, /跨产品线迁移/)
     })
   })
 })
