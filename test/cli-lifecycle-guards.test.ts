@@ -151,11 +151,12 @@ describe('DEF-003 T3 · lifecycle dry-run 守卫真接线（to_30）', { concurr
     })
   })
 
-  it('未接线守卫（仅 close_wiki_promotion）明示「未接线」；spec_reviews_retention 已真求值 · 不再是「本波未接线 adapter」', async () => {
+  it('close_wiki_promotion 已接线（PRD_DEF-003 后续棒）：dry-run 真求值 · 未接线残留清零（R-TRUTH-1）', async () => {
     // DEF-003 T6 后：close_invoke / close_review 等 close_* 守卫已真求值（cli-checks evalCloseGuard
-    // 与 task close 同一实现源 · 见 cli-task-close-guards.test.ts）；本用例钉「未接线残留」明示口径。
-    // PRD_DEF-003 后续棒：to_00 spec_reviews_retention 已接线（evalSpecReviewsRetention ·
-    // verify --spec 同一实现源 · 真求值用例见 cli-verify-spec.test.ts），未接线残留仅 close_wiki_promotion。
+    // 与 task close 同一实现源 · 见 cli-task-close-guards.test.ts）。
+    // PRD_DEF-003 后续棒：to_00 spec_reviews_retention（evalSpecReviewsRetention · verify --spec 同一实现源 ·
+    // 真求值用例见 cli-verify-spec.test.ts）与 close_wiki_promotion（evalCloseWikiPromotion ·
+    // 真求值用例见 cli-task-close-guards.test.ts）相继接线 —— 登记守卫不再存在「未接线」残留。
     await withTemp(async (dir) => {
       await seedOk(dir)
       const close = runCli([
@@ -167,8 +168,10 @@ describe('DEF-003 T3 · lifecycle dry-run 守卫真接线（to_30）', { concurr
       assert.equal(close.status, 2, close.combined)
       assert.match(close.combined, /close_review: fail · missing R<n> review/)
       assert.match(close.combined, /close_invoke: fail · missing invoke hats/)
-      assert.match(close.combined, /close_wiki_promotion: unevaluated · 未接线/)
-      assert.match(close.combined, /unevaluated ≠ pass/)
+      // close_wiki_promotion 已接线：fixture 未声明 experience_capture → 跳过 pass（非 unevaluated）
+      assert.match(close.combined, /close_wiki_promotion: pass · 未声明 experience_capture · 跳过 wiki 晋升指针/)
+      assert.match(close.combined, /unevaluated_count: 0/)
+      assert.doesNotMatch(close.combined, /未接线/)
       // to_00：--task 携带的是 task 文件（非 SPEC · 无 skip_spec_audit/bugfix 豁免且
       // 无 spec_*_audit_R<n> 审查文）→ spec_reviews_retention 真求值 fail（不再恒 unevaluated）
       const to00 = runCli([

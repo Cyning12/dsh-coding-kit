@@ -125,11 +125,13 @@ function close(dir: string, extra: string[] = []): RunResult {
   return runCli(['task', 'close', '--file', TASK_REL, ...extra], dir)
 }
 
-// DEF-003 阶段二 T6：task close 接线 lifecycle.yaml#71-111 登记的 close 守卫
+// DEF-003 阶段二 T6：task close 接线 lifecycle.yaml close 转移登记的 close 守卫
 // （required_invoke_hats/profile · close_review · graph_delta · KPI · experience · wiki_delta），
 // 与 lifecycle dry-run 同一实现源（cli-checks evalCloseGuard · 不复制逻辑）。
 // 红→绿钉死：修复前 cmdTaskClose 只查 slug/自检/验收/状态，七项守卫无求值。
-describe('DEF-003 T6 · task close 七项守卫接线', { concurrency: 1 }, () => {
+// PRD_DEF-003 后续棒：close_wiki_promotion 接线（对照旧包 @cyning/harness@2.24.0
+// evaluateWikiPromotionPointer · 红→绿钉死：修复前 evalCloseGuard 对该 id 返回 null → dry-run unevaluated）。
+describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }, () => {
   it('全齐 → CLOSE: PASS（dry-run）；--yes 真归档 active→done', async () => {
     await withTemp(async (dir) => {
       await seedComplete(dir)
@@ -272,6 +274,82 @@ describe('DEF-003 T6 · task close 七项守卫接线', { concurrency: 1 }, () =
     })
   })
 
+  // PRD_DEF-003 后续棒：close_wiki_promotion（语义映射旧包 @cyning/harness@2.24.0
+  // lib/close-loop-gates.js evaluateWikiPromotionPointer · 豁免旗标 --allow-wiki-gap 与 wiki_delta 共用）
+  it('close_wiki_promotion：experience=required 且 wiki_delta=path 缺晋升指针 → BLOCKED 点名守卫；--allow-wiki-gap 豁免留痕；wiki_promoted: 指针 PASS', async () => {
+    await withTemp(async (dir) => {
+      await seedComplete(dir, {
+        experienceCapture: 'required',
+        wikiDelta: 'docs/coding_wiki/lesson_x.md',
+        experienceBody: LONG_EXPERIENCE,
+      })
+      await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
+      const bad = close(dir)
+      assert.equal(bad.status, 2, bad.combined)
+      assert.match(bad.combined, /CLOSE: BLOCKED · cg_ok/)
+      assert.match(bad.combined, /close_wiki_promotion/)
+      assert.match(bad.combined, /晋升指针/)
+      const waived = close(dir, ['--allow-wiki-gap'])
+      assert.equal(waived.status, 0, waived.combined)
+      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /留痕/)
+      assert.match(waived.combined, /--allow-wiki-gap/)
+    })
+    await withTemp(async (dir) => {
+      await seedComplete(dir, {
+        experienceCapture: 'required',
+        wikiDelta: 'docs/coding_wiki/lesson_x.md',
+        experienceBody: LONG_EXPERIENCE + '\nwiki_promoted: docs/coding_wiki/lesson_x.md',
+      })
+      await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: PASS/)
+    })
+  })
+
+  it('close_wiki_promotion 指针词表与跳过口径（旧包对齐）：Wiki: 前缀 / 与 wiki_delta 相同子串 PASS；wiki_delta=none 或 experience≠required 不闸', async () => {
+    // Wiki: 前缀指针
+    await withTemp(async (dir) => {
+      await seedComplete(dir, {
+        experienceCapture: 'required',
+        wikiDelta: 'docs/coding_wiki/lesson_x.md',
+        experienceBody: LONG_EXPERIENCE + '\nWiki: docs/coding_wiki/lesson_x.md（本轮经验已晋升）',
+      })
+      await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: PASS/)
+    })
+    // 与 wiki_delta 相同子串（路径不含 coding_wiki 词 · 纯子串命中）
+    await withTemp(async (dir) => {
+      await seedComplete(dir, {
+        experienceCapture: 'required',
+        wikiDelta: 'docs/wiki/lesson_x.md',
+        experienceBody: LONG_EXPERIENCE + '\n本轮经验已晋升，详见 docs/wiki/lesson_x.md',
+      })
+      await writeRel(dir, 'docs/wiki/lesson_x.md', '# wiki fixture')
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: PASS/)
+    })
+    // wiki_delta=none + experience=required：晋升指针不闸（skip pass）
+    await withTemp(async (dir) => {
+      await seedComplete(dir, { experienceCapture: 'required', experienceBody: LONG_EXPERIENCE })
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: PASS/)
+    })
+    // wiki_delta=path 但 experience_capture=recommended：跳过（不闸）
+    await withTemp(async (dir) => {
+      await seedComplete(dir, { wikiDelta: 'docs/coding_wiki/lesson_x.md' })
+      await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: PASS/)
+    })
+  })
+
   it('缺项指明：多守卫同时 fail → blockers 逐项列出各自守卫 id', async () => {
     await withTemp(async (dir) => {
       await seedComplete(dir, { wikiDelta: null, wikiDeltaNote: null, kpiBody: '（占位）' }, { review: false })
@@ -283,7 +361,7 @@ describe('DEF-003 T6 · task close 七项守卫接线', { concurrency: 1 }, () =
     })
   })
 
-  it('lifecycle dry-run 同口径：close 守卫真求值 · close_wiki_promotion 未接线明示（R-TRUTH-1）', async () => {
+  it('lifecycle dry-run 同口径：close 守卫真求值 · close_wiki_promotion 已接线（R-TRUTH-1 · 未接线残留清零）', async () => {
     await withTemp(async (dir) => {
       await seedComplete(dir)
       const good = runCli([
@@ -298,8 +376,36 @@ describe('DEF-003 T6 · task close 七项守卫接线', { concurrency: 1 }, () =
       assert.match(good.combined, /close_kpi: pass/)
       assert.match(good.combined, /close_experience: pass/)
       assert.match(good.combined, /close_wiki_delta: pass/)
-      assert.match(good.combined, /close_wiki_promotion: unevaluated · 未接线/)
-      assert.match(good.combined, /unevaluated_count: 1/)
+      // 后续棒已接线：fixture experience_capture=recommended → 跳过 pass（非 unevaluated）
+      assert.match(good.combined, /close_wiki_promotion: pass · experience_capture=recommended（非 required · 跳过 wiki 晋升指针）/)
+      assert.match(good.combined, /unevaluated_count: 0/)
+      assert.doesNotMatch(good.combined, /未接线/)
+    })
+    await withTemp(async (dir) => {
+      // dry-run 同口径真求值：experience=required + wiki path 无指针 → fail 挡；--allow-wiki-gap 转 warn 留痕
+      await seedComplete(dir, {
+        experienceCapture: 'required',
+        wikiDelta: 'docs/coding_wiki/lesson_x.md',
+        experienceBody: LONG_EXPERIENCE,
+      })
+      await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
+      const bad = runCli([
+        'lifecycle', 'dry-run',
+        '--transition', 'close', '--from', 'done',
+        '--task', TASK_REL, '--target', dir,
+      ])
+      assert.equal(bad.status, 2, bad.combined)
+      assert.match(bad.combined, /close_wiki_promotion: fail · 经验节缺 wiki 晋升指针/)
+      assert.match(bad.combined, /blocked: true/)
+      const waived = runCli([
+        'lifecycle', 'dry-run',
+        '--transition', 'close', '--from', 'done',
+        '--task', TASK_REL, '--target', dir,
+        '--allow-wiki-gap',
+      ])
+      assert.equal(waived.status, 0, waived.combined)
+      assert.match(waived.combined, /close_wiki_promotion: warn/)
+      assert.match(waived.combined, /--allow-wiki-gap 豁免/)
     })
     await withTemp(async (dir) => {
       await seedComplete(dir, {}, { review: false })

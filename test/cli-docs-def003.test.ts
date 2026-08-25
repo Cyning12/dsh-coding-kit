@@ -77,6 +77,28 @@ const WIRED_CLAIMS_ANCHORS: Array<{ file: string; lineIncludes: string; evidence
     lineIncludes: '本包已接线**：`verify --spec` 真闸',
     evidence: '同（prompts 源 + skills 生成物副本同源更新 · skills check 无 drift）',
   },
+  // PRD_DEF-003 后续棒：close_wiki_promotion 真接线（红→绿钉死 · 对照旧包 @cyning/harness@2.24.0
+  // lib/close-loop-gates.js evaluateWikiPromotionPointer · 与 task close / dry-run 同一实现源）
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'close_wiki_promotion 已接线（见 v2.18 行）',
+    evidence: 'src/cli-checks.ts evalCloseWikiPromotion + evalCloseGuard 登记 · test/cli-task-close-guards.test.ts',
+  },
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'close_wiki_promotion 已接线（PRD_DEF-003 后续棒 · 见 v2.18 行）',
+    evidence: '同上（src/cli-checks.ts evalCloseWikiPromotion）',
+  },
+  {
+    file: 'assets/harness/lifecycle.yaml',
+    lineIncludes: 'close_wiki_promotion —— 已接线（PRD_DEF-003 后续棒',
+    evidence: '同上（src/cli-checks.ts evalCloseWikiPromotion · test/cli-task-close-guards.test.ts 钉死）',
+  },
+  {
+    file: 'assets/harness/prompts/30-execute-code.md',
+    lineIncludes: 'wiki 晋升指针闸 close_wiki_promotion 已接线',
+    evidence: '同（src/cli-checks.ts evalCloseWikiPromotion · test/cli-task-close-guards.test.ts）',
+  },
 ]
 
 function listAssets(dir: string): string[] {
@@ -134,26 +156,19 @@ describe('D-DOC 1.2.4 DEF-003 · 资产声称必须接线或明示未接线', { 
     assert.deepEqual(stale.map(({ a }) => a.file), [], 'allowlist 存在已不命中的腐化条目')
   })
 
-  it('DEF-003 六锚点「未接线」止血标注在位（阶段一 T1 钉死 · 阶段二逐项转已接线锚点）', () => {
-    // T4/T5/T6 后：FRAGMENT（#16 R<n> 审查文 · #18 pre-30 invoke hats）、TEMPLATE_30_gate_stop#17、
-    // TEMPLATE_invoke#47（close 帽集合）均已接线
-    // → 不得残留「未接线」陈旧标注（陈旧标注 = 声称与实现反向漂移，同属 R-TRUTH-1 拦截面）
+  it('DEF-003 「未接线」止血标注清退：后续棒全接线后残留清零 · 不得回潮（R-TRUTH-1）', () => {
+    // T4/T5/T6 + 后续棒（spec_reviews_retention · close_wiki_promotion）后：全部闸声称均已接线
+    // → 任何「未接线」字样残留 = 声称与实现反向漂移（陈旧标注同属 R-TRUTH-1 拦截面）
     for (const rel of [
       'assets/harness/prompts/FRAGMENT_30_gate_verify_v1_zh.md',
       'assets/harness/prompts/TEMPLATE_30_gate_stop.md',
       'assets/skills/harness-20-task-audit/references/TEMPLATE_30_gate_stop.md',
       'assets/harness/invokes/TEMPLATE_invoke.md',
+      'assets/harness/lifecycle.yaml',
+      'assets/harness/prompts/30-execute-code.md',
     ]) {
       const body = readFileSync(path.join(KIT, rel), 'utf8')
       assert.equal(body.includes(UNWIRED_MARK), false, `${rel} 已全接线 · 不得残留未接线标注`)
-    }
-    // 仍未接线残留（仅 close_wiki_promotion · to_00 spec_reviews_retention 后续棒已接线）：止血标注须在
-    for (const rel of [
-      'assets/harness/lifecycle.yaml',
-    ]) {
-      const body = readFileSync(path.join(KIT, rel), 'utf8')
-      assert.ok(body.includes(UNWIRED_MARK), `${rel} 须含未接线标注`)
-      assert.ok(body.includes('PRD_DEF-003 阶段二'), `${rel} 须附接线计划指针`)
     }
   })
 
