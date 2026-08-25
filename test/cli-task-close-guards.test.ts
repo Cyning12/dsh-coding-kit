@@ -162,6 +162,27 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
     })
   })
 
+  it('close_invoke profile=full：帽集合与旧包 2.24.0 口径已核对一致（10,20,30,40,00,CLOSE · 不含 22/50）', async () => {
+    // 对照旧包 @cyning/harness@2.24.0 lib/task-meta.js INVOKE_RETENTION_PROFILES：
+    // full=Object.freeze(['00','10','20','30','40','CLOSE']) —— 22/50 不属于 full；
+    // 1.4.0 Wave B 曾解释性定义为 10,20,22,30,40,50,00,CLOSE（多 22/50），本用例钉死修正后口径。
+    await withTemp(async (dir) => {
+      await seedComplete(dir, { profile: 'full' })
+      const bad = close(dir)
+      assert.equal(bad.status, 2, bad.combined)
+      // fixture 已落 10/30/40 → 缺项恰好 20,00,CLOSE（22/50 不在 required 集合）
+      assert.match(bad.combined, /missing invoke hats: 20,00,CLOSE（invoke_retention_profile=full · 或 --allow-invoke-gap 豁免）/)
+      // 补齐 20/00/close（无需 22/50）→ PASS
+      await writeRel(dir, 'docs/harness/invokes/by-task/cg_ok/invoke_20260803_20_cg_ok.md', '# invoke 20 fixture')
+      await writeRel(dir, 'docs/harness/invokes/by-task/cg_ok/invoke_20260804_00_cg_ok.md', '# invoke 00 fixture')
+      await writeRel(dir, 'docs/harness/invokes/by-task/cg_ok/invoke_20260805_close_cg_ok.md', '# invoke close fixture')
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /invoke hats 齐（invoke_retention_profile=full）/)
+    })
+  })
+
   it('close_review：缺 R<n> 审查文 → BLOCKED；--allow-no-review 豁免留痕', async () => {
     await withTemp(async (dir) => {
       await seedComplete(dir, {}, { review: false })
