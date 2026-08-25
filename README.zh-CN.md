@@ -105,7 +105,9 @@ npx dsh-coding-kit task check --file PATH
 
 `init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
 
-`check` 对 `manifest.version` 与包版本做三向比较（已是最新 / 可升级 / 高于）。自 1.5.2 起，当 manifest 带非 null `from_version`（即从旧 `@cyning/harness` 产品线迁来）时，「高于」分支输出跨产品线迁移语义（`@cyning/harness X → dsh-coding-kit Y`——跨产品线版本号不可比）并建议 `npx dsh-coding-kit upgrade --yes`，不再误报「可能为降级安装」；`from_version` 为 null 时保留原三向文案。exit 码不变（恒 0）。
+`graph yaml export` / `graph yaml check` 的 graph 面行为自 1.6.1 起修正：① export 的 `graph_id` 以 yaml 声明值（`data.graph_id`，如 `00_main`）为唯一真值源写入 graphs/nodes/edges，不再用路径命名空间 id（如 `l0/00_main`）——路径 id 仅作输入兼容定位（`--graph-id` / 文件发现）；② `check --all` 的 graph.json 切片过滤口径与 export 输出对齐（同一声明值真值源），kit 自产根 json 与 check 互认；③ export 保留全部 mark 类型（`?>` / `~>` / `::…` / `[…]`）的边 label（拓扑协议标记作为边属性呈现，不再丢弃 label 文本）；④ compile 生成的 Mermaid class 段按 `nodes[].kind`（`flow`/`struct`/`external` → `phase`/`doc`/`infra`）生成，无 `kind` 时保留 id 推断作兜底。exit 码不变。**消费者注意**：依赖旧 export 输出（命名空间 graph_id / 空 label）的消费方需重跑 `graph yaml export`。
+
+`check` 对 `manifest.version` 与包版本做三向比较（已是最新 / 可升级 / 高于）。自 1.5.2 起，当 manifest 带非 null `from_version`（即从旧 `@cyning/harness` 产品线迁来）时，「高于」分支输出跨产品线迁移语义（`@cyning/harness X → dsh-coding-kit Y`——跨产品线版本号不可比）并建议 `npx dsh-coding-kit upgrade --yes`，不再误报「可能为降级安装」；自 1.6.1 起该判据收窄为 `from_version` 属旧包产品线词表（2.x 系列）才走迁移文案，kit 线（1.x）`from_version` 与 `from_version: null` 均保留原三向文案。exit 码不变（恒 0）。
 
 ### refresh-ide-blocks（R-07 · 存量 IDE 块旧命令字面刷写）
 

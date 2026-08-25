@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+> 主题：**graph 面行为修正 · 判据收窄** —— DEF-030~033（ops-desk-api 1.5.2 实战反馈 D1/D2/D3/R6/K7）：export 保留全部 mark 边 label、graph_id 统一以 yaml 声明值为真值源（export 与 check 互认）、Mermaid class 段消费 nodes[].kind、check 跨产品线迁移判据收窄至旧包 2.x 词表。exit 码不变。
+>
+> **消费者提示（置顶）**：export 输出的 graph_id（命名空间 → 声明值）与边 label（空 → 保留）属**修正性变更**；依赖旧 export 输出的消费方需重跑 `npx dsh-coding-kit graph yaml export`。
+
+### Fixed
+
+- **DEF-030 · check 跨产品线判据收窄**（反馈 K7）：1.5.2 DEF-028 接线以 `from_version != null` 判跨产品线过宽——`from_version` 已是 kit 线版本（如 1.5.1）时，任何「manifest 高于包版本」场景都误走迁移文案。现仅当 `from_version` 属旧包产品线词表（2.x 系列，`@cyning/harness` 版本形态）时输出迁移文案；kit 线（1.x）`from_version` 回落原「manifest 版本高于包版本（可能为降级安装）」语义。exit 码不变（恒 0）。
+- **DEF-031 · graph yaml export 保留边 label**（反馈 D1）：`edgeToGraphV2` 对 mark=`?>` / `~>` / `::…` / `[…]` 不再强制清空 label——拓扑协议标记作为边属性（mark/type）呈现，label 文本全量保留；`->` 与未知 mark 行为不变。
+- **DEF-032 · export graph_id 声明值 + check 对齐**（反馈 D2/D3）：① export（`buildGraphPayload`）优先消费 yaml `data.graph_id` 声明值（如 `00_main`）写 graphs/nodes/edges，不再用路径命名空间 id（如 `l0/00_main`）；② `check --all` 的 graph.json 切片过滤口径与 export 输出对齐（同一声明值真值源），kit 自产根 json 与 check 互认；③ `validateGraphYaml` 禁 `/` 与路径 id 的自相矛盾按实现口径消解——声明值为唯一真值源（裸 slug），路径 id 仅作输入兼容定位（`allGraphIds` / `--graph-id`）。
+- **DEF-033 · generateMermaid class 按 nodes[].kind**（反馈 R6）：class 段不再硬编码 id 白名单，改消费 `nodes[].kind`（`flow`/`struct`/`external` → `phase`/`doc`/`infra`，与 `generateNodeTable` 的 kind 读取同源）；无 `kind`（或未知 kind）时保留 id 推断作兜底（历史行为，仅供未标注 kind 的旧 yaml）。
+
+### 消费者提示
+
+- export 输出 id/label 变化属修正性变更：依赖旧输出（命名空间 graph_id / 空 label）的消费方需重跑 `graph yaml export`；exit 码与写盘路径不变。
+
 ## [1.6.0] - 2026-08-25
 
 > 主题：**零未接线 · 制度固化** —— 消灭最后一个「明示未交付」命令面与最后一个未接线守卫：`verify --spec` 从 notDelivered（exit 1）改为 SPEC 审查文存在性真闸；`close_wiki_promotion` 接线后未接线残留清零；lifecycle dry-run `to_00` 的 `spec_reviews_retention` 守卫同步接线（PRD_DEF-003 后续棒）；RELEASING.md 把发版固化为九步硬 checklist（DEF-001 T5 制度化）。
