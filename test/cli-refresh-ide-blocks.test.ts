@@ -467,3 +467,92 @@ describe('R-07 refresh-ide-blocks', { concurrency: 1 }, () => {
     })
   })
 })
+
+describe('DEF-029 无 marker 文件旧字面仅报告（plain_mentions · 只读扫描 · 绝不改写）', { concurrency: 1 }, () => {
+  const PLAIN_BODY = '# 05-harness-starter\n\n- 运行 `npx @cyning/harness verify --target .`\n'
+
+  it('D29-1: 无 marker .mdc 含 npx @cyning/harness → plain_mentions 命中 A1、schema 仍 @1、文件字节不变、exit 0', async () => {
+    await withTemp(async (dir) => {
+      const rel = '.cursor/rules/05-harness-starter.mdc'
+      await writeRel(dir, rel, PLAIN_BODY)
+      const r = runCli(['refresh-ide-blocks', '--json', '--target', dir], dir)
+      assert.equal(r.status, 0, r.combined)
+      const report = parseJson(r.stdout)
+      assert.equal(report.schema, 'dsh-coding-kit/refresh-ide-blocks-report@1', 'schema 保持 @1 向后兼容增量')
+      const plains = report.plain_mentions as Array<{ path: string; rule: string; count: number }>
+      assert.ok(Array.isArray(plains), `--json 须含 top-level plain_mentions: ${r.stdout}`)
+      const hit = plains.find((m) => m.path === rel && m.rule === 'A1')
+      assert.ok(hit, `plain_mentions 须命中 A1: ${JSON.stringify(plains)}`)
+      assert.equal(hit.count, 1)
+      assert.equal(await readFile(path.join(dir, rel), 'utf8'), PLAIN_BODY, '无 marker 文件绝不改写')
+    })
+  })
+
+  it('D29-2: 人类报告含「无 marker 检出（仅报告，不刷写）」段；dry-run 与 --yes 均报告且零写入', async () => {
+    await withTemp(async (dir) => {
+      const rel = '.cursor/rules/05-harness-starter.mdc'
+      await writeRel(dir, rel, PLAIN_BODY)
+      const rd = runCli(['refresh-ide-blocks', '--target', dir], dir)
+      assert.equal(rd.status, 0, rd.combined)
+      assert.match(rd.combined, /无 marker 检出（仅报告，不刷写）/, rd.combined)
+      assert.ok(rd.combined.includes(rel), rd.combined)
+      const ry = runCli(['refresh-ide-blocks', '--yes', '--target', dir], dir)
+      assert.equal(ry.status, 0, ry.combined)
+      assert.match(ry.combined, /无 marker 检出（仅报告，不刷写）/, ry.combined)
+      assert.equal(await readFile(path.join(dir, rel), 'utf8'), PLAIN_BODY, '--yes 下无 marker 文件仍零写入')
+      assert.equal(existsSync(path.join(dir, '.cyning-harness', 'backups')), false, '仅报告不产生备份')
+    })
+  })
+
+  it('D29-3: A4 防二刷同适用 — 已迁移行 npx dsh-coding-kit skills check 不报；裸 harness skills build 报 A4', async () => {
+    await withTemp(async (dir) => {
+      await writeRel(dir, 'AGENTS.md', '# a\n\n- `npx dsh-coding-kit skills check`\n')
+      await writeRel(dir, 'CLAUDE.md', '# c\n\n- `harness skills build`\n')
+      const r = runCli(['refresh-ide-blocks', '--json', '--target', dir], dir)
+      assert.equal(r.status, 0, r.combined)
+      const report = parseJson(r.stdout)
+      const plains = report.plain_mentions as Array<{ path: string; rule: string; count: number }>
+      assert.ok(Array.isArray(plains), r.stdout)
+      assert.equal(
+        plains.some((m) => m.path === 'AGENTS.md'),
+        false,
+        `已迁移行不得报 plain_mentions: ${JSON.stringify(plains)}`,
+      )
+      const a4 = plains.find((m) => m.path === 'CLAUDE.md' && m.rule === 'A4')
+      assert.ok(a4, `裸 harness skills build 须报 A4: ${JSON.stringify(plains)}`)
+      assert.equal(a4.count, 1)
+    })
+  })
+
+  it('D29-4: 有 product 块文件不进 plain_mentions（块扫描口径不变）；B5 散文引用命中仅报告', async () => {
+    await withTemp(async (dir) => {
+      await writeRel(dir, 'AGENTS.md', M01_BODY)
+      await writeRel(dir, 'CLAUDE.md', '# c\n\n散文引用 @cyning/harness 包名。\n')
+      const r = runCli(['refresh-ide-blocks', '--json', '--target', dir], dir)
+      assert.equal(r.status, 0, r.combined)
+      const report = parseJson(r.stdout)
+      const plains = report.plain_mentions as Array<{ path: string; rule: string; count: number }>
+      assert.equal(
+        plains.some((m) => m.path === 'AGENTS.md'),
+        false,
+        `有 product 块文件不进 plain_mentions: ${JSON.stringify(plains)}`,
+      )
+      const b5 = plains.find((m) => m.path === 'CLAUDE.md' && m.rule === 'B5')
+      assert.ok(b5, `散文裸 @cyning/harness 须命中 B5: ${JSON.stringify(plains)}`)
+      assert.equal(b5.count, 1)
+    })
+  })
+
+  it('D29-5: 仅报告不触发 preflight fail-fast — git 干净仓仅 plain 命中 --yes exit 0、零写入、零备份', async () => {
+    await withTemp(async (dir) => {
+      const rel = '.cursor/rules/05-harness-starter.mdc'
+      await writeRel(dir, rel, PLAIN_BODY)
+      await initGitRepo(dir)
+      const r = runCli(['refresh-ide-blocks', '--yes', '--target', dir], dir)
+      assert.equal(r.status, 0, r.combined)
+      assert.match(r.combined, /无 marker 检出（仅报告，不刷写）/, r.combined)
+      assert.equal(await readFile(path.join(dir, rel), 'utf8'), PLAIN_BODY, '零写入')
+      assert.equal(existsSync(path.join(dir, '.cyning-harness', 'backups')), false, '零备份')
+    })
+  })
+})

@@ -202,6 +202,9 @@ export function rewriteBody(body: string): BodyRewrite {
 
 export type FileStatus = 'ok' | 'mixed' | 'malformed' | 'skipped_local'
 
+// DEF-029：无 marker（0 product 块）文件的整文只读检出条目（仅报告 · 绝不改写）
+export type PlainMention = { rule: RewriteRule | ReportRule; count: number }
+
 export type FileScan = {
   path: string
   blocks: number
@@ -212,6 +215,8 @@ export type FileScan = {
   malformed: Malformed | null
   /** MIXED 时块内现行字面所在行号（1-based，文件级） */
   mixedLines: number[]
+  /** DEF-029：0 product 块文件的整文只读命中（A/B 组同组正则；有 product 块或畸形时为空） */
+  plainMentions: PlainMention[]
   /** 有 A 组替换时的新全文；无变更为 undefined */
   newText?: string
 }
@@ -229,9 +234,21 @@ export function scanIdeFile(rel: string, text: string): FileScan {
     skippedLocalBlocks: localBlocks.length,
     malformed: parsed.malformed,
     mixedLines: [],
+    plainMentions: [],
   }
   if (parsed.malformed) {
     base.status = 'malformed'
+    return base
+  }
+  // DEF-029：0 product 块文件做整文只读扫描（复用 rewriteBody 纯函数取 A/B 组命中计数；
+  // 返回的改写文本直接丢弃——newText 不赋值，写盘路径结构上不含这些文件）
+  if (productBlocks.length === 0) {
+    const r = rewriteBody(text)
+    base.plainMentions = [
+      ...r.rewrites.map((h): PlainMention => ({ rule: h.rule, count: h.count })),
+      ...r.reportOnly.map((h): PlainMention => ({ rule: h.rule, count: h.count })),
+    ]
+    if (localBlocks.length > 0) base.status = 'skipped_local' // 状态口径与原末段一致
     return base
   }
   const lines = text.split('\n')
@@ -267,11 +284,10 @@ export function scanIdeFile(rel: string, text: string): FileScan {
   }
   base.rewrites = [...rewrites.values()]
   base.reportOnly = [...reports.entries()].map(([rule, count]) => ({ rule, count }))
+  // 0 product 块（含 local-only）已在上方 DEF-029 早退分支处理并返回；此处 productBlocks.length >= 1
   if (aHits > 0 && hasCurrent) {
     base.status = 'mixed'
     base.mixedLines = mixedLines
-  } else if (productBlocks.length === 0 && localBlocks.length > 0) {
-    base.status = 'skipped_local'
   }
   if (aHits > 0) base.newText = lines.join('\n')
   return base
@@ -339,6 +355,8 @@ function pruneBackups(target: string): void {
 
 // ---------- T4：命令接线与报告（§5） ----------
 
+// DEF-029：schema 保持 @1（向后兼容增量）——1.5.2 起新增 top-level plain_mentions[] 与 totals.plain_mentions，
+// 仅追加字段、不改既有字段语义；旧消费者忽略新字段即可。
 const REPORT_SCHEMA = 'dsh-coding-kit/refresh-ide-blocks-report@1'
 
 type ReportFile = {
@@ -358,12 +376,15 @@ type Report = {
   mode: 'dry-run' | 'apply'
   git: GitState
   files: ReportFile[]
+  /** DEF-029：无 marker 文件整文只读检出（仅报告，不刷写） */
+  plain_mentions: { path: string; rule: string; count: number }[]
   totals: {
     files_scanned: number
     product_blocks: number
     rewrites: number
     report_only: number
     files_written: number
+    plain_mentions: number
   }
   exit: 0
 }
@@ -411,8 +432,17 @@ function printHumanReport(report: Report, scans: FileScan[]): void {
       console.log('  已写入（备份: ' + (f.backup ?? 'n/a') + '）')
     }
   }
+  // DEF-029：无 marker 文件检出段（仅报告，不刷写；命中不触发 preflight fail-fast）
+  if (report.plain_mentions.length > 0) {
+    console.log('无 marker 检出（仅报告，不刷写）:')
+    for (const m of report.plain_mentions) {
+      const label =
+        (A_LABEL as Record<string, string>)[m.rule] ?? (B_LABEL as Record<string, string>)[m.rule] ?? m.rule
+      console.log('  ' + m.path + ': ' + m.rule + ' ' + label + ': ' + m.count)
+    }
+  }
   const t = report.totals
-  console.log('汇总: files_scanned=' + t.files_scanned + ' product_blocks=' + t.product_blocks + ' rewrites=' + t.rewrites + ' report_only=' + t.report_only + ' files_written=' + t.files_written)
+  console.log('汇总: files_scanned=' + t.files_scanned + ' product_blocks=' + t.product_blocks + ' rewrites=' + t.rewrites + ' report_only=' + t.report_only + ' files_written=' + t.files_written + ' plain_mentions=' + t.plain_mentions)
   console.log('回滚: git checkout -- <path>（干净树 preflight 保证 git 可用时 diff 即回滚面）；非 git 仓以备份 cp 回（.cyning-harness/backups/refresh-ide-blocks/）')
 }
 
@@ -492,12 +522,17 @@ export async function cmdRefreshIdeBlocks(args: string[]): Promise<void> {
   }
   if (apply && toWrites.length > 0) pruneBackups(target)
 
+  // DEF-029：汇总无 marker 文件只读检出（dry-run 与 --yes 均报告；不影响 exit 码与 preflight）
+  const plainMentions = scans.flatMap((s) =>
+    s.plainMentions.map((m) => ({ path: s.path, rule: m.rule as string, count: m.count })),
+  )
   const totals = {
     files_scanned: scans.length,
     product_blocks: scans.reduce((n, s) => n + s.blocks, 0),
     rewrites: scans.reduce((n, s) => n + s.rewrites.reduce((m, h) => m + h.count, 0), 0),
     report_only: scans.reduce((n, s) => n + s.reportOnly.reduce((m, h) => m + h.count, 0), 0),
     files_written: reportFiles.filter((f) => f.written).length,
+    plain_mentions: plainMentions.reduce((n, m) => n + m.count, 0),
   }
   const report: Report = {
     schema: REPORT_SCHEMA,
@@ -505,6 +540,7 @@ export async function cmdRefreshIdeBlocks(args: string[]): Promise<void> {
     mode: apply ? 'apply' : 'dry-run',
     git,
     files: reportFiles,
+    plain_mentions: plainMentions,
     totals,
     exit: 0,
   }

@@ -104,6 +104,8 @@ npx dsh-coding-kit task check --file PATH
 
 `init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`).
 
+`check` compares `manifest.version` against the package version three ways (up-to-date / upgradeable / higher). Since 1.5.2, when the manifest carries a non-null `from_version` (i.e. it was migrated from the old `@cyning/harness` product line), a "higher" comparison reports a cross-product-line migration (`@cyning/harness X → dsh-coding-kit Y` — version numbers are not comparable across product lines) and suggests `npx dsh-coding-kit upgrade --yes`, instead of a misleading "possible downgrade" warning; with `from_version: null` the original three-way wording is kept. The exit code is unchanged (always 0).
+
 ### refresh-ide-blocks (R-07 · literal refresh of stale commands in existing IDE blocks)
 
 IDE blocks embedded by the wizard marker merge in the old `@cyning/harness` era (`<!-- cyning-harness:begin -->` … `<!-- cyning-harness:end -->`) may still hold stale command literals. `refresh-ide-blocks` performs whitelisted literal replacement only inside such **product marker block bodies**:
@@ -121,10 +123,11 @@ IDE blocks embedded by the wizard marker merge in the old `@cyning/harness` era 
   | B1–B5 | `CYNING_HARNESS` / `--with-scripts` / `wizard/` paths / `harness:<name>` script names / other bare `@cyning/harness` references | **reported as "manual only", never replaced** |
 
 - **Discipline**: marker lines and out-of-block content stay byte-untouched; `<!-- cyning-harness-local:begin -->` blocks are never rewritten; `docs/tasks/`, `docs/harness/reviews/`, `docs/harness/invokes/by-task/` (S2) are always write-refused.
-- **preflight (--yes-only fail-fast, exit 2, zero writes)**: a dirty git tree / mixed old-and-new literals in one file (MIXED) / malformed marker pairing (MALFORMED) / any S2 assertion gate hit → refuse to write.
-- **Backup and rollback**: before `--yes` writes, the original bytes are backed up to `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/` (keeping the latest 5 generations); for rollback prefer `git checkout -- <path>`, or copy back from the backup in non-git repos.
+- **preflight (--yes-only fail-fast, exit 2, zero writes)**: a dirty git tree / mixed old-and-new literals in one file (MIXED) / malformed marker pairing (MALFORMED) / any S2 assertion gate hit → refuse to write. The dirty-tree check follows `git status --porcelain` semantics — **untracked files count as dirty**, so commit or `git stash -u` before `--yes`.
+- **Backup and rollback**: before `--yes` writes, the original bytes are backed up to `.cyning-harness/backups/refresh-ide-blocks/<UTCts>/` (keeping the latest 5 generations); for rollback prefer `git checkout -- <path>`, or copy back from the backup in non-git repos. Backups are for local rollback only — consumers should add `.cyning-harness/backups/` to `.gitignore` (do not commit them).
+- **Marker-less files (report-only, never rewritten)**: discovery-surface files with 0 product blocks are scanned read-only with the same A/B rule set; hits appear in a "无 marker 检出（仅报告，不刷写）" human-report section and in the top-level `plain_mentions: [{path, rule, count}]` JSON field (schema stays `@1` — additive, backward-compatible). They never trigger the preflight fail-fast and never change the exit code.
 - **Idempotent**: re-running on already-refreshed files yields 0 group-A hits, `files_written=0`, unchanged bytes, exit 0.
-- `--json` prints a single-line machine report (schema `dsh-coding-kit/refresh-ide-blocks-report@1`).
+- `--json` prints a single-line machine report (schema `dsh-coding-kit/refresh-ide-blocks-report@1`; since 1.5.2 it additively includes `plain_mentions` / `totals.plain_mentions`).
 
 ### D5 test-artifact detection boundary (audit / verify · test_strategy=required)
 
