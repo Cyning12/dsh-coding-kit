@@ -4,22 +4,29 @@
 
 ## [Unreleased]
 
-> 主题：**verify --spec 真闸交付** —— 消灭最后一个「明示未交付」命令面：`verify --spec` 从 notDelivered（exit 1）改为 SPEC 审查文存在性真闸；lifecycle dry-run `to_00` 的 `spec_reviews_retention` 守卫同步接线（PRD_DEF-003 后续棒）。
+## [1.6.0] - 2026-08-25
+
+> 主题：**零未接线 · 制度固化** —— 消灭最后一个「明示未交付」命令面与最后一个未接线守卫：`verify --spec` 从 notDelivered（exit 1）改为 SPEC 审查文存在性真闸；`close_wiki_promotion` 接线后未接线残留清零；lifecycle dry-run `to_00` 的 `spec_reviews_retention` 守卫同步接线（PRD_DEF-003 后续棒）；RELEASING.md 把发版固化为九步硬 checklist（DEF-001 T5 制度化）。
 >
-> 本波增补（1.6.0 Wave B）：**close_wiki_promotion 接线**（最后一个未接线守卫 · 未接线残留清零）· **full profile 帽集合与旧包 2.24.0 口径校对** · **RELEASING.md 发版 checklist**（DEF-001 T5 制度化）。
+> **消费者提示（置顶）**：
+>
+> - **`verify --spec` 从「本包未交付」变真闸**：缺审查文的 SPEC 现在 **BLOCKED exit 2**（此前调用方只会得到 notDelivered exit 1 提示）。使用中的消费者需注意新拦截面；过渡期可用 `--allow-no-spec-review`（或别名 `--allow-no-review`）豁免（真豁免留痕，不免除补审义务）。
+> - **`task close` 新增 `close_wiki_promotion` 求值**：`experience_capture=required` 且 `wiki_delta=path` 的 task，经验节缺晋升指针将从 PASS 变 **BLOCKED exit 2**；与 `wiki_delta` 同享 `--allow-wiki-gap` 过渡豁免（真豁免留痕）。
+> - **`invoke_retention_profile=full` 帽集合收窄**为旧包口径 `10,20,30,40,00,CLOSE`（去 22/50）：行为**放宽**，不破坏已齐套 task，此前因缺 22/50 被 BLOCKED 的 task 现在可通过。
 
 ### Added
 
 - **`verify --spec FILE` 真闸**（SPEC→00 前查审查文存在性 · 语义映射旧包 @cyning/harness@2.24.0 `verifySpecTarget`/`findSpecReview`/`shouldSkipSpecAudit`）：仅查审查文存在性，不跑 gate-check / D5 / lint（与 --task 模式分离）；审查文扫描 `docs/harness/reviews` 与 `reviews/` 双路径（与 findReview 布局一致），命名兼容 `spec_<slug>_audit_R<n>_*`（推荐）/ `spec_<slug>_ACCEPT_R<n>_*` / `task_<slug>_spec_ACCEPT_R<n>_*`；slug 取元信息 `spec_slug`，回退文件名去 `SPEC[-_]` 前缀与 `_v<n>` 后缀。缺失 → `VERIFY: BLOCKED · missing spec R<n> review` exit 2；`--allow-no-spec-review`（canonical · lifecycle.yaml 登记）与 `--allow-no-review`（别名）真豁免留痕（文本 + JSON `waived[]`，与 T4 口径一致）；`bugfix` / `skip_spec_audit` 元信息豁免 → PASS。`--task` 与 `--spec` 互斥（exit 1）；`--spec` 文件不存在 → exit 1（用法错误）。
-- **lifecycle dry-run `to_00` `spec_reviews_retention` 真求值**：--task 在该转移下携带待签收 SPEC 路径（与 verify --spec 同一实现源 src/cli-checks.ts `evalSpecReviewsRetention`）；缺审查文 → fail 挡（blocked exit 2），`--allow-no-spec-review` 转 warn 留痕；未接线残留仅 `close_wiki_promotion`（本波已接线 · 见下条）。
+- **lifecycle dry-run `to_00` `spec_reviews_retention` 真求值**：--task 在该转移下携带待签收 SPEC 路径（与 verify --spec 同一实现源 src/cli-checks.ts `evalSpecReviewsRetention`）；缺审查文 → fail 挡（blocked exit 2），`--allow-no-spec-review` 转 warn 留痕；未接线残留仅 `close_wiki_promotion`（本波已接线 · 见 Changed 节首条）。
 - **RELEASING.md 发版 checklist（DEF-001 T5 制度化）**：仓根新增 `RELEASING.md`，把「publish 前 commit + tag」写为九步硬 checklist —— ① 工作树干净且全部已提交（**禁止从未提交工作树 publish** · DEF-001 教训）② typecheck/test/build/test:lib 四门全绿 ③ CHANGELOG 版本节归拢（日期+版本号）④ 版本钉 pins 同步（README 双文件/测试/ontology/discipline-coverage）⑤ npm version + tag ⑥ PR 合并 + CI 绿（未绿禁合）⑦ `npm pack --dry-run` 核对（无 test/ 泄漏 · files 白名单）⑧ `npm publish`（仅人）⑨ publish 后 `npm view` 核验 + 过程档状态更新。README en/zh-CN 各加一行链接；`test/docs-releasing.test.ts` 钉死九步存在性/顺序/禁令。
-- **task close `close_wiki_promotion` 真闸接线**（最后一个未接线守卫 · PRD_DEF-003 后续棒 · 语义映射旧包 @cyning/harness@2.24.0 `evaluateWikiPromotionPointer`）：`experience_capture=required` 且 `wiki_delta=path` 时，`### 经验总结` 节须含晋升指针（`coding_wiki` / `wiki_promoted:` / `Wiki:` / 与 `wiki_delta` 相同子串），缺 → `CLOSE: BLOCKED` 点名守卫 id（exit 2）；豁免与 `wiki_delta` 共用 `--allow-wiki-gap`（真豁免留痕 · 旧包同口径降旗面）。跳过口径与旧包逐字对齐：未声明 `experience_capture` / ≠required / 无 `wiki_delta`（缺字段由 `close_wiki_delta` 挡）/ `wiki_delta=none|n/a` → 不闸。`lifecycle dry-run` 同口径真求值（src/cli-checks.ts `evalCloseWikiPromotion` 单一实现源 · `evalCloseGuard` 登记）；lifecycle.yaml / 30-execute-code / discipline-coverage「未接线」标注同步转「已接线」，**未接线残留清零**（dry-run `unevaluated_count: 0`）。与旧包差异：经验节标题沿用本包既有约定 `### 经验总结`（同 evalCloseExperience 抽取口径；旧包额外兼容 Experience/经验/lessons 标题）。
 
 ### Changed（行为变更 · 升级必读）
 
+- **task close `close_wiki_promotion` 真闸接线**（最后一个未接线守卫 · PRD_DEF-003 后续棒 · 语义映射旧包 @cyning/harness@2.24.0 `evaluateWikiPromotionPointer`）：`experience_capture=required` 且 `wiki_delta=path` 时，`### 经验总结` 节须含晋升指针（`coding_wiki` / `wiki_promoted:` / `Wiki:` / 与 `wiki_delta` 相同子串），缺 → `CLOSE: BLOCKED` 点名守卫 id（exit 2）；豁免与 `wiki_delta` 共用 `--allow-wiki-gap`（真豁免留痕 · 旧包同口径降旗面）。跳过口径与旧包逐字对齐：未声明 `experience_capture` / ≠required / 无 `wiki_delta`（缺字段由 `close_wiki_delta` 挡）/ `wiki_delta=none|n/a` → 不闸。`lifecycle dry-run` 同口径真求值（src/cli-checks.ts `evalCloseWikiPromotion` 单一实现源 · `evalCloseGuard` 登记）；lifecycle.yaml / 30-execute-code / discipline-coverage「未接线」标注同步转「已接线」，**未接线残留清零**（dry-run `unevaluated_count: 0`）。与旧包差异：经验节标题沿用本包既有约定 `### 经验总结`（同 evalCloseExperience 抽取口径；旧包额外兼容 Experience/经验/lessons 标题）。
 - **`invoke_retention_profile=full` 帽集合修正（与旧包 2.24.0 口径校对）**：旧包 `INVOKE_RETENTION_PROFILES.full=['00','10','20','30','40','CLOSE']`（lib/task-meta.js · CHANGELOG v2.12 · USER_GUIDE 三处同源）；本包 1.4.0 Wave B 曾解释性定义为 `10,20,22,30,40,50,00,CLOSE`（多列 22/50），经校对**不一致**，已按旧包口径修正为 `10,20,30,40,00,CLOSE`。影响面：`profile=full` 的 task close / verify pre-30 不再要求 22/50 invoke 快照（**放宽**，此前因缺 22/50 被 BLOCKED 的 task 现在可通过；required 集合收窄不破坏已齐套 task）。22/50 仍是合法 hat token（显式 `required_invoke_hats` 与合并文件名照计）。
 - `verify --spec` 不再是「本包未交付」exit 1：缺审查文的 SPEC 现在 **BLOCKED exit 2**（此前调用方只会得到未交付提示）。过渡期可用 `--allow-no-spec-review` 豁免（留痕，不免除补审义务）。
 - 与旧包差异：① 目录布局与本包 findReview 同口径扫双路径（旧包仅 `docs/harness/reviews`）；② 旧包 `--workspace-root` 双仓根旗标本包不支持（DEF-011 fail-fast 清单既有钉死）。
+- **「明示未接线 / 未交付」清单归零**：`close_wiki_promotion`（最后一个未接线守卫）与 `verify --spec`（最后一个 notDelivered 命令面）本波全部接线交付，发布物不再含任何「明示未接线 / 未交付」项；lifecycle dry-run `unevaluated_count: 0`。
 
 ## [1.5.2] - 2026-08-24
 
