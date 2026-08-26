@@ -73,7 +73,8 @@ export function validateSkillFrontmatter(fm: Frontmatter | null, source: string)
 export function loadSkillPrompts({ promptsDir }: { promptsDir: string }): SkillPrompt[] {
   const files = readdirSync(promptsDir)
     .filter((f) => f.endsWith('.md'))
-    .filter((f) => !/^(README|FRAGMENT_|TEMPLATE_)/.test(f))
+    // 00 入 prompts Starter，但不进 Agent Skills 默认分发（无 frontmatter / 不建 harness-00）
+    .filter((f) => !/^(README|FRAGMENT_|TEMPLATE_|00-)/.test(f))
     .sort()
   const out: SkillPrompt[] = []
   for (const file of files) {

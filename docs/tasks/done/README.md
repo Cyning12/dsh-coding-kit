@@ -9,6 +9,7 @@
 
 | 关账日 | task | 摘要 |
 |--------|------|------|
+| 2026-08-26 | [`task_00_default_behavior_kit_1_7_1.md`](./task_00_default_behavior_kit_1_7_1.md) | 00 默认编排纪律入 Starter · v1.7.1 |
 | 2026-08-26 | [`task_doc_health_close_binding.md`](./task_doc_health_close_binding.md) | doc-health CLOSE 强绑定 W1–W4 · v1.7.0 |
 
 ---

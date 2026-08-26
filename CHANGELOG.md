@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-08-26
+
+> 主题：**00 默认编排纪律入 Starter** —— 随包发布 `assets/harness/prompts/00-orchestrator.md`（最多起草第一步；中间全派子 Agent；收口 50+CLOSE；有初版则禁亲自实现）。
+>
+> **消费者提示（置顶）**：
+>
+> - **`upgrade` / sync prompts** 后用户仓 `docs/harness/prompts/` 可获得 `00-orchestrator.md`。
+> - **00 仍不进默认 Agent Skills 分发**（仅 prompts 资产；skills build 忽略 `00-*.md`）。
+> - CLI / CLOSE 闸行为与 **1.7.0** 相同（本版无破坏性命令变更）。
+
+### Added
+
+- Starter：`00-orchestrator.md`（默认行为表 + 例外句）
+- `skills` 加载：忽略 `00-*.md`，避免无 frontmatter 打断 build/check
+
+### Changed
+
+- `assets/harness/prompts/README.md`：00 入 Starter 表
+
 ## [1.7.0] - 2026-08-26
 
 > 主题：**doc-health · CLOSE 强绑定** —— dry-run/`PASS` 语义拆分；新增 `close_pr_merged` / `close_hub_index`；`check` 对 `docs/spec` 根级裸 SPEC WARN。试点消费者：ops-desk-api。
