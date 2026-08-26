@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, rm, writeFile, mkdir } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile, mkdir, readFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -66,6 +66,8 @@ function taskMd(opts: FixtureOpts = {}): string {
   if (opts.wikiDeltaNote !== null) meta.push(['wiki_delta_note', opts.wikiDeltaNote ?? 'fixture 无 wiki 增量'])
   meta.push(['experience_capture', opts.experienceCapture ?? 'recommended'])
   meta.push(['kpi_aggregator', opts.kpiAggregator ?? 'CLOSE'])
+  meta.push(['close_pr_policy', 'exempt'])
+  meta.push(['close_pr_exempt_note', 'fixture close guards'])
   return [
     '# Task cg_ok',
     '',
@@ -132,12 +134,13 @@ function close(dir: string, extra: string[] = []): RunResult {
 // PRD_DEF-003 后续棒：close_wiki_promotion 接线（对照旧包 @cyning/harness@2.24.0
 // evaluateWikiPromotionPointer · 红→绿钉死：修复前 evalCloseGuard 对该 id 返回 null → dry-run unevaluated）。
 describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }, () => {
-  it('全齐 → CLOSE: PASS（dry-run）；--yes 真归档 active→done', async () => {
+  it('全齐 → CLOSE: READY（dry-run）；--yes → CLOSE: PASS 真归档 active→done', async () => {
     await withTemp(async (dir) => {
       await seedComplete(dir)
       const dry = close(dir)
       assert.equal(dry.status, 0, dry.combined)
-      assert.match(dry.combined, /CLOSE: PASS · cg_ok/)
+      assert.match(dry.combined, /CLOSE: READY · cg_ok/)
+      assert.doesNotMatch(dry.combined, /CLOSE: PASS/)
       const yes = close(dir, ['--yes'])
       assert.equal(yes.status, 0, yes.combined)
       assert.match(yes.combined, /CLOSE: PASS · cg_ok/)
@@ -156,7 +159,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(bad.combined, /missing invoke hats: 30,40/)
       const waived = close(dir, ['--allow-invoke-gap'])
       assert.equal(waived.status, 0, waived.combined)
-      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /CLOSE: READY/)
       assert.match(waived.combined, /留痕/)
       assert.match(waived.combined, /--allow-invoke-gap/)
     })
@@ -178,7 +181,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/harness/invokes/by-task/cg_ok/invoke_20260805_close_cg_ok.md', '# invoke close fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -191,7 +194,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(bad.combined, /missing R<n> review/)
       const waived = close(dir, ['--allow-no-review'])
       assert.equal(waived.status, 0, waived.combined)
-      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /CLOSE: READY/)
       assert.match(waived.combined, /留痕/)
     })
   })
@@ -202,7 +205,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       const warnOnly = close(dir)
       assert.equal(warnOnly.status, 0, warnOnly.combined)
       assert.match(warnOnly.combined, /close: warn · close_graph_delta/)
-      assert.match(warnOnly.combined, /CLOSE: PASS/)
+      assert.match(warnOnly.combined, /CLOSE: READY/)
     })
     await withTemp(async (dir) => {
       await seedComplete(dir, { graphDeltaNote: null })
@@ -220,7 +223,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/_tech_graph/flow_x.md', '# graph fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -233,14 +236,14 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(bad.combined, /可解析分数/)
       const waived = close(dir, ['--allow-kpi-gap'])
       assert.equal(waived.status, 0, waived.combined)
-      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /CLOSE: READY/)
       assert.match(waived.combined, /--allow-kpi-gap/)
     })
     await withTemp(async (dir) => {
       await seedComplete(dir, { kpiBody: '| D1 | 4 |\n| D2 | 5 |' })
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -252,14 +255,14 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(bad.combined, /close_experience/)
       const waived = close(dir, ['--allow-experience-gap'])
       assert.equal(waived.status, 0, waived.combined)
-      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /CLOSE: READY/)
       assert.match(waived.combined, /--allow-experience-gap/)
     })
     await withTemp(async (dir) => {
       await seedComplete(dir, { experienceCapture: 'required', experienceBody: LONG_EXPERIENCE })
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -272,7 +275,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(missing.combined, /缺 wiki_delta 字段/)
       const waived = close(dir, ['--allow-wiki-gap'])
       assert.equal(waived.status, 0, waived.combined)
-      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /CLOSE: READY/)
       assert.match(waived.combined, /--allow-wiki-gap/)
     })
     await withTemp(async (dir) => {
@@ -290,7 +293,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -311,7 +314,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(bad.combined, /晋升指针/)
       const waived = close(dir, ['--allow-wiki-gap'])
       assert.equal(waived.status, 0, waived.combined)
-      assert.match(waived.combined, /CLOSE: PASS/)
+      assert.match(waived.combined, /CLOSE: READY/)
       assert.match(waived.combined, /留痕/)
       assert.match(waived.combined, /--allow-wiki-gap/)
     })
@@ -324,7 +327,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -339,7 +342,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
     // 与 wiki_delta 相同子串（路径不含 coding_wiki 词 · 纯子串命中）
     await withTemp(async (dir) => {
@@ -351,14 +354,14 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/wiki/lesson_x.md', '# wiki fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
     // wiki_delta=none + experience=required：晋升指针不闸（skip pass）
     await withTemp(async (dir) => {
       await seedComplete(dir, { experienceCapture: 'required', experienceBody: LONG_EXPERIENCE })
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
     // wiki_delta=path 但 experience_capture=recommended：跳过（不闸）
     await withTemp(async (dir) => {
@@ -366,7 +369,7 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       await writeRel(dir, 'docs/coding_wiki/lesson_x.md', '# wiki fixture')
       const good = close(dir)
       assert.equal(good.status, 0, good.combined)
-      assert.match(good.combined, /CLOSE: PASS/)
+      assert.match(good.combined, /CLOSE: READY/)
     })
   })
 
@@ -398,6 +401,8 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.match(good.combined, /close_wiki_delta: pass/)
       // 后续棒已接线：fixture experience_capture=recommended → 跳过 pass（非 unevaluated）
       assert.match(good.combined, /close_wiki_promotion: pass · experience_capture=recommended（非 required · 跳过 wiki 晋升指针）/)
+      assert.match(good.combined, /close_pr_merged: pass/)
+      assert.match(good.combined, /close_hub_index: pass/)
       assert.match(good.combined, /unevaluated_count: 0/)
       assert.doesNotMatch(good.combined, /未接线/)
     })
@@ -446,6 +451,65 @@ describe('DEF-003 T6 + 后续棒 · task close 守卫接线', { concurrency: 1 }
       assert.equal(waived.status, 0, waived.combined)
       assert.match(waived.combined, /close_review: warn/)
       assert.match(waived.combined, /--allow-no-review 豁免/)
+    })
+  })
+
+  it('close_pr_merged：DSH_CLOSE_PR_STATE=OPEN → BLOCKED；MERGED 过；--allow-no-pr-merge 豁免', async () => {
+    await withTemp(async (dir) => {
+      await seedComplete(dir)
+      // 去掉 fixture exempt，强制走探测
+      const abs = path.join(dir, TASK_REL)
+      let body = await readFile(abs, 'utf8')
+      body = body
+        .replace(/\| \*\*close_pr_policy\*\* \| `exempt` \|\n/, '')
+        .replace(/\| \*\*close_pr_exempt_note\*\* \| `fixture close guards` \|\n/, '')
+      await writeFile(abs, body, 'utf8')
+      const prev = process.env.DSH_CLOSE_PR_STATE
+      try {
+        process.env.DSH_CLOSE_PR_STATE = 'OPEN'
+        const bad = close(dir)
+        assert.equal(bad.status, 2, bad.combined)
+        assert.match(bad.combined, /close_pr_merged/)
+        assert.match(bad.combined, /CLOSE: BLOCKED/)
+        const waived = close(dir, ['--allow-no-pr-merge'])
+        assert.equal(waived.status, 0, waived.combined)
+        assert.match(waived.combined, /CLOSE: READY/)
+        assert.match(waived.combined, /--allow-no-pr-merge/)
+        process.env.DSH_CLOSE_PR_STATE = 'MERGED'
+        const good = close(dir)
+        assert.equal(good.status, 0, good.combined)
+        assert.match(good.combined, /CLOSE: READY/)
+      } finally {
+        if (prev === undefined) delete process.env.DSH_CLOSE_PR_STATE
+        else process.env.DSH_CLOSE_PR_STATE = prev
+      }
+    })
+  })
+
+  it('close_hub_index：有 Hub 无行 → BLOCKED；补行过；close_hub_gate=false skip；--allow-no-hub', async () => {
+    await withTemp(async (dir) => {
+      await seedComplete(dir)
+      await writeRel(dir, 'docs/tasks/done/README.md', '# Hub\n\n| 关账日 | task |\n|--------|------|\n')
+      const bad = close(dir)
+      assert.equal(bad.status, 2, bad.combined)
+      assert.match(bad.combined, /close_hub_index/)
+      assert.match(bad.combined, /CLOSE: BLOCKED/)
+      const waived = close(dir, ['--allow-no-hub'])
+      assert.equal(waived.status, 0, waived.combined)
+      assert.match(waived.combined, /--allow-no-hub/)
+      await writeRel(
+        dir,
+        'docs/tasks/done/README.md',
+        '# Hub\n\n| 关账日 | task |\n|--------|------|\n| 2026-08-26 | [`task_cg_ok_v1.md`](./task_cg_ok_v1.md) |\n',
+      )
+      const good = close(dir)
+      assert.equal(good.status, 0, good.combined)
+      assert.match(good.combined, /CLOSE: READY/)
+      await writeRel(dir, '.cyning-harness/local.json', JSON.stringify({ close_hub_gate: false }))
+      await writeRel(dir, 'docs/tasks/done/README.md', '# Hub empty again\n')
+      const skipped = close(dir)
+      assert.equal(skipped.status, 0, skipped.combined)
+      assert.match(skipped.combined, /CLOSE: READY/)
     })
   })
 })

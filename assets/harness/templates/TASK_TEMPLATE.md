@@ -28,6 +28,9 @@
 | **wiki_delta** | `docs/coding_wiki/<file>.md` 或 `none` / `n/a` |
 | **wiki_delta_note** | （`none` / `n/a` 时 **必填**理由） |
 | **wiki_promotion** | `none` / `stable` / `context` / `volatile` / `mixed`（可选） |
+| **related_pr** | （可选）`#N` / URL；缺省由 `gh pr view` 关联当前分支 |
+| **close_pr_policy** | `required`（默认）/ `exempt` |
+| **close_pr_exempt_note** | （`exempt` 时 **必填**） |
 | **experience_capture** | `required` / `recommended` / `not_applicable` |
 | **experience_capture_note** | （`not_applicable` 时 **必填**理由） |
 | **kpi_rubric** | `KPI_RUBRIC_v1_2` |

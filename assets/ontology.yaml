@@ -4,7 +4,7 @@
 # （该命令校验 HGM 公理，不校验本文件；独立的 ontology-check 本包未接线）
 
 version: "1.3"
-product_semver: "1.6.1" # 自旧包 cyning-harness 2.0.4 迁移，对齐本包 package.json
+product_semver: "1.7.0" # 自旧包 cyning-harness 2.0.4 迁移，对齐本包 package.json
 license: MIT
 
 classes:

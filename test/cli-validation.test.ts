@@ -126,7 +126,7 @@ describe('DEF-013 init/upgrade/check 取值与版本校验（D1 钉 harness-only
         version: string
         from_version: string
       }
-      assert.equal(mf.version, '1.6.1')
+      assert.equal(mf.version, '1.7.0')
       assert.equal(mf.from_version, '1.2.0')
     })
   })
@@ -152,9 +152,9 @@ describe('DEF-013 init/upgrade/check 取值与版本校验（D1 钉 harness-only
     })
   })
 
-  it('T3 等版本回归: manifest 1.6.1 = 包版本 → status 0，含「已是最新」', async () => {
+  it('T3 等版本回归: manifest 1.7.0 = 包版本 → status 0，含「已是最新」', async () => {
     await withTemp(async (dir) => {
-      await seedManifest(dir, '1.6.1')
+      await seedManifest(dir, '1.7.0')
       const r = runCli(['check'], dir)
       assert.equal(r.status, 0, r.combined)
       assert.match(r.combined, /已是最新/)
@@ -181,7 +181,7 @@ describe('DEF-028 check 跨产品线迁移语义（from_version 非 null + 版�
       assert.equal(r.status, 0, r.combined)
       assert.match(r.combined, /跨产品线迁移/, r.combined)
       assert.match(r.combined, /@cyning\/harness 2\.24\.0/, r.combined)
-      assert.match(r.combined, /dsh-coding-kit 1\.6\.1/, r.combined)
+      assert.match(r.combined, /dsh-coding-kit 1\.7\.0/, r.combined)
       assert.match(r.combined, /npx dsh-coding-kit upgrade --yes/, '迁移分支须建议 upgrade')
       assert.doesNotMatch(r.combined, /降级安装/, '跨产品线迁移场景不得报降级警告')
     })
@@ -200,7 +200,7 @@ describe('DEF-028 check 跨产品线迁移语义（from_version 非 null + 版�
 
   it('D28-3: from_version 非 null 但版本相等/低于 → 走原「已是最新 / 可升级」分支', async () => {
     await withTemp(async (dir) => {
-      await seedManifest(dir, '1.6.1', '1.2.0')
+      await seedManifest(dir, '1.7.0', '1.2.0')
       const r1 = runCli(['check'], dir)
       assert.equal(r1.status, 0, r1.combined)
       assert.match(r1.combined, /已是最新/, r1.combined)
@@ -226,9 +226,9 @@ describe('DEF-030 check 跨产品线判据收窄（仅旧包 2.x 产品线 from_
     })
   })
 
-  it('D30-2: version=1.7.0 + from_version=1.5.1（kit 线 1.x）→ 回落原「可能为降级安装」语义，不走迁移文案', async () => {
+  it('D30-2: version=1.8.0 + from_version=1.5.1（kit 线 1.x · 高于包）→ 回落原「可能为降级安装」语义，不走迁移文案', async () => {
     await withTemp(async (dir) => {
-      await seedManifest(dir, '1.7.0', '1.5.1')
+      await seedManifest(dir, '1.8.0', '1.5.1')
       const r = runCli(['check'], dir)
       assert.equal(r.status, 0, r.combined)
       assert.match(r.combined, /高于包版本（可能为降级安装）/, r.combined)

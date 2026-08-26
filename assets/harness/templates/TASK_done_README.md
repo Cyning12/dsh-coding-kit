@@ -56,11 +56,12 @@
 
 ## 关账维护（checklist）
 
-1. `git mv {tasks_root}/active/<file>.md {tasks_root}/done/<domain>/`  
+1. `git mv {tasks_root}/active/<file>.md {tasks_root}/done/<domain>/`（或 `npx dsh-coding-kit task close --file … --yes`）  
 2. 头部 `> **状态**：done（YYYY-MM-DD 验收通过）`  
-3. **本 Hub** 对应域表 **追加一行**（日期 · 链接 · freeze_id 一行摘要）  
+3. **本 Hub** 对应域表 **追加一行**（日期 · 链接 · freeze_id 一行摘要）—— **机械闸** `close_hub_index`（有本文件则默认要求；仓级 `close_hub_gate: false` 可关）  
 4. **禁止**向 `_views/done.md` 追加长列表（保持 ≤15 行薄指针）  
 5. 可选：同步 `_views/done_by_domain.md` 分组表  
+6. dry-run 仅 `CLOSE: READY`；完成态才 `CLOSE: PASS`
 
 ---
 

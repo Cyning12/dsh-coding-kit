@@ -7,6 +7,7 @@
 # v2.17+ close 增补：close_graph_delta · close_kpi · close_experience —— 已接线（PRD_DEF-003 阶段二 T6 · 同 T6 锚点）；close_wiki_promotion 已接线（PRD_DEF-003 后续棒 · 见 v2.18 行）
 # v2.18+ close 增补：close_wiki_delta 已接线（PRD_DEF-003 阶段二 T6）；close_wiki_promotion —— 已接线（PRD_DEF-003 后续棒 · src/cli-checks.ts evalCloseWikiPromotion 对照旧包 2.24.0 evaluateWikiPromotionPointer · test/cli-task-close-guards.test.ts 钉死）
 # v2.19+ to_00：spec_reviews_retention 已接线（verify --spec 真闸交付 · src/cli-checks.ts findSpecReview/evalSpecReviewsRetention 单一实现源 · PRD_DEF-003 后续棒 · test/cli-verify-spec.test.ts 钉死）；to_00/to_30/close 登记守卫全部已接线（dry-run 恒真求值 · 无 unevaluated 残留）
+# v1.7.0+ close：close_pr_merged · close_hub_index 已接线（doc-health SPEC · src/cli-checks.ts · test/cli-task-close-guards.test.ts）
 # 只读展示：npx dsh-coding-kit lifecycle show [--json]
 # 本包未附带 JSON Schema（旧 schema 指针已移除 · DEF-009）
 
@@ -68,8 +69,8 @@ transitions:
     from: ["done"]
     to: archived
     hat: "close"
-    description: "task close · active→done 归档"
-    # 守卫接线真值（dsh-coding-kit）：close_* 十一项全部已接线（src/cli-checks.ts evalCloseGuard · task close 与 lifecycle dry-run 同一实现源 · PRD_DEF-003 阶段二 T6 + 后续棒 close_wiki_promotion · test/cli-task-close-guards.test.ts 钉死）
+    description: "task close · active→done 归档（逻辑态 done→archived）"
+    # 守卫接线真值：既有 close_* + doc-health close_pr_merged / close_hub_index（src/cli-checks.ts evalCloseGuard · task close 与 lifecycle dry-run 同一实现源）
     guards:
       - id: close_invoke
         command_or_check: "task close 检查1 · invoke hats 集合覆盖（required_invoke_hats / profile · v2.12+）"
@@ -114,3 +115,13 @@ transitions:
         severity: block
         allow_flag: "--allow-wiki-gap"
         note: "本包已接线（PRD_DEF-003 后续棒 · src/cli-checks.ts evalCloseWikiPromotion · 与 task close / dry-run 同一实现源 · 豁免与 wiki_delta 共用 --allow-wiki-gap）"
+      - id: close_pr_merged
+        command_or_check: "task close · 关联 PR MERGED（related_pr / gh pr view 当前分支 · doc-health）"
+        severity: block
+        allow_flag: "--allow-no-pr-merge"
+        note: "close_pr_policy=exempt + close_pr_exempt_note 亦可；不自动 gh pr merge"
+      - id: close_hub_index
+        command_or_check: "task close · Hub 索引行（检测 Hub 文件则要求含 basename · A+manifest 可关）"
+        severity: block
+        allow_flag: "--allow-no-hub"
+        note: "仓级 close_hub_gate 缺省 true；false 则 skip；无 Hub 文件 skip"

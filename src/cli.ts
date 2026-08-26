@@ -27,6 +27,7 @@ import {
   evalCloseGuard,
   findReview,
   findSpecReview,
+  listBareSpecFiles,
   lintTaskFile,
   PLACEHOLDER_RE,
   runTestCheck,
@@ -45,8 +46,7 @@ type Manifest = {
   upgraded_at: string
 }
 
-// DEF-003 阶段二 T6 + PRD_DEF-003 后续棒：close 守卫求值顺序（lifecycle.yaml close 转移登记序；
-// 十一项全部已接线 · close_wiki_promotion 后续棒接入）
+// DEF-003 阶段二 T6 + PRD_DEF-003 后续棒 + doc-health：close 守卫求值顺序
 const CLOSE_GUARD_ORDER = [
   'close_invoke',
   'close_self_check',
@@ -59,6 +59,8 @@ const CLOSE_GUARD_ORDER = [
   'close_experience',
   'close_wiki_delta',
   'close_wiki_promotion',
+  'close_pr_merged',
+  'close_hub_index',
 ]
 // init --preset 合法词表（DEF-013 D1：当前唯一合法值；新增 preset 须先扩展此常量）
 const VALID_PRESETS = ['harness-only'] as const
@@ -254,6 +256,13 @@ async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
   } else {
     console.log('状态: manifest 版本高于包版本（可能为降级安装）')
     console.log('建议: 核对接入来源（manifest 由更高版本 CLI 写入）')
+  }
+  const bareSpecs = listBareSpecFiles(target)
+  if (bareSpecs.length > 0) {
+    console.log(
+      `WARN: docs/spec 根级裸 SPEC-*.md（${bareSpecs.length}）· 见 docs/spec/doc-health（新 SPEC 须专属夹）`,
+    )
+    for (const f of bareSpecs) console.log(`  - docs/spec/${f}`)
   }
 }
 
@@ -584,13 +593,15 @@ async function cmdTaskLint(args: string[]): Promise<void> {
 
 async function cmdTaskClose(args: string[]): Promise<void> {
   const yes = args.includes('--yes')
-  // DEF-003 阶段二 T6：close 守卫豁免旗标（lifecycle.yaml allow_flag 登记 · 真豁免并留痕）
+  // DEF-003 阶段二 T6 + doc-health：close 守卫豁免旗标
   const allowUnchecked = args.includes('--allow-unchecked')
   const allowInvokeGap = args.includes('--allow-invoke-gap')
   const allowNoReview = args.includes('--allow-no-review')
   const allowKpiGap = args.includes('--allow-kpi-gap')
   const allowExperienceGap = args.includes('--allow-experience-gap')
   const allowWikiGap = args.includes('--allow-wiki-gap')
+  const allowNoPrMerge = args.includes('--allow-no-pr-merge')
+  const allowNoHub = args.includes('--allow-no-hub')
   let rest = args.filter(
     (a) =>
       a !== '--yes' &&
@@ -599,7 +610,9 @@ async function cmdTaskClose(args: string[]): Promise<void> {
       a !== '--allow-no-review' &&
       a !== '--allow-kpi-gap' &&
       a !== '--allow-experience-gap' &&
-      a !== '--allow-wiki-gap',
+      a !== '--allow-wiki-gap' &&
+      a !== '--allow-no-pr-merge' &&
+      a !== '--allow-no-hub',
   )
   const { value: fileArg, rest: r1 } = takeOption(rest, '--file')
   rest = r1
@@ -623,9 +636,9 @@ async function cmdTaskClose(args: string[]): Promise<void> {
     close_experience: allowExperienceGap ? '--allow-experience-gap' : undefined,
     close_wiki_delta: allowWikiGap ? '--allow-wiki-gap' : undefined,
     close_wiki_promotion: allowWikiGap ? '--allow-wiki-gap' : undefined,
+    close_pr_merged: allowNoPrMerge ? '--allow-no-pr-merge' : undefined,
+    close_hub_index: allowNoHub ? '--allow-no-hub' : undefined,
   }
-  // DEF-003 阶段二 T6：close 守卫逐项真求值（cli-checks evalCloseGuard 单一实现源 ·
-  // 与 lifecycle dry-run 同口径；缺项即拒 close 并指明守卫 id；warn 级不挡但留痕）
   for (const guardId of CLOSE_GUARD_ORDER) {
     const outcome = evalCloseGuard(guardId, abs, content)
     if (!outcome) continue
@@ -659,7 +672,7 @@ async function cmdTaskClose(args: string[]): Promise<void> {
   if (!yes) {
     console.log('mode: dry-run（未执行 mv · 加 --yes 执行）')
     console.log(`dest: ${dest}`)
-    console.log(`CLOSE: PASS · ${slug}`)
+    console.log(`CLOSE: READY · ${slug}`)
     return
   }
   if (!dest) fail('无法解析归档目标', 2)
@@ -670,7 +683,7 @@ async function cmdTaskClose(args: string[]): Promise<void> {
 }
 
 const TASK_USAGE =
-  'task lint --file PATH · task close --file PATH [--yes] [--allow-unchecked] [--allow-invoke-gap] [--allow-no-review] [--allow-kpi-gap] [--allow-experience-gap] [--allow-wiki-gap] · task lint-done · task lint-wiki-delta · task check --file PATH'
+  'task lint --file PATH · task close --file PATH [--yes] [--allow-unchecked] [--allow-invoke-gap] [--allow-no-review] [--allow-kpi-gap] [--allow-experience-gap] [--allow-wiki-gap] [--allow-no-pr-merge] [--allow-no-hub] · task lint-done · task lint-wiki-delta · task check --file PATH'
 
 async function cmdTask(args: string[]): Promise<void> {
   const [sub, ...rest] = args

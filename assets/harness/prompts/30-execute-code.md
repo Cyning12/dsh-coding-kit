@@ -32,7 +32,7 @@ metadata:
 - `test_strategy: required` → **先** 可失败测试再改实现
 - 闸扫描通过后：运行 task **验证命令**；回填 `### 自检结论（执行者）`
 - invoke 快照落盘 `docs/harness/invokes/by-task/<task_slug>/`（须覆盖 task 要求的 hats；40 可与 30 合并为 `invoke_*_30_40_*.md`；**pre-30** 须在 30 改码前落盘，见 verify v2.14+）
-- 归档（active→done）**只能**走 `npx dsh-coding-kit task close --file <task> --yes`：`CLOSE: PASS` 后方可归档；机械校验 **invoke hats 集合** / 自检结论 / 验收勾选 / slug / 状态 / R1 review / graph_delta / KPI / experience / **wiki_delta**（及晋升指针），任一不过 **不执行** mv（v2.2+ · hats 集合 v2.12+ · wiki v2.18+）——上述机械校验本包**已接线**（src/cli-checks.ts evalCloseGuard · task close 真求值 · PRD_DEF-003 阶段二 T6 · test/cli-task-close-guards.test.ts 钉死；wiki 晋升指针闸 close_wiki_promotion 已接线 · PRD_DEF-003 后续棒）
+- 归档（active→done）**只能**走 `npx dsh-coding-kit task close --file <task> --yes`：仅 **`--yes` 成功**后打印 `CLOSE: PASS`；无 `--yes` 为 dry-run，打印 **`CLOSE: READY`**（不得当作已关账）。机械校验 **invoke hats 集合** / 自检结论 / 验收勾选 / slug / 状态 / R1 review / graph_delta / KPI / experience / **wiki_delta**（及晋升指针）/ **close_pr_merged** / **close_hub_index**，任一不过 **不执行** mv（v2.2+ · hats 集合 v2.12+ · wiki v2.18+ · doc-health v1.7.0+）——上述机械校验本包**已接线**（src/cli-checks.ts evalCloseGuard · task close 真求值 · PRD_DEF-003 阶段二 T6 · test/cli-task-close-guards.test.ts 钉死；wiki 晋升指针闸 close_wiki_promotion 已接线 · PRD_DEF-003 后续棒）。禁止拆成「验收写 PASS、归档另议」。
 - 关账前答 **`wiki_delta`**（`path` | `none` | `n/a` + note）；若有可复用教训，更新 `docs/coding_wiki/`，并在经验节写指针（`Wiki:` / `wiki_promoted:` / 含 `coding_wiki`）
 
 ## 禁止什么

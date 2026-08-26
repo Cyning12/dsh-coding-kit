@@ -4,6 +4,33 @@
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-08-26
+
+> 主题：**doc-health · CLOSE 强绑定** —— dry-run/`PASS` 语义拆分；新增 `close_pr_merged` / `close_hub_index`；`check` 对 `docs/spec` 根级裸 SPEC WARN。试点消费者：ops-desk-api。
+>
+> **消费者提示（置顶）**：
+>
+> - **`task close` dry-run 不再打印 `CLOSE: PASS`**：无 `--yes` 时输出 **`CLOSE: READY`**；仅 `--yes` 归档成功后为 `CLOSE: PASS`（破坏性文案变更 · **不兼容**旧脚本若只匹配 PASS）。
+> - **新闸 `close_pr_merged`**：默认要求关联 PR `MERGED`（`related_pr` → `gh pr view` 当前分支）；豁免：`--allow-no-pr-merge` 或 `close_pr_policy=exempt` + note。
+> - **新闸 `close_hub_index`**：若存在 `docs/tasks/done/README.md`（或 harness 对称路径）则要求 Hub 含归档文件名；仓级 `.cyning-harness/local.json` `close_hub_gate: false` 可关（**缺省开**）；`--allow-no-hub` 豁免。
+> - **`check`**：对 `docs/spec/SPEC-*.md` 根级裸文件打印 WARN（不挡 exit）。
+
+### Added
+
+- `close_pr_merged` / `close_hub_index`（lifecycle.yaml 登记 · `evalCloseGuard` · dry-run 同口径）
+- `docs/spec/doc-health/` SPEC 包（签收）与试点 FEEDBACK 约定
+- task 元信息草案字段：`related_pr` / `close_pr_policy` / `close_pr_exempt_note`
+- 测试钩：`DSH_CLOSE_PR_STATE=MERGED|OPEN|…`（单测旁路 gh）
+
+### Changed
+
+- dry-run 完成态用词：`CLOSE: READY`（见上）
+- prompts / TEMPLATE_invoke / TASK_done_README Hub checklist 与闸对齐
+
+### Docs
+
+- SPEC 布局公约：新长期 SPEC 须专属夹；历史裸文件 warn（索引表 + CLI）
+
 ## [1.6.1] - 2026-08-25
 
 > 主题：**graph 面行为修正 · 判据收窄** —— DEF-030~033（ops-desk-api 1.5.2 实战反馈 D1/D2/D3/R6/K7）：export 保留全部 mark 边 label、graph_id 统一以 yaml 声明值为真值源（export 与 check 互认）、Mermaid class 段消费 nodes[].kind、check 跨产品线迁移判据收窄至旧包 2.x 词表。exit 码不变。

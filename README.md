@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md) | English
 
-**dsh-coding-kit@1.6.1** is a **bundle plugin** for DeepSeek Harness (DSH), shipping a **P0 gate CLI** and the **G1–G7 process commands**. The discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
+**dsh-coding-kit@1.7.0** is a **bundle plugin** for DeepSeek Harness (DSH), shipping a **P0 gate CLI** and the **G1–G7 process commands**. The discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
 
 > **Loading ≠ injecting.** Installing or loading this plugin does **not** automatically rewrite the system prompt. `apply()` only registers tools. Only after you or the model calls `apply_coding_standards` will later turns' runtime context contain `# Coding Standards`.
 
@@ -13,7 +13,7 @@
 | DSH session / model calling tools | `dsh plugin add dsh-coding-kit` | Don't just `npm install` (without the bundle layer the tools won't appear) |
 | Cursor / CI / daily gates on existing repos | `npx dsh-coding-kit` | Don't treat the plugin `init_coding_kit` and the CLI `init` as the same entry |
 
-Both entries ship from the same npm package **`dsh-coding-kit@1.6.1`**. The plugin surface and the CLI surface do not replace each other.
+Both entries ship from the same npm package **`dsh-coding-kit@1.7.0`**. The plugin surface and the CLI surface do not replace each other.
 
 The `@deepseek-ai/cordis` and `@deepseek-ai/dsh-tools` entries in `peerDependencies` are the **DSH host plugin contract** (needed only when the host loads this package as a plugin; not needed for CLI-only use), and are marked **optional** in `peerDependenciesMeta`.
 
@@ -105,9 +105,9 @@ npx dsh-coding-kit task check --file PATH
 
 `init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`).
 
-Since 1.6.1 the graph-facing behavior of `graph yaml export` / `graph yaml check` is corrected: ① export writes `graph_id` from the yaml-declared value (`data.graph_id`, e.g. `00_main`) as the single source of truth into graphs/nodes/edges, no longer the path-namespaced id (e.g. `l0/00_main`) — path ids remain input-compat only (`--graph-id` / file discovery); ② `check --all` filters graph.json slices with the same declared-value source as export output, so kit-produced root graph.json and check mutually recognize each other; ③ export preserves edge labels for every mark type (`?>` / `~>` / `::…` / `[…]`) — topology-protocol marks are carried as edge attributes instead of dropping the label text; ④ the Mermaid class block emitted by compile is driven by `nodes[].kind` (`flow`/`struct`/`external` → `phase`/`doc`/`infra`), with id-based inference kept as a fallback for nodes without `kind`. Exit codes are unchanged. **Consumer note**: consumers depending on the old export output (namespaced graph_id / dropped labels) must re-run `graph yaml export`.
+Since 1.7.0 the graph-facing behavior of `graph yaml export` / `graph yaml check` is corrected: ① export writes `graph_id` from the yaml-declared value (`data.graph_id`, e.g. `00_main`) as the single source of truth into graphs/nodes/edges, no longer the path-namespaced id (e.g. `l0/00_main`) — path ids remain input-compat only (`--graph-id` / file discovery); ② `check --all` filters graph.json slices with the same declared-value source as export output, so kit-produced root graph.json and check mutually recognize each other; ③ export preserves edge labels for every mark type (`?>` / `~>` / `::…` / `[…]`) — topology-protocol marks are carried as edge attributes instead of dropping the label text; ④ the Mermaid class block emitted by compile is driven by `nodes[].kind` (`flow`/`struct`/`external` → `phase`/`doc`/`infra`), with id-based inference kept as a fallback for nodes without `kind`. Exit codes are unchanged. **Consumer note**: consumers depending on the old export output (namespaced graph_id / dropped labels) must re-run `graph yaml export`.
 
-`check` compares `manifest.version` against the package version three ways (up-to-date / upgradeable / higher). Since 1.5.2, when the manifest carries a non-null `from_version` (i.e. it was migrated from the old `@cyning/harness` product line), a "higher" comparison reports a cross-product-line migration (`@cyning/harness X → dsh-coding-kit Y` — version numbers are not comparable across product lines) and suggests `npx dsh-coding-kit upgrade --yes`, instead of a misleading "possible downgrade" warning; since 1.6.1 this criterion is narrowed so only a `from_version` in the old product line's vocabulary (the 2.x series) takes the migration wording — a kit-line (1.x) `from_version` and `from_version: null` both keep the original three-way wording. The exit code is unchanged (always 0).
+`check` compares `manifest.version` against the package version three ways (up-to-date / upgradeable / higher). Since 1.5.2, when the manifest carries a non-null `from_version` (i.e. it was migrated from the old `@cyning/harness` product line), a "higher" comparison reports a cross-product-line migration (`@cyning/harness X → dsh-coding-kit Y` — version numbers are not comparable across product lines) and suggests `npx dsh-coding-kit upgrade --yes`, instead of a misleading "possible downgrade" warning; since 1.7.0 this criterion is narrowed so only a `from_version` in the old product line's vocabulary (the 2.x series) takes the migration wording — a kit-line (1.x) `from_version` and `from_version: null` both keep the original three-way wording. The exit code is unchanged (always 0).
 
 ### refresh-ide-blocks (R-07 · literal refresh of stale commands in existing IDE blocks)
 
@@ -153,10 +153,10 @@ When a task declares `test_strategy=required`, `audit` / `verify` run the D5 har
 
 ## Migrating from @cyning/harness
 
-After pinning **dsh-coding-kit@1.6.1** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
+After pinning **dsh-coding-kit@1.7.0** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
 
-1. Replace the `devDependency` `@cyning/harness` with `dsh-coding-kit` (pin `1.6.1`).
-2. Run `npx dsh-coding-kit upgrade --yes` at the repo root (reads the old `.cyning-harness/manifest.json`; `version` pinned at 1.6.1, `from_version` records the old number).
+1. Replace the `devDependency` `@cyning/harness` with `dsh-coding-kit` (pin `1.7.0`).
+2. Run `npx dsh-coding-kit upgrade --yes` at the repo root (reads the old `.cyning-harness/manifest.json`; `version` pinned at 1.7.0, `from_version` records the old number).
 3. In CI / scripts, replace `npx @cyning/harness` with `npx dsh-coding-kit`.
 
 Skill installation is **recommended, not required** (the minimal path does not depend on DSH scanning skills). Commands are always `npx dsh-coding-kit`.
@@ -170,12 +170,12 @@ If pnpm install still fails on the peer chain (e.g. resolving to an unpublished 
 Paste the whole block:
 
 ````text
-You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to dsh-coding-kit@1.6.1.
+You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to dsh-coding-kit@1.7.0.
 
 Minimal path (required, in order):
-1. package.json devDependency: delete @cyning/harness, replace with dsh-coding-kit (pinned at 1.6.1).
+1. package.json devDependency: delete @cyning/harness, replace with dsh-coding-kit (pinned at 1.7.0).
 2. Run at the repo root: npx dsh-coding-kit upgrade --yes
-   (reads the old .cyning-harness/manifest.json; version pinned at 1.6.1, from_version records the old number; never overwrites docs/tasks, reviews, invokes/by-task.)
+   (reads the old .cyning-harness/manifest.json; version pinned at 1.7.0, from_version records the old number; never overwrites docs/tasks, reviews, invokes/by-task.)
 3. Replace every npx @cyning/harness in CI and scripts with npx dsh-coding-kit.
 Commands are always npx dsh-coding-kit. Never write npx @cyning/harness skills build again.
 

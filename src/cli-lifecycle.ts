@@ -132,6 +132,8 @@ type DryRunFlags = {
   allowKpiGap?: boolean
   allowExperienceGap?: boolean
   allowWikiGap?: boolean
+  allowNoPrMerge?: boolean
+  allowNoHub?: boolean
 }
 
 function flagsAllow(flags: DryRunFlags, allowFlag?: string): boolean {
@@ -143,6 +145,8 @@ function flagsAllow(flags: DryRunFlags, allowFlag?: string): boolean {
   if (allowFlag === '--allow-kpi-gap') return Boolean(flags.allowKpiGap)
   if (allowFlag === '--allow-experience-gap') return Boolean(flags.allowExperienceGap)
   if (allowFlag === '--allow-wiki-gap') return Boolean(flags.allowWikiGap)
+  if (allowFlag === '--allow-no-pr-merge') return Boolean(flags.allowNoPrMerge)
+  if (allowFlag === '--allow-no-hub') return Boolean(flags.allowNoHub)
   return false
 }
 
@@ -358,6 +362,8 @@ export async function cmdLifecycle(args: string[]): Promise<void> {
   npx dsh-coding-kit lifecycle dry-run --transition ID --from STATE [--task PATH] [--target PATH] [--json]
        [--allow-no-review] [--allow-lint-fail] [--allow-no-spec-review]
        [--allow-invoke-gap] [--allow-unchecked]
+       [--allow-kpi-gap] [--allow-experience-gap] [--allow-wiki-gap]
+       [--allow-no-pr-merge] [--allow-no-hub]
 `)
     return
   }
@@ -392,6 +398,8 @@ export async function cmdLifecycle(args: string[]): Promise<void> {
       allowKpiGap: remaining.includes('--allow-kpi-gap'),
       allowExperienceGap: remaining.includes('--allow-experience-gap'),
       allowWikiGap: remaining.includes('--allow-wiki-gap'),
+      allowNoPrMerge: remaining.includes('--allow-no-pr-merge'),
+      allowNoHub: remaining.includes('--allow-no-hub'),
     }
     remaining = remaining.filter(
       (a) =>
@@ -403,7 +411,9 @@ export async function cmdLifecycle(args: string[]): Promise<void> {
         a !== '--allow-unchecked' &&
         a !== '--allow-kpi-gap' &&
         a !== '--allow-experience-gap' &&
-        a !== '--allow-wiki-gap',
+        a !== '--allow-wiki-gap' &&
+        a !== '--allow-no-pr-merge' &&
+        a !== '--allow-no-hub',
     )
     if (remaining.length > 0) fail(`lifecycle dry-run 未知参数: ${remaining.join(' ')}`)
     if (!transitionId || !fromState) {

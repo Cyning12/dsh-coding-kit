@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import {
@@ -362,9 +363,137 @@ export function evalCloseWikiPromotion(absTask: string, content: string): CloseG
   return { status: 'pass', detail: '经验节含 wiki 晋升指针' }
 }
 
+// ==== doc-health · close_pr_merged / close_hub_index（SPEC docs/spec/doc-health） ====
+
+const HUB_CANDIDATES = [
+  'docs/tasks/done/README.md',
+  'docs/harness/tasks/done/README.md',
+]
+
+/** 仓级 Hub 闸：`.cyning-harness/local.json` 的 `close_hub_gate`；缺省 true（默认开）。 */
+export function isCloseHubGateEnabled(root: string): boolean {
+  const localPath = path.join(root, '.cyning-harness', 'local.json')
+  if (!existsSync(localPath)) return true
+  try {
+    const raw = JSON.parse(readFileSync(localPath, 'utf8')) as { close_hub_gate?: unknown }
+    if (raw.close_hub_gate === false) return false
+    return true
+  } catch {
+    return true
+  }
+}
+
+export function findHubFile(root: string): string | null {
+  for (const rel of HUB_CANDIDATES) {
+    const abs = path.join(root, rel)
+    if (existsSync(abs)) return abs
+  }
+  return null
+}
+
+/** 探测 PR 合入态。测试可设 `DSH_CLOSE_PR_STATE=MERGED|OPEN|NONE` 旁路 gh。 */
+export function resolvePrMergedState(
+  root: string,
+  relatedPr?: string,
+): { ok: boolean; state: string; detail: string } {
+  const envState = (process.env.DSH_CLOSE_PR_STATE ?? '').trim().toUpperCase()
+  if (envState) {
+    if (envState === 'MERGED') return { ok: true, state: 'MERGED', detail: `DSH_CLOSE_PR_STATE=MERGED` }
+    if (envState === 'OPEN' || envState === 'CLOSED' || envState === 'NONE') {
+      return { ok: false, state: envState, detail: `DSH_CLOSE_PR_STATE=${envState}` }
+    }
+    return { ok: false, state: envState, detail: `DSH_CLOSE_PR_STATE 非法: ${envState}` }
+  }
+  const args = relatedPr
+    ? ['pr', 'view', relatedPr.replace(/^#/, ''), '--json', 'state,url']
+    : ['pr', 'view', '--json', 'state,url']
+  const r = spawnSync('gh', args, { cwd: root, encoding: 'utf8' })
+  if (r.error || r.status !== 0) {
+    const err = (r.stderr || r.stdout || r.error?.message || 'gh failed').trim()
+    return {
+      ok: false,
+      state: 'NONE',
+      detail: `无法解析关联 PR（gh 失败或无 PR）: ${err.slice(0, 200)}`,
+    }
+  }
+  try {
+    const parsed = JSON.parse(r.stdout || '{}') as { state?: string; url?: string }
+    const state = (parsed.state ?? '').toUpperCase()
+    if (state === 'MERGED') {
+      return { ok: true, state, detail: `PR MERGED${parsed.url ? ` · ${parsed.url}` : ''}` }
+    }
+    return {
+      ok: false,
+      state: state || 'UNKNOWN',
+      detail: `PR 状态非 MERGED（当前: ${state || 'unknown'}）`,
+    }
+  } catch {
+    return { ok: false, state: 'NONE', detail: 'gh 输出无法解析 JSON' }
+  }
+}
+
+export function evalClosePrMerged(absTask: string, content: string): CloseGuardOutcome {
+  const meta = parseHarnessMeta(content)
+  const policy = (meta.close_pr_policy ?? '').trim().toLowerCase()
+  if (policy === 'exempt') {
+    if (!(meta.close_pr_exempt_note ?? '').trim()) {
+      return {
+        status: 'fail',
+        detail: 'close_pr_policy=exempt 但缺 close_pr_exempt_note（或 --allow-no-pr-merge 豁免）',
+      }
+    }
+    return { status: 'pass', detail: `close_pr_policy=exempt（${meta.close_pr_exempt_note}）` }
+  }
+  const root = taskTargetRoot(absTask)
+  const related = (meta.related_pr ?? '').trim() || undefined
+  const resolved = resolvePrMergedState(root, related)
+  if (resolved.ok) return { status: 'pass', detail: resolved.detail }
+  return {
+    status: 'fail',
+    detail: `${resolved.detail}（或 --allow-no-pr-merge / close_pr_policy=exempt）`,
+  }
+}
+
+export function evalCloseHubIndex(absTask: string, _content: string): CloseGuardOutcome {
+  const root = taskTargetRoot(absTask)
+  if (!isCloseHubGateEnabled(root)) {
+    return { status: 'pass', detail: 'close_hub_gate=false（仓级关闭 · skip）' }
+  }
+  const hub = findHubFile(root)
+  if (!hub) return { status: 'pass', detail: '无 Hub 文件 · skip close_hub_index' }
+  const base = path.basename(absTask)
+  const body = readFileSync(hub, 'utf8')
+  // 索引行：markdown 链接目标或纯文本含归档文件名
+  const linked =
+    body.includes(base) ||
+    new RegExp(`\\]\\([^)]*${escapeRegExp(base)}\\)`).test(body) ||
+    new RegExp(`\\]\\(\\./[^)]*${escapeRegExp(base)}\\)`).test(body)
+  if (!linked) {
+    return {
+      status: 'fail',
+      detail: `Hub 缺本 task 索引行（须含 ${base} · Hub=${path.relative(root, hub)} · 或 --allow-no-hub）`,
+    }
+  }
+  return { status: 'pass', detail: `Hub 含索引（${base}）` }
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/** docs/spec 根级裸 SPEC-*.md（warn · 不 BLOCK）。 */
+export function listBareSpecFiles(root: string): string[] {
+  const dir = path.join(root, 'docs', 'spec')
+  if (!existsSync(dir)) return []
+  return readdirSync(dir)
+    .filter((f) => /^SPEC-.+\.md$/i.test(f))
+    .sort()
+}
+
 // close 守卫注册表（lifecycle.yaml close 转移登记顺序）：未登记 id → null（= 未接线 · 调用方明示，
 // R-TRUTH-1 禁止第三态；登记守卫全部已接线 —— close_wiki_promotion 于 PRD_DEF-003 后续棒接线，
-// to_00 spec_reviews_retention 实现见本文件 evalSpecReviewsRetention（verify --spec 同一实现源））。
+// to_00 spec_reviews_retention 实现见本文件 evalSpecReviewsRetention（verify --spec 同一实现源）；
+// doc-health：close_pr_merged / close_hub_index）。
 export function evalCloseGuard(
   guardId: string,
   absTask: string,
@@ -393,6 +522,10 @@ export function evalCloseGuard(
       return evalCloseWikiDelta(absTask, content)
     case 'close_wiki_promotion':
       return evalCloseWikiPromotion(absTask, content)
+    case 'close_pr_merged':
+      return evalClosePrMerged(absTask, content)
+    case 'close_hub_index':
+      return evalCloseHubIndex(absTask, content)
     default:
       return null
   }

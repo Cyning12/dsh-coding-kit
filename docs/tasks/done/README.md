@@ -1,0 +1,20 @@
+# done/ · 已完成任务导航（Hub）
+
+> **用途**：日常浏览 **只打开本文件**。  
+> **落盘**：`docs/tasks/done/`
+
+---
+
+## harness
+
+| 关账日 | task | 摘要 |
+|--------|------|------|
+| 2026-08-26 | [`task_doc_health_close_binding.md`](./task_doc_health_close_binding.md) | doc-health CLOSE 强绑定 W1–W4 · v1.7.0 |
+
+---
+
+## 修订记录
+
+| 日期 | 摘要 |
+|------|------|
+| 2026-08-26 | 初建 Hub（doc-health 关账） |
