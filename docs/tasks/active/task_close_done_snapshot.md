@@ -79,9 +79,9 @@
 ## 验收标准
 
 - [x] `task close --yes` 成功：stdout 含 done 路径 + `## Harness 元信息` 表摘录 + 禁手写提示行
-- [ ] dry-run 输出与 1.7.1 逐字一致（回归测）
-- [ ] `--json` 两路径断言：PASS 有快照字段（`path` + `harness_meta_section`）；READY（dry-run，含豁免 dry-run）为 null；豁免 + --yes 的 PASS 路径 done_snapshot 字段非 null（与 stdout 快照一致）；既有 close 闸测（PR/Hub/wiki/kpi/experience）全绿
-- [ ] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（对齐 .github/workflows/ci.yml 四步）；CHANGELOG 已增条
+- [x] dry-run 输出与 1.7.1 逐字一致（回归测）
+- [x] `--json` 两路径断言：PASS 有快照字段（`path` + `harness_meta_section`）；READY（dry-run，含豁免 dry-run）为 null；豁免 + --yes 的 PASS 路径 done_snapshot 字段非 null（与 stdout 快照一致）；既有 close 闸测（PR/Hub/wiki/kpi/experience）全绿
+- [x] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（对齐 .github/workflows/ci.yml 四步）；CHANGELOG 已增条
 
 ---
 
