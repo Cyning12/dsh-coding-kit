@@ -100,7 +100,9 @@ function usage(version: string): void {
   npx dsh-coding-kit skills check
   npx dsh-coding-kit wiki export --json [--target PATH]
   npx dsh-coding-kit task lint-done [--target PATH]
-  npx dsh-coding-kit task lint-wiki-delta [--target PATH]
+  npx dsh-coding-kit task lint-wiki-delta [--target PATH] [--scope all|active|done] [--strict] [--json]
+    诊断码: wiki_delta_missing（缺字段）· wiki_delta_wrong_section（字段写在 ## Harness 元信息 之外的节 · 替代 missing 不双报）
+    --strict 追加: wiki_delta_invalid / wiki_delta_path_missing；task lint --file E8 同口径查 wiki_delta 存在性
   npx dsh-coding-kit task check --file PATH
 `)
 }

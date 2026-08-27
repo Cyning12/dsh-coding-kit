@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+> **消费者提示（置顶）**：
+>
+> - **`task lint --file` 新增 E8（存量仓注意）**：`## Harness 元信息` 节在但缺 `wiki_delta` 行 → **error，无 draft 豁免**（与 close 闸 `close_wiki_delta` 对齐 · 仅查存在性）。存量仓 draft task 将新增拦截——在元信息表补 `| **wiki_delta** | \`path|none|n/a\` |` 行即过。
+> - **`task lint-wiki-delta` 新诊断码 `wiki_delta_wrong_section`**：`wiki_delta` 行写在 `## Harness 元信息` 之外的节（如 `## Harness`）时**替代** `wiki_delta_missing`（不双报），detail 含节名/行号并提示「须在 `## Harness 元信息` 表格内」。诊断非兼容：`parseHarnessMeta` 权威节名不变。
+
+### Added
+
+- `lint-wiki-delta`：错节诊断码 `wiki_delta_wrong_section`（默认档与 `--json` 同码同文案 · `--strict` 既有检查语义不变）
+- `task lint`：E8 规则（`wiki_delta` 存在性早拦 · 错节场景文案指向正确节名）
+- `src/cli-shared.ts`：`findWikiDeltaOutsideMetaSection` helper（两 lint 同源）
+
+### Docs
+
+- `assets/docs/POINTER_RUNBOOK_wiki_delta.md`：新增诊断码表（含 `wiki_delta_wrong_section` 与 E8）
+- CLI usage / `lint-wiki-delta --help`：诊断码说明同步
+
 ## [1.7.1] - 2026-08-26
 
 > 主题：**00 默认编排纪律入 Starter** —— 随包发布 `assets/harness/prompts/00-orchestrator.md`（最多起草第一步；中间全派子 Agent；收口 50+CLOSE；有初版则禁亲自实现）。
