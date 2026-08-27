@@ -33,6 +33,7 @@
 | **close_pr_exempt_note** | kit docs 轨；合入由 00 push |
 | **entry_invoke_30** | `docs/harness/invokes/by-task/self-tech-graph-w0-inventory/invoke_20260827_30_40_self-tech-graph-w0-inventory.md` |
 | **maintainer_release_hold** | `true` — merge 后停于发版前 · 无 bump/tag/publish |
+| **related_pr** | `#21` |
 
 ### 00 维护者授权（2026-08-27）
 
@@ -182,13 +183,19 @@
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 92
+
+- W0-1~W0-6 全勾 · verify/lint 绿 · 310/310 · PR #21 squash merge
+- DEF 去重 27 对齐 · 6 项仅外置 · 3 项人裁 pending 已落文 · 无 silent 合并
+- docs-only · 无 bump/tag（maintainer_release_hold）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- W0 盘点须以执行日快照为准（mtime/文件数），inventory 1.2.2 与 1.9.0 src 差距大 → W1 必须实读重核，禁止照抄旧 inventory
+- DEF 外置 vs ledger 冲突一律进「人裁 pending」，30 不得擅自补录或合并条目
+- 外置三树 Open Folder 纪律：仅 kit 仓时须 task 内 `@` 外置路径或 Open `Projects/`
 
 ---
 
