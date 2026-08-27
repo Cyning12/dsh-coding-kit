@@ -72,6 +72,8 @@
 
 ## 验收标准
 
+- [ ] 全量测试命令通过（**与本仓 CI workflow 一致**；按仓实际栈填写，如 `pytest tests -q` / `pnpm test`）
+- [ ] `npx --yes dsh-coding-kit task lint-wiki-delta --target .` 通过（wiki_delta 预检 · 与 PR CI sample `run:` 行逐字一致）
 - [ ] …
 
 ---
@@ -128,3 +130,4 @@
 |------|------|
 | YYYY-MM-DD | 从 cyning-harness `TASK_TEMPLATE.md` 嵌入 |
 | 2026-07-28 | v2.18 · wiki_delta / wiki_promotion |
+| 2026-08-27 | K6：验收节默认两行（仓 CI 全量测试命令 + lint-wiki-delta 预检） |

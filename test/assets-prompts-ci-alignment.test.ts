@@ -43,6 +43,24 @@ describe('prompts-ci-alignment · W1（K4）bulk-split 早检', { concurrency: 1
   })
 })
 
+describe('prompts-ci-alignment · W2（K6）默认验收', { concurrency: 1 }, () => {
+  it('TASK_TEMPLATE 验收节含默认两行（仓 CI 全量命令示例 + lint-wiki-delta）', () => {
+    const body = readAsset('assets/harness/templates/TASK_TEMPLATE.md')
+    const sec = body.slice(body.indexOf('## 验收标准'))
+    assert.match(sec, /与本仓 CI workflow 一致/)
+    assert.match(sec, /pytest tests -q/, '须含 pytest 示例（不硬编码单一栈）')
+    assert.match(sec, /pnpm test/, '须含 pnpm 示例（不硬编码单一栈）')
+    assert.ok(sec.includes(LINT_CMD), '验收节缺与 CI sample 逐字一致的 lint-wiki-delta 命令串')
+  })
+
+  it('40-self-check 含「task 未列全量命令时按 .github/workflows/ 真值补齐再自检」', () => {
+    const body = readAsset('assets/harness/prompts/40-self-check.md')
+    assert.match(body, /与子仓 CI 对齐者优先/)
+    assert.match(body, /未列全量/)
+    assert.match(body, /\.github\/workflows\//)
+  })
+})
+
 describe('prompts-ci-alignment · 全域防虚构旗标', { concurrency: 1 }, () => {
   it('改动资产均无 --scope changed 等虚构旗标（仅 all|active|done 存在）', () => {
     for (const rel of [
