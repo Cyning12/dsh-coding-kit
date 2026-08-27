@@ -1,6 +1,6 @@
 # Task：verify --task 纳入 wiki lint（K3）
 
-> **状态**：`draft`  
+> **状态**：`done`  
 > **关联图谱**：无（`graph_change_layer=none`）  
 > **关联证据**：`ops-desk-api` 仓 `docs/harness/evidence/FEEDBACK_agent_host_plan_ci_20260827.md` §3 **K3（P2）**  
 > **拟发版**：`dsh-coding-kit@1.8.0`（建议与本批同波；可独立 PR）  
@@ -44,13 +44,13 @@
 
 30 帽 GATE_VERIFY 跑 `verify --task`，PR CI 跑 `lint-wiki-delta`，**双轨**：#70 类「兄弟 active task 缺 `wiki_delta`」在 30 自检阶段不可见，到 CI 才红。反馈建议 `verify` 增 `--with-wiki-lint`（或 preset 默认开启），且 BLOCKED 时打印与 CI 相同命令。
 
-**完成态行为**：`npx dsh-coding-kit verify --task <file> --with-wiki-lint` 在既有检查之上追加 `lintWikiDeltaMissing`（默认档 · `scope=all`）；失败时 verify 判 BLOCKED，输出 issue 列表 **并打印与 CI 完全一致的复跑命令**（sample 原文 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`，与 `assets/ci/samples/lint-wiki-delta.yml.example` L33 逐字一致，含 `--yes`），使 30/40 本地即可对齐 PR CI。
+**完成态行为**：`npx dsh-coding-kit verify --task <file> --with-wiki-lint` 在既有检查之上追加 `lintWikiDeltaMissing`（默认档 · `scope=all`）；失败时 verify 判 BLOCKED，输出 issue 列表 **并打印与 CI 完全一致的复跑命令**（sample 原文 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`，与 `assets/ci/samples/lint-wiki-delta.yml.example` L35 逐字一致，含 `--yes`），使 30/40 本地即可对齐 PR CI。
 
 ---
 
 ## 范围
 
-- [x] W1：`cmdVerify`（`src/cli.ts` L460+）增 `--with-wiki-lint` 旗标：调用 `lintWikiDeltaMissing(target, { scope: 'all' })`（复用 `src/cli-task-extra.ts` 导出，**不复制**逻辑）；fail → BLOCKED + issue 列表 + 复跑命令行 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 CI sample L33 逐字一致，含 `--yes`）；`--json` 增 `wiki_lint` 块（ok/issues/scanned）
+- [x] W1：`cmdVerify`（`src/cli.ts` L460+）增 `--with-wiki-lint` 旗标：调用 `lintWikiDeltaMissing(target, { scope: 'all' })`（复用 `src/cli-task-extra.ts` 导出，**不复制**逻辑）；fail → BLOCKED + issue 列表 + 复跑命令行 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 CI sample L35 逐字一致，含 `--yes`）；`--json` 增 `wiki_lint` 块（ok/issues/scanned）
 - [x] W2：usage/help（`src/cli.ts` L85）与 `README.md` / `README.zh-CN.md` verify 节补旗标说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链
 - [x] 决策点（R 轮 + 20 审）：是否引入 preset（如 `fullstack-node-py`）默认开启本旗标——**默认不做**，仅显式旗标（非破坏）；若做则另起 task（本 task 按「不做」交付）
 - [x] 单测：旗标开/关两路径、BLOCKED 文案含 CI 同命令、`--json` 形状、与 `--task`/`--spec` 互斥规则不冲突
@@ -77,7 +77,7 @@
 
 ## 验收标准
 
-- [x] 有缺口仓 fixture：`verify --task … --with-wiki-lint` BLOCKED，stdout **全串断言**含完整命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 `assets/ci/samples/lint-wiki-delta.yml.example` L33 逐字一致，含 `--yes`，非子串）
+- [x] 有缺口仓 fixture：`verify --task … --with-wiki-lint` BLOCKED，stdout **全串断言**含完整命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 `assets/ci/samples/lint-wiki-delta.yml.example` L35 逐字一致，含 `--yes`，非子串）
 - [x] 无缺口 fixture：verify 结果与不加旗标一致；无旗标时行为与 1.7.1 逐字一致（回归测）
 - [x] `--json` 含 `wiki_lint.ok/issues/scanned`；`--spec` 模式下旗标行为**同生效（20 审 R1 已定）**
 - [x] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（与 `.github/workflows/ci.yml` 四步全对齐）；help/README/CHANGELOG 已同步
@@ -134,7 +134,7 @@
 **实现备忘（30）**：
 
 - `src/cli.ts`：`cmdVerify` 解析 `--with-wiki-lint`（task 模式在既有全部硬闸之后追加 · spec 模式经 `verifySpecMode` opts 同生效，skip_spec_audit 豁免路径同闸）；复用 `lintWikiDeltaMissing(target, {scope:'all'})` 导出（import 自 `cli-task-extra.ts` · 未复制逻辑）；新增 `WikiLintGateResult`/`wikiLintJson`/`printWikiLintIssues` 三个模块内 helper；`--json` 增 `wiki_lint{ok,issues,scanned}`（仅旗标开启时输出）；usage L85 与 `verify --help` 同步
-- 测试：`test/cli-verify-with-wiki-lint.test.ts`（10 测 · 先红后绿）——旗标开/关、BLOCKED 文案全串断言（含 CI sample L33 锁步测）、`--json` 形状、scanned:0 边缘（task 落仓根不在扫描目录）、`--spec` 同生效、互斥规则不动、help/usage 列出旗标、无旗标回归（输出不得出现 wiki_delta 字样）
+- 测试：`test/cli-verify-with-wiki-lint.test.ts`（10 测 · 先红后绿）——旗标开/关、BLOCKED 文案全串断言（含 CI sample L35 锁步测）、`--json` 形状、scanned:0 边缘（task 落仓根不在扫描目录）、`--spec` 同生效、互斥规则不动、help/usage 列出旗标、无旗标回归（输出不得出现 wiki_delta 字样）
 - 文档：README.md / README.zh-CN.md verify 节、CI sample 注释互链、CHANGELOG `[Unreleased]`（置顶消费者提示 + Added + Docs）
 - 顺序语义：wiki-lint 闸位于既有硬闸（gate-check → test → review → invoke）**之后**；早前 BLOCKED 路径不附加 `wiki_lint` 块（保持既有输出面不变）
 
@@ -142,13 +142,18 @@
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 93
+
+- 验收全勾 · 四步全绿（279/279 = 基线 269+10）· 50 独立复检一次 PASS · 实现一棒落地无调度损耗
+- 20 审 R1 退回 → 10-task 回填 → R2 签收：闸机制正常发挥（B1 --yes 字面量 / B2 test:lib 缺口均在 30 前拦截）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- 「与 CI 完全相同命令」类承诺必须以 CI sample 文件为锁步真值 + 测试全串断言（`includes(RERUN_CMD)` + sample 锁步测），否则一个 `--yes` 字面量漂移即可证伪承诺
+- 验收四步与 .github/workflows/ci.yml 逐步对齐（含 test:lib）是消「本地≠CI」双轨的最小成本；改 CLI 面的 task 缺 test:lib 等于自留 src→lib 漂移盲区
+- 复用型追加闸（verify 调用 lintWikiDeltaMissing）须标配 scanned:0 边缘单测（target 无 docs/tasks/ 不得误 BLOCKED）；闸置于既有硬闸之后可保早前 BLOCKED 输出面不变
 
 ---
 
