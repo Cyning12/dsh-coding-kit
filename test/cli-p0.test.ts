@@ -63,6 +63,7 @@ function taskMd(opts: {
   selfCheckBody?: string
   checked?: boolean
   includeGates?: boolean
+  wikiDelta?: string
 }): string {
   const status = opts.status ?? 'draft'
   const audit = opts.audit ?? 'pending'
@@ -82,6 +83,7 @@ function taskMd(opts: {
     '|------|-----|',
     `| **task_slug** | \`${opts.slug}\` |`,
     `| **test_strategy** | \`${testStrategy}\` |`,
+    ...(opts.wikiDelta ? [`| **wiki_delta** | \`${opts.wikiDelta}\` |`] : []),
     '',
   ]
   if (opts.includeGates !== false) {
@@ -472,6 +474,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
           slug: 'style_only',
           includeGates: false,
           selfCheckBody: '（30/40 回填）',
+          // T1（K2）：E8 起 wiki_delta 为 lint 必备行；本用例口径为「仅风格 W 不挡」须带齐
+          wikiDelta: 'none',
         }),
         'utf8',
       )

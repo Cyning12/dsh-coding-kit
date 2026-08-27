@@ -90,6 +90,42 @@ export function parseHarnessMeta(content: string): Record<string, string> {
   return meta
 }
 
+// K1（task wiki-delta-section-diagnostics）：错节诊断 helper —— 诊断非兼容。
+// parseHarnessMeta 权威节名仍只认 '## Harness 元信息'（不改）；本 helper 仅在解析落空时
+// 全文查找「写在其他节的 wiki_delta 字段行」，供 lint-wiki-delta（wiki_delta_wrong_section）
+// 与 task lint（E8）输出指向正确节的诊断。key 单元格须恰为 wiki_delta（不误伤 wiki_delta_note）；
+// 启发式可能命中正文代码块示例（residual_risk 已登记）——诊断 detail 带行号便于人判。
+const WIKI_DELTA_ROW_RE = /^\s*\|?\s*(?:\*\*)?wiki_delta(?:\*\*)?\s*[|:]/
+const HEADING_RE = /^(#{1,6})\s+(.+?)\s*$/
+
+export function findWikiDeltaOutsideMetaSection(
+  content: string,
+): { line: number; section: string } | null {
+  const lines = content.split('\n')
+  let inMeta = false
+  let section = '（文首 · 无节）'
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i]
+    const heading = line.match(HEADING_RE)
+    if (heading) {
+      const level = heading[1].length
+      const title = heading[2]
+      if (level === 2 && title === 'Harness 元信息') {
+        inMeta = true
+        continue
+      }
+      // 与 extractSection(content, '## Harness 元信息', '###') 同口径：节域止于下一个
+      // ### 及以上标题（level >= 3）；后继 ## 节仍在解析节域内（与解析器行为一致，避免误报）
+      if (inMeta && level >= 3) inMeta = false
+      if (!inMeta) section = `${heading[1]} ${title}`
+      continue
+    }
+    if (inMeta) continue
+    if (WIKI_DELTA_ROW_RE.test(line)) return { line: i + 1, section }
+  }
+  return null
+}
+
 export function parseHumanGates(content: string): HumanGate[] {
   const section = extractSection(content, '### 人工闸', '\n##')
   if (!section) return []

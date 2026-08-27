@@ -47,7 +47,7 @@ async function writeRel(root: string, rel: string, body: string): Promise<string
 
 // ---- fixtures（JS 模板常量）----
 
-// 错节：无权威节，wiki_delta 行写在 '## Harness' 节表格内（PR #72 事故形态 · L11 为字段行）
+// 错节：无权威节，wiki_delta 行写在 '## Harness' 节表格内（PR #72 事故形态 · L10 为字段行）
 const WRONG_SECTION_MD = [
   '# Task wd_wrong',
   '',
@@ -117,11 +117,11 @@ const OK_MD = MISSING_MD.replaceAll('wd_missing', 'wd_ok').replace(
   '| **test_strategy** | `recommended` |\n| **wiki_delta** | `none` |',
 )
 
-// 错节（分裂形态）：权威节在但 wiki_delta 行写在后面 '## 附录' 节表格内
-const SPLIT_WRONG_MD = MISSING_MD.replaceAll('wd_missing', 'wd_split').replace(
-  '### 自检结论（执行者）',
-  '## 附录\n\n| 字段 | 值 |\n|------|-----|\n| **wiki_delta** | `none` |\n\n### 自检结论（执行者）',
-)
+// 错节（分裂形态）：权威节在但 wiki_delta 行写在 '### 自检结论' 之后的 '## 附录' 节表格内
+//（extractSection 以 '###' 为界：自检结论标题已终结解析节域 → 附录行在节域外 · 解析落空）
+const SPLIT_WRONG_MD =
+  MISSING_MD.replaceAll('wd_missing', 'wd_split') +
+  ['## 附录', '', '| 字段 | 值 |', '|------|-----|', '| **wiki_delta** | `none` |', ''].join('\n')
 
 const HINT_RE = /须在 `## Harness 元信息` 表格内/
 
@@ -144,7 +144,7 @@ describe('T1-K1 · lint-wiki-delta 错节诊断码 wiki_delta_wrong_section', { 
         '错节场景不得双报 wiki_delta_missing',
       )
       assert.match(r.issues[0].detail, /Harness/)
-      assert.match(r.issues[0].detail, /L11/)
+      assert.match(r.issues[0].detail, /L10/)
       assert.match(r.issues[0].detail, HINT_RE)
     })
   })

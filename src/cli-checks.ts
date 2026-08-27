@@ -5,6 +5,7 @@ import {
   extractSection,
   extractTaskSlug,
   fail,
+  findWikiDeltaOutsideMetaSection,
   normalizeSlug,
   parseHarnessMeta,
   resolveTaskPath,
@@ -819,6 +820,19 @@ export function lintTaskFile(filePath: string, cwd: string): {
         message: `slug 不一致: 文件名 ${fileSlug} ≠ 元信息 task_slug ${meta.task_slug}`,
       })
     }
+  }
+  // E8（K2 · 与 close_wiki_delta 对齐 · 20 审裁定直接 error 不灰度 · 无 draft 豁免）：
+  // 仅查存在性——词表（path|none|n/a）与路径存在性仍归 close 闸与 lint-wiki-delta --strict；
+  // 错节场景（字段写在其他节）文案指向正确节名并带行号（与 wiki_delta_wrong_section 同源 helper）。
+  if (content.includes('## Harness 元信息') && !(meta.wiki_delta ?? '').trim()) {
+    const wrong = findWikiDeltaOutsideMetaSection(content)
+    errors.push({
+      rule: 'E8',
+      message: wrong
+        ? `缺 wiki_delta 行：字段写在「${wrong.section}」节 L${wrong.line} · 须在 ## Harness 元信息 表格内（path|none|n/a）`
+        : '缺 wiki_delta 行（## Harness 元信息 表格内须含 wiki_delta: path|none|n/a · 与 close_wiki_delta 对齐）',
+      ...(wrong ? { line: wrong.line } : {}),
+    })
   }
   if (!content.includes('### 人工闸')) {
     warnings.push({ rule: 'W2', message: '缺 ### 人工闸 节（轻量 task 可忽略本提醒）' })
