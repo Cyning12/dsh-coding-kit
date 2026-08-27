@@ -44,13 +44,13 @@
 
 30 帽 GATE_VERIFY 跑 `verify --task`，PR CI 跑 `lint-wiki-delta`，**双轨**：#70 类「兄弟 active task 缺 `wiki_delta`」在 30 自检阶段不可见，到 CI 才红。反馈建议 `verify` 增 `--with-wiki-lint`（或 preset 默认开启），且 BLOCKED 时打印与 CI 相同命令。
 
-**完成态行为**：`npx dsh-coding-kit verify --task <file> --with-wiki-lint` 在既有检查之上追加 `lintWikiDeltaMissing`（默认档 · `scope=all`）；失败时 verify 判 BLOCKED，输出 issue 列表 **并打印与 CI 完全一致的复跑命令**，使 30/40 本地即可对齐 PR CI。
+**完成态行为**：`npx dsh-coding-kit verify --task <file> --with-wiki-lint` 在既有检查之上追加 `lintWikiDeltaMissing`（默认档 · `scope=all`）；失败时 verify 判 BLOCKED，输出 issue 列表 **并打印与 CI 完全一致的复跑命令**（sample 原文 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`，与 `assets/ci/samples/lint-wiki-delta.yml.example` L33 逐字一致，含 `--yes`），使 30/40 本地即可对齐 PR CI。
 
 ---
 
 ## 范围
 
-- [ ] W1：`cmdVerify`（`src/cli.ts` L460+）增 `--with-wiki-lint` 旗标：调用 `lintWikiDeltaMissing(target, { scope: 'all' })`（复用 `src/cli-task-extra.ts` 导出，**不复制**逻辑）；fail → BLOCKED + issue 列表 + 复跑命令行 `npx dsh-coding-kit task lint-wiki-delta --target .`；`--json` 增 `wiki_lint` 块（ok/issues/scanned）
+- [ ] W1：`cmdVerify`（`src/cli.ts` L460+）增 `--with-wiki-lint` 旗标：调用 `lintWikiDeltaMissing(target, { scope: 'all' })`（复用 `src/cli-task-extra.ts` 导出，**不复制**逻辑）；fail → BLOCKED + issue 列表 + 复跑命令行 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 CI sample L33 逐字一致，含 `--yes`）；`--json` 增 `wiki_lint` 块（ok/issues/scanned）
 - [ ] W2：usage/help（`src/cli.ts` L85）与 `README.md` / `README.zh-CN.md` verify 节补旗标说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链
 - [ ] 决策点（R 轮 + 20 审）：是否引入 preset（如 `fullstack-node-py`）默认开启本旗标——**默认不做**，仅显式旗标（非破坏）；若做则另起 task
 - [ ] 单测：旗标开/关两路径、BLOCKED 文案含 CI 同命令、`--json` 形状、与 `--task`/`--spec` 互斥规则不冲突
@@ -71,15 +71,16 @@
 | `--with-wiki-lint` 且有缺口 | verify BLOCKED + issues + CI 同命令 | 是（补字段重跑） | 是 |
 | 旗标拼写错误 | exit 1 用法错误（既有 `fail` 族） | 是 | 是 |
 | 无 `--task`/`--spec` | 既有用法错误不变 | 是 | 是 |
+| target 无 `docs/tasks/` 目录 | `lintWikiDeltaMissing` 返回 `ok:true, scanned:0`，verify **不得误 BLOCKED**（建议单测覆盖） | 是 | 否 |
 
 ---
 
 ## 验收标准
 
-- [ ] 有缺口仓 fixture：`verify --task … --with-wiki-lint` BLOCKED，stdout 含 `task lint-wiki-delta --target .` 复跑命令
-- [ ] 无缺口 fixture：verify 结果与不加坡一致；无旗标时行为与 1.7.1 逐字一致（回归测）
-- [ ] `--json` 含 `wiki_lint.ok/issues/scanned`；`--spec` 模式下旗标行为有明文定义（建议同生效或显式拒绝，R 轮定）
-- [ ] `npm test` / `typecheck` / `build` 全绿；help/README/CHANGELOG 已同步
+- [ ] 有缺口仓 fixture：`verify --task … --with-wiki-lint` BLOCKED，stdout **全串断言**含完整命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 `assets/ci/samples/lint-wiki-delta.yml.example` L33 逐字一致，含 `--yes`，非子串）
+- [ ] 无缺口 fixture：verify 结果与不加旗标一致；无旗标时行为与 1.7.1 逐字一致（回归测）
+- [ ] `--json` 含 `wiki_lint.ok/issues/scanned`；`--spec` 模式下旗标行为**同生效（20 审 R1 已定）**
+- [ ] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（与 `.github/workflows/ci.yml` 四步全对齐）；help/README/CHANGELOG 已同步
 
 ---
 
@@ -100,8 +101,9 @@
 | R1 | 复用 lintWikiDeltaMissing 导出，禁复制词表 | no |
 | R2 | 默认档 scope=all 与 CI `lint-wiki-delta.yml.example` 对齐 | no |
 | R3 | 非破坏：无旗标输出逐字不变须入回归测 | no |
+| R4 | 20 审 R1 退回回填：B1 复跑命令字面量对齐 CI sample（含 `--yes`）+ 验收全串断言；B2 验收补 `npm run test:lib`；`--spec` 同生效裁决落实 | no |
 
-**residual_risks**：`--spec` 模式下语义需明文；scope=all 会扫兄弟 active task（正是 K4 场景，文案须说明「缺口可能来自兄弟 task」）。
+**residual_risks**：`--spec` 模式下 `--with-wiki-lint` **同生效（20 审 R1 已定）**；scope=all 会扫兄弟 active task（正是 K4 场景，文案须说明「缺口可能来自兄弟 task」）。
 
 ---
 
@@ -134,3 +136,4 @@
 | 日期 | 说明 |
 |------|------|
 | 2026-08-27 | 初稿：自 ops-desk-api FEEDBACK K3 起草（00 单窗） |
+| 2026-08-27 | R1 回填：B1 复跑命令对齐 CI sample 原文（含 `--yes`）+ 验收全串断言；B2 验收补 `npm run test:lib` 对齐 ci.yml 四步；`--spec` 同生效裁决落实；失败路径补 scanned:0 边缘行；「不加坡」笔误修 |
