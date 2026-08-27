@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-08-27
+
+> 主题：**sync prompts 命令补齐**（ops-desk-api 1.8.0 复发反馈 · 唯一残余摩擦）——`sync prompts` 子命令（SHA-256 三分 · dry-run 默认 · `--yes`/`--force`/`--json`）· `upgrade` 只读提示行 · 测试 297 → 310。
+>
 > **消费者提示（置顶）**：
 >
 > - **新命令 `sync prompts`（兑现 1.7.1/1.8.0 CHANGELOG 滞后承诺）**：`npx dsh-coding-kit sync prompts [--target PATH] [--yes] [--force] [--json]` 将包内 Starter prompts（9 文件）与 `TASK_TEMPLATE.md` 同步到目标仓 `docs/harness/prompts/` 与 `docs/harness/templates/`。默认 dry-run（三分清单：skip/add/conflict · 零写入）；`--yes` 写入 add 项；本地已改文件列为 conflict 且**默认不覆盖**（`--force` 显式覆盖）。前置须已有 `.cyning-harness/manifest.json`。1.7.1 与 1.8.0 消费者提示中的「sync prompts 后生效」此前无对应命令——本版补齐。

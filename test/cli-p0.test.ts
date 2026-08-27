@@ -110,13 +110,13 @@ function taskMd(opts: {
 }
 
 describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
-  it('C-bin / version: package.json 为 1.8.0 且有 bin.dsh-coding-kit', async () => {
+  it('C-bin / version: package.json 为 1.9.0 且有 bin.dsh-coding-kit', async () => {
     const pkgRaw = await readFile(path.join(KIT, 'package.json'), 'utf8')
     const pkg = JSON.parse(pkgRaw) as {
       version: string
       bin?: Record<string, string>
     }
-    assert.equal(pkg.version, '1.8.0')
+    assert.equal(pkg.version, '1.9.0')
     assert.notEqual(pkg.version, '1.0.0')
     assert.notEqual(pkg.version, '0.1.0')
     assert.ok(pkg.bin && pkg.bin['dsh-coding-kit'], 'missing bin.dsh-coding-kit')
@@ -156,9 +156,9 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     assert.equal(/未交付/.test(help), false)
   })
 
-  it('R-HELP README: 完成态 1.8.0；双入口；加载≠注入；钉版后可去旧包', async () => {
+  it('R-HELP README: 完成态 1.9.0；双入口；加载≠注入；钉版后可去旧包', async () => {
     const readme = await readFile(path.join(KIT, 'README.md'), 'utf8')
-    assert.match(readme, /dsh-coding-kit@1\.8\.0/)
+    assert.match(readme, /dsh-coding-kit@1\.9\.0/)
     assert.match(readme, /Loading\s*≠\s*injecting/)
     assert.match(readme, /apply_coding_standards/)
     assert.match(readme, /dsh plugin add/)
@@ -180,7 +180,7 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
       bin?: Record<string, string>
       files?: string[]
     }
-    assert.equal(pkg.version, '1.8.0')
+    assert.equal(pkg.version, '1.9.0')
     assert.ok(pkg.bin)
     assert.deepEqual(Object.keys(pkg.bin), ['dsh-coding-kit'])
     assert.equal(Object.prototype.hasOwnProperty.call(pkg.bin, 'cyning-harness'), false)
@@ -209,8 +209,8 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     }>
     assert.ok(Array.isArray(parsed) && parsed[0])
     const info = parsed[0]
-    assert.equal(info.version, '1.8.0')
-    assert.match(String(info.filename ?? info.id ?? ''), /dsh-coding-kit-1\.8\.0/)
+    assert.equal(info.version, '1.9.0')
+    assert.match(String(info.filename ?? info.id ?? ''), /dsh-coding-kit-1\.9\.0/)
     const paths = (info.files ?? []).map((f) => f.path.replace(/\\/g, '/'))
     const joined = paths.join('\n')
     assert.equal(paths.includes('SPEC.md'), false, 'pack must not contain SPEC.md')
@@ -234,14 +234,14 @@ describe('C* CLI P0 runtime', { concurrency: 1 }, () => {
     })
   })
 
-  it('C1: init --preset harness-only --yes 写出 version=1.8.0 且不写 S2', async () => {
+  it('C1: init --preset harness-only --yes 写出 version=1.9.0 且不写 S2', async () => {
     await withTemp(async (dir) => {
       const r = runCli(['init', '--preset', 'harness-only', '--yes', '--target', dir])
       assert.equal(r.status, 0, r.combined)
       const mfPath = path.join(dir, '.cyning-harness', 'manifest.json')
       assert.equal(existsSync(mfPath), true)
       const mf = JSON.parse(await readFile(mfPath, 'utf8')) as { version: string }
-      assert.equal(mf.version, '1.8.0')
+      assert.equal(mf.version, '1.9.0')
       for (const rel of S2_RELS) {
         assert.equal(existsSync(path.join(dir, rel)), false, `S2 leaked: ${rel}`)
       }
