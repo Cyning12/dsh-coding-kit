@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-08-27
+
+> 主题：**wiki_delta 链路缝隙收口**（ops-desk-api FEEDBACK K1–K7 · agent-host-plan CI 复盘）——`lint-wiki-delta` 错节诊断码（K1）· `task lint` E8 早拦（K2）· `verify --with-wiki-lint` 双轨对齐（K3）· `task close` done 快照 + `--json`（K5）· Starter prompts/TASK_TEMPLATE 与 CI 对齐（K4/K6/K7）。四 task 串行交付 · 20 审 R1×4/R2×2 · 50 复检全 PASS · 测试 269 → 297。
+>
 > **消费者提示（置顶）**：
 >
 > - **`task lint --file` 新增 E8（存量仓注意）**：`## Harness 元信息` 节在但缺 `wiki_delta` 行 → **error，无 draft 豁免**（与 close 闸 `close_wiki_delta` 对齐 · 仅查存在性）。存量仓 draft task 将新增拦截——在元信息表补 `| **wiki_delta** | \`path|none|n/a\` |` 行即过。
