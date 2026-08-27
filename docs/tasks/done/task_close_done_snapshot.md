@@ -1,6 +1,6 @@
 # Task：task close 成功输出 done 片段快照（K5）
 
-> **状态**：`draft`  
+> **状态**：`done`  
 > **关联图谱**：无（`graph_change_layer=none`）  
 > **关联证据**：`ops-desk-api` 仓 `docs/harness/evidence/FEEDBACK_agent_host_plan_ci_20260827.md` §3 **K5（P2）** · §2 #72（手写 done 绕过 close）  
 > **拟发版**：`dsh-coding-kit@1.8.0`（建议与本批同波；可独立 PR）  
@@ -137,13 +137,18 @@
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 93
+
+- 验收 4/4 勾选 · 四步全绿（288/288 = 基线 279+9）· 50 独立复检一次 PASS · READY 逐字回归为全 stdout assert.equal
+- 20 审 R1 退回 → 回填 → R2 签收（含 done_snapshot 唯绑归档裁决）· 实现一棒落地 + 勾选收尾半棒
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- 「done_snapshot null 唯绑归档事件（renameSync 后）」的 20 审裁决先行，使 stdout 打印与 JSON 字段在豁免×dry-run 组合矩阵下零歧义——组合语义先裁后码是正解
+- 追加型 UX 改动（PASS 后快照块）的安全网是 READY 分支全 stdout 逐字 assert.equal 回归测；块级 contains 断言钉不住 1.7.0 冻结文案
+- mutation 预算截断时「自检先记全绿 + 勾选显式留待 + 上报剩余 edit 数」让收尾 turn 一次到位——预算感知的回填顺序值得固化
 
 ---
 
