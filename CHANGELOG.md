@@ -9,6 +9,7 @@
 > - **`task lint --file` 新增 E8（存量仓注意）**：`## Harness 元信息` 节在但缺 `wiki_delta` 行 → **error，无 draft 豁免**（与 close 闸 `close_wiki_delta` 对齐 · 仅查存在性）。存量仓 draft task 将新增拦截——在元信息表补 `| **wiki_delta** | \`path|none|n/a\` |` 行即过。
 > - **`task lint-wiki-delta` 新诊断码 `wiki_delta_wrong_section`**：`wiki_delta` 行写在 `## Harness 元信息` 之外的节（如 `## Harness`）时**替代** `wiki_delta_missing`（不双报），detail 含节名/行号并提示「须在 `## Harness 元信息` 表格内」。诊断非兼容：`parseHarnessMeta` 权威节名不变。
 > - **`verify` 新旗标 `--with-wiki-lint`（可选 · 非破坏）**：在既有检查之上追加 `lint-wiki-delta`（默认档 · `scope=all` · `--task`/`--spec` 同生效）；有缺口时 BLOCKED 并打印与 PR CI 逐字一致的复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`。无旗标行为与 1.7.1 逐字一致。
+> - **`task close --yes` PASS 后 stdout 新增 done 片段快照块**：归档成功后追加 `done_snapshot` 块（归档路径 + 归档文件 `## Harness 元信息` 节摘录 + 「禁止手写 done · 以此快照为格式真值」提示行）；`CLOSE: PASS` 文案不变、dry-run（`CLOSE: READY`）输出与 1.7.1 逐字一致。依赖「PASS 后无追加输出」精确匹配的脚本（极不可能但存在）需适配。
 
 ### Added
 
@@ -16,12 +17,14 @@
 - `task lint`：E8 规则（`wiki_delta` 存在性早拦 · 错节场景文案指向正确节名）
 - `src/cli-shared.ts`：`findWikiDeltaOutsideMetaSection` helper（两 lint 同源）
 - `verify`：`--with-wiki-lint` 旗标（复用 `lintWikiDeltaMissing` 导出 · 默认档 `scope=all` 与 CI sample 对齐 · `--task`/`--spec` 同生效）；`--json` 增 `wiki_lint{ok,issues,scanned}`；target 无 `docs/tasks/` 时 scanned:0 不误 BLOCKED
+- `task close`：PASS 分支 stdout 追加 done 片段快照块（归档路径 + `## Harness 元信息` 节归档真值摘录（`extractSection`）+ 禁手写提示；缺节异常态打 canonical 模板占位 + WARN 行）；新增 `--json` 旗标（PASS → `done_snapshot:{path,harness_meta_section}` · READY（dry-run 含豁免）→ `done_snapshot:null` exit 0 · BLOCKED → 非 0 仅错误面）；`src/cli-shared.ts` 新增 `buildDoneSnapshot` / `canonicalHarnessMetaSection`；快照存在性唯绑归档事件，与豁免旗标无关
 
 ### Docs
 
 - `assets/docs/POINTER_RUNBOOK_wiki_delta.md`：新增诊断码表（含 `wiki_delta_wrong_section` 与 E8）
 - CLI usage / `lint-wiki-delta --help`：诊断码说明同步
 - CLI usage / `verify --help` / README（en/zh-CN）verify 节：`--with-wiki-lint` 说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链本地预检
+- CLI usage / `TASK_USAGE`：`task close` 增 `[--json]`；`assets/harness/prompts/FRAGMENT_30_invoke_block_v1_zh.md` 补「归档仅走 `task close --yes`；格式真值 = close 成功快照」
 
 ## [1.7.1] - 2026-08-26
 

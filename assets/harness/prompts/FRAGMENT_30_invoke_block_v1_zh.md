@@ -24,4 +24,5 @@
 【禁止】
 - 采信聊天「已 approved」而不读 task 表
 - 闸 pending 时改 packages/**
+- 手写 docs/tasks/done/ 归档文件：归档仅走 task close --yes；格式真值 = close 成功快照
 ```

@@ -7,6 +7,7 @@ import { cmdRefreshIdeBlocks, countStaleIdeLiterals } from './cli-refresh-ide-bl
 import { cmdDiscipline, cmdLifecycle } from './cli-lifecycle.ts'
 import { cmdSkills } from './cli-skills.ts'
 import {
+  buildDoneSnapshot,
   CliError,
   evaluateMayStart30,
   extractSection,
@@ -86,7 +87,7 @@ function usage(version: string): void {
   npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]
   npx dsh-coding-kit audit [--target PATH] [--task FILE]
   npx dsh-coding-kit task lint --file PATH
-  npx dsh-coding-kit task close --file PATH [--yes]
+  npx dsh-coding-kit task close --file PATH [--yes] [--json]
   npx dsh-coding-kit status [--target PATH] [--task FILE] [--json] [--check]
   npx dsh-coding-kit timeline --task FILE [--target PATH] [--json] [--limit N] [--ingest]
   npx dsh-coding-kit lifecycle show [--json]
@@ -663,6 +664,9 @@ async function cmdTaskLint(args: string[]): Promise<void> {
 
 async function cmdTaskClose(args: string[]): Promise<void> {
   const yes = args.includes('--yes')
+  // K5（close-done-snapshot · 拟 1.8.0）：task close 新增 --json 旗标
+  // （done_snapshot 唯绑归档事件 · 20 审 R2 口径裁决）
+  const json = args.includes('--json')
   // DEF-003 阶段二 T6 + doc-health：close 守卫豁免旗标
   const allowUnchecked = args.includes('--allow-unchecked')
   const allowInvokeGap = args.includes('--allow-invoke-gap')
@@ -675,6 +679,7 @@ async function cmdTaskClose(args: string[]): Promise<void> {
   let rest = args.filter(
     (a) =>
       a !== '--yes' &&
+      a !== '--json' &&
       a !== '--allow-unchecked' &&
       a !== '--allow-invoke-gap' &&
       a !== '--allow-no-review' &&
@@ -733,27 +738,72 @@ async function cmdTaskClose(args: string[]): Promise<void> {
     dest = path.join(path.dirname(activeDir), 'done', path.basename(abs))
   }
   if (dest && existsSync(dest)) blockers.push(`目标已存在（不覆盖）: ${dest}`)
-  for (const t of traces) console.log(t)
+  if (!json) {
+    for (const t of traces) console.log(t)
+  }
   if (blockers.length > 0) {
-    for (const b of blockers) console.log(`  - ${b}`)
-    console.log(`CLOSE: BLOCKED · ${slug}`)
+    if (json) {
+      // K5：--json BLOCKED —— 非 0 退出 · JSON 仅错误面（无 done_snapshot 字段）
+      console.log(JSON.stringify({ ok: false, status: 'BLOCKED', slug, blockers, traces }, null, 2))
+    } else {
+      for (const b of blockers) console.log(`  - ${b}`)
+      console.log(`CLOSE: BLOCKED · ${slug}`)
+    }
     fail('', 2)
   }
   if (!yes) {
-    console.log('mode: dry-run（未执行 mv · 加 --yes 执行）')
-    console.log(`dest: ${dest}`)
-    console.log(`CLOSE: READY · ${slug}`)
+    if (json) {
+      // K5：--json READY（dry-run · 含豁免 dry-run）—— 未归档 → done_snapshot 恒 null · exit 0
+      console.log(
+        JSON.stringify({ ok: true, status: 'READY', slug, dest, traces, done_snapshot: null }, null, 2),
+      )
+    } else {
+      console.log('mode: dry-run（未执行 mv · 加 --yes 执行）')
+      console.log(`dest: ${dest}`)
+      console.log(`CLOSE: READY · ${slug}`)
+    }
     return
   }
   if (!dest) fail('无法解析归档目标', 2)
   mkdirSync(path.dirname(dest), { recursive: true })
   renameSync(abs, dest)
+  // K5：真归档（renameSync 执行）后构建 done 片段快照 —— 摘录归档文件内
+  // '## Harness 元信息' 节原文（extractSection · 归档真值防模板漂移）；快照存在性
+  // 唯绑归档事件，与豁免旗标无关（20 审 R2 口径裁决：豁免 + --yes → 快照照打）
+  const snapshot = buildDoneSnapshot(dest)
+  if (json) {
+    console.log(
+      JSON.stringify(
+        {
+          ok: true,
+          status: 'PASS',
+          slug,
+          dest,
+          traces,
+          done_snapshot: {
+            path: snapshot.path,
+            harness_meta_section: snapshot.harness_meta_section,
+          },
+        },
+        null,
+        2,
+      ),
+    )
+    return
+  }
   console.log(`moved: ${abs} → ${dest}`)
   console.log(`CLOSE: PASS · ${slug}`)
+  // K5（W1）：PASS 分支 stdout 追加快照块 —— 归档后路径 + 元信息节摘录 + 禁手写提示；
+  // 取不到元信息节（异常态）打 canonical 模板占位 + WARN 行；不改 CLOSE: PASS 冻结文案，仅追加
+  console.log(`done_snapshot · path: ${snapshot.path}`)
+  if (snapshot.warn) console.log(`WARN: ${snapshot.warn}`)
+  console.log('done_snapshot · harness_meta_section:')
+  console.log(snapshot.harness_meta_section)
+  console.log('done_snapshot · 禁止手写 done · 以此快照为格式真值')
 }
 
 const TASK_USAGE =
-  'task lint --file PATH · task close --file PATH [--yes] [--allow-unchecked] [--allow-invoke-gap] [--allow-no-review] [--allow-kpi-gap] [--allow-experience-gap] [--allow-wiki-gap] [--allow-no-pr-merge] [--allow-no-hub] · task lint-done · task lint-wiki-delta · task check --file PATH'
+  'task lint --file PATH · task close --file PATH [--yes] [--json] [--allow-unchecked] [--allow-invoke-gap] [--allow-no-review] [--allow-kpi-gap] [--allow-experience-gap] [--allow-wiki-gap] [--allow-no-pr-merge] [--allow-no-hub] · task lint-done · task lint-wiki-delta · task check --file PATH'
 
 async function cmdTask(args: string[]): Promise<void> {
   const [sub, ...rest] = args

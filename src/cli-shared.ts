@@ -199,3 +199,43 @@ export function extractHatsFromInvokeFilename(name: string): string[] {
   }
   return []
 }
+
+// K5（task close-done-snapshot · 拟 1.8.0）：done 片段快照 —— 摘录归档文件内
+// '## Harness 元信息' 节原文（与 parseHarnessMeta 同一 extractSection 口径 · 思考轮 R2：
+// 归档真值摘录 > 静态模板，防模板漂移）；取不到（异常态）回落 canonical 模板占位 + warn。
+// 调用方仅在真归档（renameSync 执行 · CLOSE: PASS）后消费；READY（dry-run · 含豁免）不消费
+// —— 快照存在性唯绑归档事件，与豁免旗标无关（20 审 R2 口径裁决）。
+export type DoneSnapshot = {
+  path: string
+  harness_meta_section: string
+  warn: string | null
+}
+
+// 异常态兜底：canonical 模板（assets/harness/templates/TASK_TEMPLATE.md）亦不可读时的最小节。
+const CANONICAL_META_FALLBACK =
+  '## Harness 元信息\n\n| 字段 | 值 |\n|------|-----|\n| **task_slug** | `<slug>` |'
+
+export function canonicalHarnessMetaSection(): string {
+  try {
+    const tpl = readFileSync(
+      path.join(packageRoot(), 'assets', 'harness', 'templates', 'TASK_TEMPLATE.md'),
+      'utf8',
+    )
+    const section = extractSection(tpl, '## Harness 元信息', '###')
+    if (section) return section.trimEnd()
+  } catch {
+    // 落兜底常量
+  }
+  return CANONICAL_META_FALLBACK
+}
+
+export function buildDoneSnapshot(dest: string): DoneSnapshot {
+  const content = readFileSync(dest, 'utf8')
+  const excerpt = extractSection(content, '## Harness 元信息', '###')
+  if (excerpt) return { path: dest, harness_meta_section: excerpt.trimEnd(), warn: null }
+  return {
+    path: dest,
+    harness_meta_section: canonicalHarnessMetaSection(),
+    warn: '归档文件缺 ## Harness 元信息 节 · done_snapshot 打印 canonical 模板占位（assets/harness/templates/TASK_TEMPLATE.md）',
+  }
+}
