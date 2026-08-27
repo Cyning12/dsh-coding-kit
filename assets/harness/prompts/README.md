@@ -25,13 +25,13 @@
 
 | 文件 | hat_id | 说明 |
 |------|--------|------|
-| [`00-orchestrator.md`](./00-orchestrator.md) | 00 | 总调度 · **默认行为**（最多起草第一步；中间派子 Agent；收口 50+CLOSE） |
-| [`10-task-requirements.md`](./10-task-requirements.md) | 10-task | task 思考 · 验收/failure_paths |
+| [`00-orchestrator.md`](./00-orchestrator.md) | 00 | 总调度 · **默认行为**（最多起草第一步；中间派子 Agent；收口 50+CLOSE；bulk-split 后 lint-wiki-delta 早检） |
+| [`10-task-requirements.md`](./10-task-requirements.md) | 10-task | task 思考 · 验收/failure_paths · 批量拆 task 预填 wiki_delta |
 | [`10-spec-requirements.md`](./10-spec-requirements.md) | 10-spec | SPEC 思考 · R0–R5 |
-| [`20-task-audit.md`](./20-task-audit.md) | 20-task-audit | reviews/ · HG-AUDIT-R1 |
+| [`20-task-audit.md`](./20-task-audit.md) | 20-task-audit | reviews/ · HG-AUDIT-R1 · 行为变更旧测 grep 提醒 |
 | [`20-spec-audit.md`](./20-spec-audit.md) | 20-spec-audit | SPEC 书面审 · HG-SPEC-SIGNOFF |
 | [`30-execute-code.md`](./30-execute-code.md) | 30 | 实现 · **含 40 自检闭环** |
-| [`40-self-check.md`](./40-self-check.md) | 40 | 与 30 同 Agent · 规则分文件 |
+| [`40-self-check.md`](./40-self-check.md) | 40 | 与 30 同 Agent · 规则分文件 · CI 全量命令兜底 |
 | [`FRAGMENT_30_gate_verify_v1_zh.md`](./FRAGMENT_30_gate_verify_v1_zh.md) | — | GATE_VERIFY · pre-30 / graph 字段 |
 | [`TEMPLATE_30_gate_stop.md`](./TEMPLATE_30_gate_stop.md) | — | 30 拒开工 |
 
@@ -51,3 +51,4 @@
 | 2026-07-24 | V2 拆分收编：10→10-task/10-spec · 22→20-task-audit/20-spec-audit · 旧文件删除 |
 | 2026-07-29 | **v2.1**：路径 D Inform/meta · 链 SDD_HAT_FLOW §5 · GATE_VERIFY fragment 入表 |
 | 2026-08-26 | **v1.7.1**：Starter 入包 `00-orchestrator.md`（默认行为） |
+| 2026-08-27 | K4/K6/K7：00/10-task/20-task-audit/40 与 CI 对齐条文同步（说明列） |

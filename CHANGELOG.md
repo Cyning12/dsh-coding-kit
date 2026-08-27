@@ -10,6 +10,7 @@
 > - **`task lint-wiki-delta` 新诊断码 `wiki_delta_wrong_section`**：`wiki_delta` 行写在 `## Harness 元信息` 之外的节（如 `## Harness`）时**替代** `wiki_delta_missing`（不双报），detail 含节名/行号并提示「须在 `## Harness 元信息` 表格内」。诊断非兼容：`parseHarnessMeta` 权威节名不变。
 > - **`verify` 新旗标 `--with-wiki-lint`（可选 · 非破坏）**：在既有检查之上追加 `lint-wiki-delta`（默认档 · `scope=all` · `--task`/`--spec` 同生效）；有缺口时 BLOCKED 并打印与 PR CI 逐字一致的复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`。无旗标行为与 1.7.1 逐字一致。
 > - **`task close --yes` PASS 后 stdout 新增 done 片段快照块**：归档成功后追加 `done_snapshot` 块（归档路径 + 归档文件 `## Harness 元信息` 节摘录 + 「禁止手写 done · 以此快照为格式真值」提示行）；`CLOSE: PASS` 文案不变、dry-run（`CLOSE: READY`）输出与 1.7.1 逐字一致。依赖「PASS 后无追加输出」精确匹配的脚本（极不可能但存在）需适配。
+> - **Starter prompts / TASK_TEMPLATE 与 CI 对齐（K4/K6/K7）**：00 默认行为表增 bulk-split 后 `lint-wiki-delta` 早检行；TASK_TEMPLATE 验收节增默认两行（仓 CI 全量命令 + `lint-wiki-delta`）；40-self-check 补 CI 全量兜底；20-task-audit 增行为变更旧测 grep 提醒。条文随包发布，消费仓 **`upgrade` / sync prompts 后生效**；未 sync 的仓仍用旧条文（预期，非缺陷）。
 
 ### Added
 
@@ -25,6 +26,7 @@
 - CLI usage / `lint-wiki-delta --help`：诊断码说明同步
 - CLI usage / `verify --help` / README（en/zh-CN）verify 节：`--with-wiki-lint` 说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链本地预检
 - CLI usage / `TASK_USAGE`：`task close` 增 `[--json]`；`assets/harness/prompts/FRAGMENT_30_invoke_block_v1_zh.md` 补「归档仅走 `task close --yes`；格式真值 = close 成功快照」
+- Starter prompts / `TASK_TEMPLATE.md` 与 CI 对齐（K4/K6/K7）：`00-orchestrator.md` 默认行为表增 bulk-split 后 `lint-wiki-delta` 早检行；`10-task-requirements.md` 补批量拆 task 预填 `## Harness 元信息` + `wiki_delta` 与 `--scope all|active|done` 取舍；`TASK_TEMPLATE.md` 验收节增默认两行；`40-self-check.md` 补 `.github/workflows/` 全量兜底；`20-task-audit.md` checklist 增行为变更「旧测 grep 影响面」提醒；新增 `test/assets-prompts-ci-alignment.test.ts` grep 断言
 
 ## [1.7.1] - 2026-08-26
 

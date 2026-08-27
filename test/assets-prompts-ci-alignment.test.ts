@@ -72,6 +72,31 @@ describe('prompts-ci-alignment · W3（K7）行为变更旧测提醒', { concurr
   })
 })
 
+describe('prompts-ci-alignment · W4 伴生同步', { concurrency: 1 }, () => {
+  it('prompts README 说明列同步 · 各改动文件修订记录 +1 行（2026-08-27）', () => {
+    const readme = readAsset('assets/harness/prompts/README.md')
+    assert.match(readme, /bulk-split/, 'README 00 说明列未同步早检')
+    assert.match(readme, /\| 2026-08-27 \|/, 'README 修订记录缺 2026-08-27 行')
+    for (const rel of [
+      'assets/harness/prompts/00-orchestrator.md',
+      'assets/harness/prompts/10-task-requirements.md',
+      'assets/harness/prompts/20-task-audit.md',
+      'assets/harness/prompts/40-self-check.md',
+      'assets/harness/templates/TASK_TEMPLATE.md',
+    ]) {
+      assert.match(readAsset(rel), /\| 2026-08-27 \|/, rel + ' 修订记录缺 2026-08-27 行')
+    }
+  })
+
+  it('CHANGELOG [Unreleased] 含 prompts 与 CI 对齐条目与消费者提示（upgrade/sync 后生效）', () => {
+    const cl = readAsset('CHANGELOG.md')
+    const m = /## \[Unreleased\]([\s\S]*?)(?=\n## \[1\.7\.1\])/.exec(cl)
+    assert.ok(m, '缺 [Unreleased] 节')
+    assert.match(m![1], /K4\/K6\/K7/, 'Unreleased 缺 K4/K6/K7 条目')
+    assert.match(m![1], /sync prompts 后生效/, '缺消费者提示（upgrade/sync 后生效）')
+  })
+})
+
 describe('prompts-ci-alignment · 全域防虚构旗标', { concurrency: 1 }, () => {
   it('改动资产均无 --scope changed 等虚构旗标（仅 all|active|done 存在）', () => {
     for (const rel of [
