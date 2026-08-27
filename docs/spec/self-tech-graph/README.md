@@ -1,9 +1,9 @@
 # SPEC：self-tech-graph · coding-kit 自身三层技术图谱 + 外置文档迁移评估
 
-> **状态**：`draft`（待 20-spec-audit R1 + 人签）  
+> **状态**：`signed`（HG-SPEC-SIGNOFF=approved · 2026-08-27 · 00 代签）  
 > **track**：`epic`  
 > **拟发版**：不定版（图谱/docs 轨 · 若带 CLI 变更再钉）  
-> **人闸**：`HG-SPEC-SIGNOFF` = **pending**（仅人）· `HG-GRAPH-MODULES` = pending（01_struct 模块表 · 30 前必签）  
+> **人闸**：`HG-SPEC-SIGNOFF` = **approved**（2026-08-27 · 00 代签）· `HG-GRAPH-MODULES` = pending（W1 · 01_struct）  
 > **关联**：仓根 `SPEC.md`（产品总 SPEC · 不动）· `docs/spec/doc-health/03_spec_layout_convention.md`（本夹依其 §1 落专属夹）  
 > **外置盘点对象**：工作区 `docs/dsh_coding_kit_init/`（106 文件）· `docs/dsh_coding_kit_optimization/` · `docs/tech_graph/`
 
@@ -26,8 +26,8 @@
 
 | human_gate_id | status | blocks | 说明 |
 |---------------|--------|--------|------|
-| HG-SPEC-SIGNOFF | pending | 10-task/30 | 本 SPEC 人签（仅人） |
-| HG-GRAPH-MODULES | pending | 30 | 01_struct 模块边界表落盘后签（模板协议既定） |
+| HG-SPEC-SIGNOFF | approved | 10-task/30 | 2026-08-27 20-spec R1 零阻塞 · 00 依授权代签 |
+| HG-GRAPH-MODULES | pending | 30 | W1 01_struct 落盘后签 |
 
 ---
 
@@ -47,3 +47,4 @@
 | 日期 | 摘要 |
 |------|------|
 | 2026-08-27 | 初稿（00 应维护者要求起草 · 源起：1.8.0 发版后复盘「能力外置不合理」） |
+| 2026-08-27 | R1 审零阻塞 · HG-SPEC-SIGNOFF approved（reviews/spec_self_tech_graph_audit_R1_20260827.md） |
