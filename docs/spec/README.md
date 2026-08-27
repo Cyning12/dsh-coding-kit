@@ -7,3 +7,4 @@
 | slug | 路径 | 状态 | 一句话 |
 |------|------|------|--------|
 | `doc-health` | [`doc-health/`](./doc-health/) | draft · HG-SPEC-SIGNOFF=pending | 文档健康度 + CLOSE 强绑定 · 试点 ops-desk-api |
+| `self-tech-graph` | [`self-tech-graph/`](./self-tech-graph/) | **signed** · HG-SPEC-SIGNOFF=approved · W0 定稿 [`reference/W0_inventory_diff_20260827.md`](./self-tech-graph/reference/W0_inventory_diff_20260827.md) | kit 自身三层技术图谱 + 外置三树迁留 · 读序见 [`self-tech-graph/README.md`](./self-tech-graph/README.md) |

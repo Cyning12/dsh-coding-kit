@@ -10,7 +10,7 @@ dsh-coding-kit 向消费仓提供完整图谱能力（`assets/graph/templates/` 
 
 | 外置树 | 内容 | 锚定版本 | 问题 |
 |--------|------|----------|------|
-| `docs/dsh_coding_kit_optimization/00_inventory/` | architecture.md / cli_surface.md / plugin_surface.md / assets_catalog.md —— **实质是 kit 的架构文档** | 1.2.2 | 已滞后 6 个版本（当前 1.8.0）；仓外不可被仓内 CI 校验；进仓 Agent 不可见 |
+| `docs/dsh_coding_kit_optimization/00_inventory/` | architecture.md / cli_surface.md / plugin_surface.md / assets_catalog.md —— **实质是 kit 的架构文档** | 1.2.2 | 已滞后 6 个版本（当前 1.9.0）；仓外不可被仓内 CI 校验；进仓 Agent 不可见 |
 | `docs/dsh_coding_kit_init/`（106 文件） | 1.0–1.2.2 的 tasks/spec/invokes/reviews 过程树 | 历史 | 过程档价值真实但与仓内 `docs/tasks/` `docs/harness/` 双轨割裂 |
 | `docs/tech_graph/` | graph 专题 SPEC（json_graph/query_graph）+ 承接仓方案 + tasks/prompts/invokes | 跨仓 | 多为跨仓方法论，非 kit 私有；json_graph 等规约与 kit graph 面直接相关 |
 

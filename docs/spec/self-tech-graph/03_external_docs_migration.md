@@ -49,3 +49,4 @@
 | 日期 | 摘要 |
 |------|------|
 | 2026-08-27 | 初稿（实勘三树） |
+| 2026-08-27 | W0 定稿：迁留矩阵 approved 见 [`reference/W0_inventory_diff_20260827.md`](./reference/W0_inventory_diff_20260827.md) §迁留定稿矩阵 |
