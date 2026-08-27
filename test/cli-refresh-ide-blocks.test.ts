@@ -437,7 +437,7 @@ describe('R-07 refresh-ide-blocks', { concurrency: 1 }, () => {
       assert.match(r.combined, /检测到 \d+ 处 IDE 块内旧命令字面/)
       assert.equal(await readFile(path.join(dir, 'AGENTS.md'), 'utf8'), M01_BODY, 'upgrade 不写 IDE 文件')
       const mf = JSON.parse(await readFile(path.join(dir, '.cyning-harness', 'manifest.json'), 'utf8')) as { version: string }
-      assert.equal(mf.version, '1.7.1', 'upgrade 既有 manifest 语义不变')
+      assert.equal(mf.version, '1.8.0', 'upgrade 既有 manifest 语义不变')
     })
   })
 

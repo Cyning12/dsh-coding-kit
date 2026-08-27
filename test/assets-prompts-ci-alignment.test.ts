@@ -88,10 +88,10 @@ describe('prompts-ci-alignment · W4 伴生同步', { concurrency: 1 }, () => {
     }
   })
 
-  it('CHANGELOG [Unreleased] 含 prompts 与 CI 对齐条目与消费者提示（upgrade/sync 后生效）', () => {
+  it('CHANGELOG [1.8.0] 含 prompts 与 CI 对齐条目与消费者提示（upgrade/sync 后生效）', () => {
     const cl = readAsset('CHANGELOG.md')
-    const m = /## \[Unreleased\]([\s\S]*?)(?=\n## \[1\.7\.1\])/.exec(cl)
-    assert.ok(m, '缺 [Unreleased] 节')
+    const m = /## \[1\.8\.0\]([\s\S]*?)(?=\n## \[1\.7\.1\])/.exec(cl)
+    assert.ok(m, '缺 [1.8.0] 节')
     assert.match(m![1], /K4\/K6\/K7/, 'Unreleased 缺 K4/K6/K7 条目')
     assert.match(m![1], /sync prompts 后生效/, '缺消费者提示（upgrade/sync 后生效）')
   })

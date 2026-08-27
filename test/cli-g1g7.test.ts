@@ -288,7 +288,7 @@ describe('D1–D7 G1–G7 runtime', { concurrency: 1 }, () => {
       await writeRel(
         dir,
         '.cyning-harness/manifest.json',
-        `${JSON.stringify({ version: '1.7.1', preset: 'harness-only', ide: [], from_version: null, upgraded_at: '2026-08-16T00:00:00Z' }, null, 2)}\n`,
+        `${JSON.stringify({ version: '1.8.0', preset: 'harness-only', ide: [], from_version: null, upgraded_at: '2026-08-16T00:00:00Z' }, null, 2)}\n`,
       )
       await writeRel(dir, 'docs/tasks/active/task_hgm_ok_v1.md', taskMd({ slug: 'hgm_ok' }))
       const dry = runCli(['graph', 'ingest', '--target', dir, '--dry-run'])

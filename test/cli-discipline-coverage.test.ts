@@ -87,7 +87,7 @@ describe('D-DOC 1.2.4 DEF-005 · discipline-coverage 与本包实接线对齐', 
     assert.equal(parsed.as_of_package_version, data.as_of_package_version)
     const text = runCli(['discipline', 'show'])
     assert.equal(text.status, 0, text.out)
-    assert.match(text.out, /as_of: 1\.7\.1/)
+    assert.match(text.out, /as_of: 1\.8\.0/)
     assert.match(text.out, /status 口径 = 本包实接线/, 'T4 口径注记')
   })
 })
