@@ -36,7 +36,7 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | approved | 22-R1, 30 | 2026-08-27 维护者批准（Q1A）· 授权 00 代签过程闸 |
-| HG-AUDIT-R1 | pending | 30 | 20 R1 落盘后人签 |
+| HG-AUDIT-R1 | approved | 30 | 2026-08-27 20 审 R2 零阻塞签收（reviews/task_close_done_snapshot_audit_R2_20260827.md · R1 退回已回填 · done_snapshot 口径裁定唯绑 PASS）· 00 依维护者 Q1A 授权代签 |
 
 ---
 
@@ -80,7 +80,7 @@
 
 - [ ] `task close --yes` 成功：stdout 含 done 路径 + `## Harness 元信息` 表摘录 + 禁手写提示行
 - [ ] dry-run 输出与 1.7.1 逐字一致（回归测）
-- [ ] `--json` 两路径断言：PASS 有快照字段（`path` + `harness_meta_section`）；READY（dry-run）或豁免路径为 null；既有 close 闸测（PR/Hub/wiki/kpi/experience）全绿
+- [ ] `--json` 两路径断言：PASS 有快照字段（`path` + `harness_meta_section`）；READY（dry-run，含豁免 dry-run）为 null；豁免 + --yes 的 PASS 路径 done_snapshot 字段非 null（与 stdout 快照一致）；既有 close 闸测（PR/Hub/wiki/kpi/experience）全绿
 - [ ] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（对齐 .github/workflows/ci.yml 四步）；CHANGELOG 已增条
 
 ---
