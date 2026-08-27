@@ -36,7 +36,7 @@
 | human_gate_id | status | blocks_hats | 说明 |
 |---------------|--------|-------------|------|
 | HG-TASK-DRAFT | approved | 22-R1, 30 | 2026-08-27 维护者批准（Q1A）· 授权 00 代签过程闸 |
-| HG-AUDIT-R1 | pending | 30 | 20 R1 落盘后人签 |
+| HG-AUDIT-R1 | approved | 30 | 2026-08-27 20 审 R2 零阻塞签收（reviews/task_verify_with_wiki_lint_audit_R2_20260827.md · R1 退回已回填）· 00 依维护者 Q1A 授权代签 |
 
 ---
 

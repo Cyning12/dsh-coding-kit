@@ -50,9 +50,10 @@
 
 ## 范围
 
-- [ ] W1：`cmdTaskClose`（`src/cli-lifecycle.ts`）PASS 分支打印快照块：`done_path` + 归档文件 `## Harness 元信息` 节原文摘录（用 `extractSection` 取，取不到则打印 canonical 模板占位）；dry-run（`CLOSE: READY`）**不打印**快照
-- [ ] W2：`--json` 输出增 `done_snapshot: { path, harness_meta_section }` 字段（无快照场景为 null）
-- [ ] W3：`assets/harness/prompts/FRAGMENT_30_invoke_block_v1_zh.md`（或 30-execute-code 关账节）补一句：「归档仅走 `task close --yes`；格式真值 = close 成功快照」
+- [ ] W1：`cmdTaskClose`（`src/cli.ts` L594–682 · PASS≈L682）PASS 分支打印快照块：`done_path` + 归档文件 `## Harness 元信息` 节原文摘录（用 `extractSection` 取，取不到则打印 canonical 模板占位）；dry-run（`CLOSE: READY`）**不打印**快照
+- [ ] W2：**新增** `task close --json` 旗标（现不存在，未知参数即 fail）；JSON 输出增 `done_snapshot: { path, harness_meta_section }` 字段（无快照场景为 null）
+- [ ] 同步 `TASK_USAGE`（src/cli.ts L686）与顶层 USAGE help 文案（src/cli.ts usage 块），纳入 `--json`
+- [ ] W3：`assets/harness/prompts/FRAGMENT_30_invoke_block_v1_zh.md` 补一句：「归档仅走 `task close --yes`；格式真值 = close 成功快照」
 - [ ] 单测：PASS 后 stdout 含快照与归档路径；READY 不含；`--json` 形状；豁免旗标（--allow-* 族）路径下快照仍打印
 - [ ] CHANGELOG `[Unreleased]` 增条
 
@@ -71,6 +72,7 @@
 | close BLOCKED | 无快照（现状不变） | 是 | 是 |
 | 归档文件缺 `## Harness 元信息`（异常态） | 快照位打印 canonical 模板 + WARN 行 | 是 | 是 |
 | dry-run | `CLOSE: READY`，无快照 | — | 是 |
+| `--json` 模式 | dry-run（READY）：JSON 输出 `done_snapshot: null`，退出 0；BLOCKED：非 0 退出，JSON 仅错误面（无快照字段） | 是 | 是 |
 
 ---
 
@@ -78,15 +80,15 @@
 
 - [ ] `task close --yes` 成功：stdout 含 done 路径 + `## Harness 元信息` 表摘录 + 禁手写提示行
 - [ ] dry-run 输出与 1.7.1 逐字一致（回归测）
-- [ ] `--json` 含 `done_snapshot`；既有 close 闸测（PR/Hub/wiki/kpi/experience）全绿
-- [ ] `npm test` / `typecheck` / `build` 全绿；CHANGELOG 已增条
+- [ ] `--json` 两路径断言：PASS 有快照字段（`path` + `harness_meta_section`）；READY（dry-run）或豁免路径为 null；既有 close 闸测（PR/Hub/wiki/kpi/experience）全绿
+- [ ] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（对齐 .github/workflows/ci.yml 四步）；CHANGELOG 已增条
 
 ---
 
 ## 给执行帽的必读列表
 
 1. 反馈证据 §2 #72 · §3 K5 · §5 正确 done 格式真值
-2. `src/cli-lifecycle.ts` `cmdTaskClose`（PASS/READY 分支）· `src/cli-checks.ts` `evalCloseGuard`
+2. `src/cli.ts` L594–682 `cmdTaskClose`（PASS/READY 分支 · READY≈L675 · PASS≈L682）· `src/cli-checks.ts` `evalCloseGuard`（close 守卫复用）
 3. `src/cli-shared.ts` `extractSection`（快照摘录复用）
 4. `test/cli-task-close-guards.test.ts`
 5. `assets/harness/prompts/FRAGMENT_30_invoke_block_v1_zh.md`
@@ -100,6 +102,7 @@
 | R0 | 快照是 UX 正向引导，不做手写检测负向闸 | no |
 | R1 | READY 不打印，避免快照被当成已归档证据 | no |
 | R2 | 摘录归档文件真值 > 打印静态模板（防模板漂移） | no |
+| R3+ | R1 退回回填：B1 锚点改 src/cli.ts L594–682（cmdTaskClose 不在 cli-lifecycle.ts）· B2 --json 显式声明新增 + TASK_USAGE/顶层 USAGE 同步 + dry-run/BLOCKED JSON 行为钉死 · N1 补 test:lib · N2 W3 唯一落点 | no |
 
 **residual_risks**：stdout 变长，依赖精确匹配 PASS 后无输出的脚本极不可能但存在 → CHANGELOG 写明「PASS 后新增快照块」。
 
@@ -134,3 +137,4 @@
 | 日期 | 说明 |
 |------|------|
 | 2026-08-27 | 初稿：自 ops-desk-api FEEDBACK K5 起草（00 单窗） |
+| 2026-08-27 | R1 回填：B1 锚点修正（cmdTaskClose 真值 src/cli.ts L594–682 · READY≈L675 · PASS≈L682）· B2 显式新增 --json 旗标 + USAGE 同步 + 失败路径补 JSON 行 + 验收 --json 两路径断言 · N1 验收补 npm run test:lib · N2 W3 钉死 FRAGMENT_30_invoke_block_v1_zh.md |
