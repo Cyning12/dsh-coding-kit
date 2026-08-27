@@ -35,7 +35,7 @@ import {
 } from './cli-checks.ts'
 import { cmdStatus, cmdTimeline } from './cli-status.ts'
 import { cmdSync } from './cli-sync.ts'
-import { cmdTaskCheck, cmdTaskLintDone, cmdTaskLintWikiDelta } from './cli-task-extra.ts'
+import { cmdTaskCheck, cmdTaskLintDone, cmdTaskLintWikiDelta, lintWikiDeltaMissing } from './cli-task-extra.ts'
 import { cmdWiki } from './cli-wiki.ts'
 
 type Manifest = {
@@ -82,7 +82,7 @@ function usage(version: string): void {
   npx dsh-coding-kit upgrade [--target PATH] [--yes]
   npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
   npx dsh-coding-kit check [--target PATH]
-  npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json]
+  npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json] [--with-wiki-lint]
   npx dsh-coding-kit gate-check [--target PATH] [--task FILE] [--json]
   npx dsh-coding-kit audit [--target PATH] [--task FILE]
   npx dsh-coding-kit task lint --file PATH
@@ -399,6 +399,23 @@ async function cmdAudit(args: string[]): Promise<void> {
   if (!gateOk || !test.ok) fail('ICVO audit 未通过', 2)
 }
 
+// K3（FEEDBACK §3 · task verify-with-wiki-lint）：verify --with-wiki-lint 追加闸 ——
+// 复用 lintWikiDeltaMissing 导出（默认档 · scope=all，与 PR CI assets/ci/samples/lint-wiki-delta.yml.example 对齐），
+// 逻辑不复制；fail → BLOCKED + issues + 与 CI 逐字一致的复跑命令（含 --yes · sample L33）。
+type WikiLintGateResult = ReturnType<typeof lintWikiDeltaMissing>
+
+function wikiLintJson(res: WikiLintGateResult): { ok: boolean; issues: WikiLintGateResult['issues']; scanned: number } {
+  return { ok: res.ok, issues: res.issues, scanned: res.scanned }
+}
+
+function printWikiLintIssues(res: WikiLintGateResult): void {
+  console.log('verify: 缺 wiki_delta 字段的 task（lint-wiki-delta · scope=all · 缺口可能来自兄弟 active/done task）:')
+  for (const m of res.issues) {
+    console.log(`  - ${m.path} · ${m.code} · ${m.detail}`)
+  }
+  console.log('复跑（与 PR CI 同命令）: npx --yes dsh-coding-kit task lint-wiki-delta --target .')
+}
+
 // PRD_DEF-003 后续棒：verify --spec 真闸（SPEC→00 前查审查文存在性 · 消灭最后一个 notDelivered 命令面）。
 // 语义映射旧包 @cyning/harness@2.24.0 lib/verify.js verifySpecTarget（差异见 cli-checks.ts findSpecReview 注释与 PR body）：
 //   · 仅查审查文存在性，不跑 gate-check / audit D5 / task lint（与 --task 模式分离）
@@ -408,11 +425,15 @@ async function cmdAudit(args: string[]): Promise<void> {
 async function verifySpecMode(
   target: string,
   specFile: string,
-  opts: { json: boolean; allowNoSpecReview: boolean; allowNoReview: boolean },
+  opts: { json: boolean; allowNoSpecReview: boolean; allowNoReview: boolean; withWikiLint: boolean },
 ): Promise<void> {
   const abs = resolveTaskPath(target, specFile)
   const label = path.basename(abs)
-  const emitJson = (blocked: boolean, extra?: { waived?: string[]; skipped?: string }): void => {
+  const emitJson = (
+    blocked: boolean,
+    extra?: { waived?: string[]; skipped?: string },
+    wikiLint?: WikiLintGateResult | null,
+  ): void => {
     console.log(
       JSON.stringify(
         {
@@ -423,6 +444,7 @@ async function verifySpecMode(
           verdict: blocked ? 'BLOCKED' : 'PASS',
           ...(extra?.skipped ? { skipped: extra.skipped } : {}),
           ...(extra?.waived && extra.waived.length > 0 ? { waived: extra.waived } : {}),
+          ...(wikiLint ? { wiki_lint: wikiLintJson(wikiLint) } : {}),
         },
         null,
         2,
@@ -431,10 +453,22 @@ async function verifySpecMode(
   }
   if (!existsSync(abs)) fail(`错误: 未找到 --spec 文件 ${abs}`)
   const content = await readFile(abs, 'utf8')
+  // K3：--with-wiki-lint 在 --spec 模式同生效（20 审 R1 已定 · 复用 lintWikiDeltaMissing 导出 · 默认档 scope=all）
+  const wikiLint = opts.withWikiLint ? lintWikiDeltaMissing(target, { scope: 'all' }) : null
   if (shouldSkipSpecAudit(content)) {
-    if (opts.json) emitJson(false, { skipped: 'bugfix / skip_spec_audit' })
+    if (wikiLint && !wikiLint.ok) {
+      if (opts.json) emitJson(true, { skipped: 'bugfix / skip_spec_audit' }, wikiLint)
+      else {
+        console.log('verify: INFO · skip SPEC review gate（bugfix / skip_spec_audit）')
+        printWikiLintIssues(wikiLint)
+        console.log(`VERIFY: BLOCKED · wiki_delta 缺口（lint-wiki-delta · scope=all）· ${label}`)
+      }
+      fail('', 2)
+    }
+    if (opts.json) emitJson(false, { skipped: 'bugfix / skip_spec_audit' }, wikiLint)
     else {
       console.log('verify: INFO · skip SPEC review gate（bugfix / skip_spec_audit）')
+      if (wikiLint) console.log(`verify: wiki-lint PASS · scanned: ${wikiLint.scanned} · scope: all`)
       console.log(`VERIFY: PASS · ${label}`)
     }
     return
@@ -455,14 +489,25 @@ async function verifySpecMode(
       )
     }
   }
-  if (opts.json) emitJson(false, { waived })
-  else console.log(`VERIFY: PASS · ${label}`)
+  if (wikiLint && !wikiLint.ok) {
+    if (opts.json) emitJson(true, { waived }, wikiLint)
+    else {
+      printWikiLintIssues(wikiLint)
+      console.log(`VERIFY: BLOCKED · wiki_delta 缺口（lint-wiki-delta · scope=all）· ${label}`)
+    }
+    fail('', 2)
+  }
+  if (opts.json) emitJson(false, { waived }, wikiLint)
+  else {
+    if (wikiLint) console.log(`verify: wiki-lint PASS · scanned: ${wikiLint.scanned} · scope: all`)
+    console.log(`VERIFY: PASS · ${label}`)
+  }
 }
 
 async function cmdVerify(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
     console.log(
-      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json] [--allow-no-review] [--allow-invoke-gap] [--allow-no-spec-review]',
+      '用法: npx dsh-coding-kit verify [--target PATH] [--task FILE | --spec FILE] [--json] [--with-wiki-lint] [--allow-no-review] [--allow-invoke-gap] [--allow-no-spec-review]',
     )
     return
   }
@@ -483,18 +528,21 @@ async function cmdVerify(args: string[]): Promise<void> {
   rest = rest.filter((a) => a !== '--allow-invoke-gap')
   const allowNoSpecReview = rest.includes('--allow-no-spec-review')
   rest = rest.filter((a) => a !== '--allow-no-spec-review')
+  // K3：--with-wiki-lint 追加闸（显式旗标 · 非破坏；preset 默认开启为独立决策点，本 task 不做）
+  const withWikiLint = rest.includes('--with-wiki-lint')
+  rest = rest.filter((a) => a !== '--with-wiki-lint')
   if (rest.length > 0) fail(`verify 未知参数: ${rest.join(' ')}`)
   const target = resolveTarget(process.cwd(), targetArg)
   // --task 与 --spec 互斥（旧包 lib/cli.js#487-491 语义 · exit 1 用法错误）
   if (taskFile && specFile) fail('verify：--task 与 --spec 互斥')
   if (specFile) {
-    await verifySpecMode(target, specFile, { json, allowNoSpecReview, allowNoReview })
+    await verifySpecMode(target, specFile, { json, allowNoSpecReview, allowNoReview, withWikiLint })
     return
   }
   if (!taskFile) fail('verify 须指定 --task FILE 或 --spec FILE')
   const abs = resolveTaskPath(target, taskFile)
   const label = path.basename(abs)
-  const emitJson = (blocked: boolean, waived?: string[]): void => {
+  const emitJson = (blocked: boolean, waived?: string[], wikiLint?: WikiLintGateResult | null): void => {
     console.log(
       JSON.stringify(
         {
@@ -504,6 +552,7 @@ async function cmdVerify(args: string[]): Promise<void> {
           blocked,
           verdict: blocked ? 'BLOCKED' : 'PASS',
           ...(waived && waived.length > 0 ? { waived } : {}),
+          ...(wikiLint ? { wiki_lint: wikiLintJson(wikiLint) } : {}),
         },
         null,
         2,
@@ -564,6 +613,25 @@ async function cmdVerify(args: string[]): Promise<void> {
         `verify: 留痕 · 缺 pre-30 invoke hats: ${invoke.missing.join(',')}（${invoke.source}）· --allow-invoke-gap 豁免生效（仍须补落 invoke 快照）`,
       )
     }
+  }
+  // K3：--with-wiki-lint 追加闸（既有全部硬闸之后 · 复用 lintWikiDeltaMissing 导出 · 默认档 scope=all）；
+  // target 无 docs/tasks/ 候选目录时 scanned:0/ok:true，不得误 BLOCKED（失败路径表边缘行）
+  if (withWikiLint) {
+    const wikiLint = lintWikiDeltaMissing(target, { scope: 'all' })
+    if (!wikiLint.ok) {
+      if (json) emitJson(true, waived, wikiLint)
+      else {
+        printWikiLintIssues(wikiLint)
+        console.log(`VERIFY: BLOCKED · wiki_delta 缺口（lint-wiki-delta · scope=all）· ${label}`)
+      }
+      fail('', 2)
+    }
+    if (json) emitJson(false, waived, wikiLint)
+    else {
+      console.log(`verify: wiki-lint PASS · scanned: ${wikiLint.scanned} · scope: all`)
+      console.log(`VERIFY: PASS · ${label}`)
+    }
+    return
   }
   if (json) emitJson(false, waived)
   else {
