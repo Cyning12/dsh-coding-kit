@@ -61,6 +61,17 @@ describe('prompts-ci-alignment · W2（K6）默认验收', { concurrency: 1 }, (
   })
 })
 
+describe('prompts-ci-alignment · W3（K7）行为变更旧测提醒', { concurrency: 1 }, () => {
+  it('20-task-audit checklist 含行为变更类 task「旧测 grep 影响面」条（checklist 提醒 · 非机械闸）', () => {
+    const body = readAsset('assets/harness/prompts/20-task-audit.md')
+    assert.match(body, /行为变更类 task/)
+    assert.match(body, /改默认值 \/ 校验 \/ 策略门 \/ fallback 语义/)
+    assert.match(body, /旧测 grep 影响面/)
+    assert.match(body, /退回 10-task/)
+    assert.match(body, /不进 `task lint` 机械闸/)
+  })
+})
+
 describe('prompts-ci-alignment · 全域防虚构旗标', { concurrency: 1 }, () => {
   it('改动资产均无 --scope changed 等虚构旗标（仅 all|active|done 存在）', () => {
     for (const rel of [

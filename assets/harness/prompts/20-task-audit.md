@@ -23,6 +23,7 @@ metadata:
 ## 只做什么
 
 - 对照验收、`failure_paths`、`test_strategy`、必读列表
+- **行为变更类 task**（改默认值 / 校验 / 策略门 / fallback 语义）：验收标准须含「**旧测 grep 影响面**」项，缺则**退回 10-task** 补列（checklist 提醒 · 不进 `task lint` 机械闸）
 - **阶段 C**：若 task §4 含思考轮 → **思考轮审查**（控制表 · 回填闭合 · early_stop 理由/风险）
 - **思考审查不通过** → 审查文 **「退回 10-task」**；下一棒 **10-task**，**禁止**附 30 Prompt
 - **必须** 写 `task_<slug>_audit_R<n>_YYYYMMDD.md`
@@ -82,6 +83,7 @@ metadata:
 |------|------|
 | 2026-07-24 | V2 拆分收编：自 `22-task-audit.md` 改名为 `20-task-audit.md`（来源：工作区 `20-task-audit.md` · 2026-06-21 v3 + 原包内人工闸联动节保留） |
 | 2026-07-26 | v2.12：澄清 20 invoke 仅在 required 集合含 20 时强制；默认靠 reviews |
+| 2026-08-27 | K7：checklist 增行为变更类 task「旧测 grep 影响面」提醒（非机械闸） |
 
 ## 给 Cursor
 
