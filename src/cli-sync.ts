@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
+import { cmdSyncPrompts, SYNC_PROMPTS_USAGE } from './cli-sync-prompts.ts'
 import { fail, parseHarnessMeta, resolveTarget, takeOption } from './cli-shared.ts'
 
 function extractHatId(filename: string): string {
@@ -98,13 +99,31 @@ export function generateInvokeIndex(target: string): string {
   return indexFile
 }
 
+const SYNC_INDEX_USAGE = `用法: npx dsh-coding-kit sync index [--target PATH]`
+
 export async function cmdSync(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
-    console.log(`用法: npx dsh-coding-kit sync index [--target PATH]`)
+    console.log(`用法:
+  npx dsh-coding-kit sync index [--target PATH]
+  npx dsh-coding-kit sync prompts [--target PATH] [--yes] [--force] [--json]
+
+子命令 help: sync index --help · sync prompts --help`)
     return
   }
   const [sub, ...rest] = args
-  if (sub !== 'index') fail(`sync 子命令未知: ${sub ?? '(空)'}\n用法: sync index [--target PATH]`)
+  if (sub === 'prompts') {
+    await cmdSyncPrompts(rest)
+    return
+  }
+  if (sub === 'index' && (rest.includes('--help') || rest.includes('-h'))) {
+    console.log(SYNC_INDEX_USAGE)
+    return
+  }
+  if (sub !== 'index') {
+    fail(
+      `sync 子命令未知: ${sub ?? '(空)'}\n用法: sync index [--target PATH] · sync prompts [--target PATH] [--yes] [--force] [--json]`,
+    )
+  }
   let remaining = rest
   const { value: targetArg, rest: r1 } = takeOption(remaining, '--target')
   remaining = r1
