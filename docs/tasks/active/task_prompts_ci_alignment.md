@@ -51,12 +51,12 @@
 
 ## 范围
 
-- [ ] W1（K4）：`assets/harness/prompts/00-orchestrator.md` 默认行为表增行——「bulk-split（一次拆 ≥2 个 active task）后、派第一棒 30 前，必跑 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`」；`assets/harness/prompts/10-task-requirements.md` 补「批量拆 task 时每个文件必须预填 `## Harness 元信息` + `wiki_delta`」；附 `--scope all|active` trade-off 两行说明（`--scope changed` 不存在，文案禁止虚构旗标）
-- [ ] W2（K6）：`assets/harness/templates/TASK_TEMPLATE.md` 验收标准占位增默认两行——「全量测试命令（与本仓 CI workflow 一致，如 `pytest tests -q` / `pnpm test`）」+「`task lint-wiki-delta --target .`」；`assets/harness/prompts/40-self-check.md`「与子仓 CI 对齐者优先」后补：task 未列全量命令时按 `.github/workflows/` 真值补齐再自检
-- [ ] W3（K7）：`assets/harness/prompts/20-task-audit.md`「只做什么」checklist 增一条——行为变更类 task（改默认值 / 校验 / 策略门 / fallback 语义）验收须含「旧测 grep 影响面」项，缺则退回 10-task
-- [ ] W4：`assets/harness/prompts/README.md` 与各文件修订记录同步；`assets/docs/POINTER_RUNBOOK_wiki_delta.md` 若列 lint 时机则互链
-- [ ] 资产单测同步：`test/assets.test.ts` / `test/assets-ontology.test.ts` / skills 校验测全绿；新增文案附 grep 断言
-- [ ] CHANGELOG `[Unreleased]` 增条（主题：prompts 与 CI 对齐）
+- [x] W1（K4）：`assets/harness/prompts/00-orchestrator.md` 默认行为表增行——「bulk-split（一次拆 ≥2 个 active task）后、派第一棒 30 前，必跑 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`」；`assets/harness/prompts/10-task-requirements.md` 补「批量拆 task 时每个文件必须预填 `## Harness 元信息` + `wiki_delta`」；附 `--scope all|active` trade-off 两行说明（`--scope changed` 不存在，文案禁止虚构旗标）
+- [x] W2（K6）：`assets/harness/templates/TASK_TEMPLATE.md` 验收标准占位增默认两行——「全量测试命令（与本仓 CI workflow 一致，如 `pytest tests -q` / `pnpm test`）」+「`task lint-wiki-delta --target .`」；`assets/harness/prompts/40-self-check.md`「与子仓 CI 对齐者优先」后补：task 未列全量命令时按 `.github/workflows/` 真值补齐再自检
+- [x] W3（K7）：`assets/harness/prompts/20-task-audit.md`「只做什么」checklist 增一条——行为变更类 task（改默认值 / 校验 / 策略门 / fallback 语义）验收须含「旧测 grep 影响面」项，缺则退回 10-task
+- [x] W4：`assets/harness/prompts/README.md` 与各文件修订记录同步；`assets/docs/POINTER_RUNBOOK_wiki_delta.md` 若列 lint 时机则互链
+- [x] 资产单测同步：`test/assets.test.ts` / `test/assets-ontology.test.ts` / skills 校验测全绿；新增文案附 grep 断言
+- [x] CHANGELOG `[Unreleased]` 增条（主题：prompts 与 CI 对齐）
 
 ## 非范围
 
@@ -78,11 +78,11 @@
 
 ## 验收标准
 
-- [ ] 00-orchestrator.md 含 bulk-split 早检行，命令串与 CI sample 逐字一致
-- [ ] TASK_TEMPLATE.md / 40-self-check.md 含默认验收两行；20-task-audit.md 含行为变更旧测提醒条
-- [ ] 全部改动文件修订记录 +1 行；prompts README 清单一致
-- [ ] `npm test`（含资产/清单/skills 校验）/ `typecheck` / `build` 全绿
-- [ ] CHANGELOG 增条且含消费者提示（upgrade/sync 后生效）
+- [x] 00-orchestrator.md 含 bulk-split 早检行，命令串与 CI sample 逐字一致（`grep -qF` 实跑命中 + 测试锚定 sample `run:` 行）
+- [x] TASK_TEMPLATE.md / 40-self-check.md 含默认验收两行；20-task-audit.md 含行为变更旧测提醒条（grep L75–76 / L26 / L26 + 测试断言）
+- [x] 全部改动文件修订记录 +1 行（2026-08-27 ×6 文件）；prompts README 清单一致（说明列四行同步 + 修订记录）
+- [x] `npm test`（含资产/清单/skills 校验）/ `typecheck` / `build` 全绿（297/297 · 附 `test:lib` 4/4，审计 N2）
+- [x] CHANGELOG 增条且含消费者提示（upgrade/sync 后生效）（`[Unreleased]` 置顶提示 + Docs 条目，追加于 T1–T3 条目下）
 
 ---
 
@@ -117,7 +117,33 @@
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+**结论：PASS**（2026-08-27 · 30/40 同 Agent 连续两帽 · commits `ce895ca`/`d6847bc`/`27ce61f`/`97c4c8e`）
+
+**命令块**（cwd=仓根 · `npm_config_cache=$(mktemp -d)` 规避本机 EPERM）：
+
+| 命令 | 退出码 | 关键输出 |
+|------|--------|----------|
+| `npm run typecheck` | 0 | tsc --noEmit 无错误 |
+| `npm test` | 0 | **297/297**（基线 288 + 新增 9 · suites 48） |
+| `npm run build` | 0 | tsc 无错误 |
+| `npm run test:lib` | 0 | lib 冒烟 4/4（含 mtime 哨兵 S0）· 审计 N2 已含 |
+| `node bin/dsh-coding-kit.js skills check` | 0 | SKILLS CHECK: PASS · frontmatter 合法 · skills/ 无 drift |
+| `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_prompts_ci_alignment.md` | 0 | LINT: PASS |
+| `node bin/dsh-coding-kit.js task lint-wiki-delta --target .` | 0 | scope=all · scanned 6 · issues 0 · LINT-WIKI-DELTA: PASS |
+
+**验收表摘要**：5/5 pass（证据见验收标准各条勾选附注）。
+
+**dogfood（grep 实跑核对）**：① 00-orchestrator 含与 `lint-wiki-delta.yml.example` `run:` 行逐字一致命令串（`grep -qF` 命中）；② TASK_TEMPLATE L75–76 默认两行；③ 40-self-check L26 `.github/workflows/` 补齐规则；④ 20-task-audit L26 旧测 grep 条；⑤ 全域 `grep -rn -- '--scope changed' assets/harness/{prompts,templates}` 零命中；⑥ 10-task-requirements L29–31 预填义务 + `--scope` 取舍。
+
+**实现备忘**：
+- W1：`00-orchestrator.md` 默认行为表增「bulk-split 后 · 派 30 前」行；`10-task-requirements.md` 只做什么增预填义务 + `--scope all|active|done` 取舍两行；`skills build` 重生成 `assets/skills/harness-10-task/SKILL.md`；本 task W1 内联串补 `--yes`（审计 N1 顺手修正）。
+- W2：`TASK_TEMPLATE.md` 验收节默认两行（pytest/pnpm 双示例 · 不硬编码单一栈）；`40-self-check.md` 增「未列全量命令按 `.github/workflows/` 补齐再自检」。
+- W3：`20-task-audit.md` checklist 增行为变更「旧测 grep 影响面」条（checklist 提醒 · 不进 `task lint` 机械闸）；`skills build` 重生成 `assets/skills/harness-20-task-audit/SKILL.md`。
+- W4：六文件修订记录各 +1（2026-08-27）；prompts README 说明列四行同步 + 修订记录；CHANGELOG `[Unreleased]` 置顶消费者提示 + Docs 条目（追加于 T1–T3 条目下）。
+- 测试：`test/assets-prompts-ci-alignment.test.ts` 新增 9 条 grep 断言（命令串真值锚 / W1–W4 / 全域防虚构旗标），逐 W 先红后绿（4→6→7→9）。
+- **N3 no-op**：`assets/docs/POINTER_RUNBOOK_wiki_delta.md` 为薄指针 + 诊断码表，**不列 lint 时机**，互链条件不成立 → 按审计 N3 不做，如实记录于此。
+
+**已知未测项**：50 独立复检未做（后续帽）；消费仓 `upgrade` / sync 后条文生效路径未实跑（属消费侧动作，CHANGELOG 已提示预期非缺陷）。
 
 ---
 
@@ -138,3 +164,4 @@
 | 日期 | 说明 |
 |------|------|
 | 2026-08-27 | 初稿：自 ops-desk-api FEEDBACK K4/K6/K7 起草（00 单窗） |
+| 2026-08-27 | 30/40 回填：W1–W4 交付（4 commits）· 四步全绿 297/297 + test:lib 4/4 · dogfood 六组 PASS · N1 修正 · N3 no-op 记录 |
