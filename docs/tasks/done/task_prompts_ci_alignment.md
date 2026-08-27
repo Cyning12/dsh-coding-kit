@@ -1,6 +1,6 @@
 # Task：prompts/模板与 CI 对齐（K4 bulk-split 早检 · K6 默认验收 · K7 行为变更旧测提醒）
 
-> **状态**：`draft`  
+> **状态**：`done`  
 > **关联图谱**：无（`graph_change_layer=none`）  
 > **关联证据**：`ops-desk-api` 仓 `docs/harness/evidence/FEEDBACK_agent_host_plan_ci_20260827.md` §3 **K4（P2）/ K6（P2）/ K7（P3）** · §4 L1–L4（消费仓侧对照）  
 > **拟发版**：`dsh-coding-kit@1.8.0`（建议与本批同波；可独立 PR）  
@@ -149,13 +149,18 @@
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 94
+
+- W1–W4 全落实 · 验收全勾 · 四步全绿（297/297 = 基线 288+9）· 50 独立复检一次 PASS · skills check 无 drift
+- 20 审 R1 一次签收（零退回）· N1–N4 非阻塞项全部妥善处置（N1 顺手修 · N2 已含 · N3 条件性 no-op 留痕 · N4 CHANGELOG 串行无冲突）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- prompts/模板类条文改动同样可以测试化：grep 断言测 + base 提交零命中互证先红后绿；「禁止虚构旗标」这类负向约束用全域 grep（--scope changed 零命中）钉死最有效
+- 「命令串与 CI 逐字一致」的验证要锚定 sample 文件本身（grep -qF 对 run: 行），手抄字符串在 sample 演进时静默漂移
+- 条件性互链（N3 类）的正确形态是「条件不成立 → no-op + 实现备忘留痕」，强行互链会制造悬空指针
 
 ---
 
