@@ -8,17 +8,20 @@
 >
 > - **`task lint --file` 新增 E8（存量仓注意）**：`## Harness 元信息` 节在但缺 `wiki_delta` 行 → **error，无 draft 豁免**（与 close 闸 `close_wiki_delta` 对齐 · 仅查存在性）。存量仓 draft task 将新增拦截——在元信息表补 `| **wiki_delta** | \`path|none|n/a\` |` 行即过。
 > - **`task lint-wiki-delta` 新诊断码 `wiki_delta_wrong_section`**：`wiki_delta` 行写在 `## Harness 元信息` 之外的节（如 `## Harness`）时**替代** `wiki_delta_missing`（不双报），detail 含节名/行号并提示「须在 `## Harness 元信息` 表格内」。诊断非兼容：`parseHarnessMeta` 权威节名不变。
+> - **`verify` 新旗标 `--with-wiki-lint`（可选 · 非破坏）**：在既有检查之上追加 `lint-wiki-delta`（默认档 · `scope=all` · `--task`/`--spec` 同生效）；有缺口时 BLOCKED 并打印与 PR CI 逐字一致的复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`。无旗标行为与 1.7.1 逐字一致。
 
 ### Added
 
 - `lint-wiki-delta`：错节诊断码 `wiki_delta_wrong_section`（默认档与 `--json` 同码同文案 · `--strict` 既有检查语义不变）
 - `task lint`：E8 规则（`wiki_delta` 存在性早拦 · 错节场景文案指向正确节名）
 - `src/cli-shared.ts`：`findWikiDeltaOutsideMetaSection` helper（两 lint 同源）
+- `verify`：`--with-wiki-lint` 旗标（复用 `lintWikiDeltaMissing` 导出 · 默认档 `scope=all` 与 CI sample 对齐 · `--task`/`--spec` 同生效）；`--json` 增 `wiki_lint{ok,issues,scanned}`；target 无 `docs/tasks/` 时 scanned:0 不误 BLOCKED
 
 ### Docs
 
 - `assets/docs/POINTER_RUNBOOK_wiki_delta.md`：新增诊断码表（含 `wiki_delta_wrong_section` 与 E8）
 - CLI usage / `lint-wiki-delta --help`：诊断码说明同步
+- CLI usage / `verify --help` / README（en/zh-CN）verify 节：`--with-wiki-lint` 说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链本地预检
 
 ## [1.7.1] - 2026-08-26
 

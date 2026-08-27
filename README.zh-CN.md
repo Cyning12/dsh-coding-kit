@@ -80,8 +80,8 @@ npx dsh-coding-kit init [--preset NAME] [--yes]   # NAME 词表: harness-only（
 npx dsh-coding-kit upgrade --yes
 npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
 npx dsh-coding-kit check
-npx dsh-coding-kit verify --task <task.md>
-npx dsh-coding-kit verify --spec <SPEC.md>   # SPEC→00 前审查文存在性闸（与 --task 互斥）
+npx dsh-coding-kit verify --task <task.md> [--with-wiki-lint]
+npx dsh-coding-kit verify --spec <SPEC.md>   # SPEC→00 前审查文存在性闸（与 --task 互斥 · --with-wiki-lint 同生效）
 npx dsh-coding-kit gate-check --task <task.md>
 npx dsh-coding-kit audit --task <task.md>
 npx dsh-coding-kit task lint --file <task.md>
@@ -104,6 +104,8 @@ npx dsh-coding-kit task check --file PATH
 ```
 
 `init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。
+
+`verify --with-wiki-lint`（显式旗标 · 非破坏）：在既有检查之上追加 `lint-wiki-delta`（默认档 · `scope=all`），`--task` 与 `--spec` 模式同生效。有缺口时 verify 判 BLOCKED，列出 issue（缺口可能来自兄弟 active/done task），并打印与 PR CI 逐字一致的复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（见 `assets/ci/samples/lint-wiki-delta.yml.example`）；`--json` 增 `wiki_lint` 块（`ok` / `issues` / `scanned`）。target 无 `docs/tasks/` 目录时 scanned:0，不会误 BLOCKED。无旗标时 `verify` 行为与之前逐字一致。
 
 `graph yaml export` / `graph yaml check` 的 graph 面行为自 1.7.0 起修正：① export 的 `graph_id` 以 yaml 声明值（`data.graph_id`，如 `00_main`）为唯一真值源写入 graphs/nodes/edges，不再用路径命名空间 id（如 `l0/00_main`）——路径 id 仅作输入兼容定位（`--graph-id` / 文件发现）；② `check --all` 的 graph.json 切片过滤口径与 export 输出对齐（同一声明值真值源），kit 自产根 json 与 check 互认；③ export 保留全部 mark 类型（`?>` / `~>` / `::…` / `[…]`）的边 label（拓扑协议标记作为边属性呈现，不再丢弃 label 文本）；④ compile 生成的 Mermaid class 段按 `nodes[].kind`（`flow`/`struct`/`external` → `phase`/`doc`/`infra`）生成，无 `kind` 时保留 id 推断作兜底。exit 码不变。**消费者注意**：依赖旧 export 输出（命名空间 graph_id / 空 label）的消费方需重跑 `graph yaml export`。
 

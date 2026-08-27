@@ -80,8 +80,8 @@ npx dsh-coding-kit init [--preset NAME] [--yes]   # NAME vocabulary: harness-onl
 npx dsh-coding-kit upgrade --yes
 npx dsh-coding-kit refresh-ide-blocks [--target PATH] [--dry-run] [--yes] [--json]
 npx dsh-coding-kit check
-npx dsh-coding-kit verify --task <task.md>
-npx dsh-coding-kit verify --spec <SPEC.md>   # SPEC-to-00 review-existence gate (mutually exclusive with --task)
+npx dsh-coding-kit verify --task <task.md> [--with-wiki-lint]
+npx dsh-coding-kit verify --spec <SPEC.md>   # SPEC-to-00 review-existence gate (mutually exclusive with --task; --with-wiki-lint applies here too)
 npx dsh-coding-kit gate-check --task <task.md>
 npx dsh-coding-kit audit --task <task.md>
 npx dsh-coding-kit task lint --file <task.md>
@@ -104,6 +104,8 @@ npx dsh-coding-kit task check --file PATH
 ```
 
 `init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`).
+
+`verify --with-wiki-lint` (opt-in, non-breaking): appends the `lint-wiki-delta` check (default tier, `scope=all`) on top of the existing gates — effective in both `--task` and `--spec` modes. On a gap, verify is BLOCKED, lists the issues (which may come from sibling active/done tasks), and prints the exact same rerun command as PR CI: `npx --yes dsh-coding-kit task lint-wiki-delta --target .` (see `assets/ci/samples/lint-wiki-delta.yml.example`). `--json` gains a `wiki_lint` block (`ok` / `issues` / `scanned`). A target without `docs/tasks/` directories scans 0 files and never false-blocks. Without the flag, `verify` behaves exactly as before.
 
 Since 1.7.0 the graph-facing behavior of `graph yaml export` / `graph yaml check` is corrected: ① export writes `graph_id` from the yaml-declared value (`data.graph_id`, e.g. `00_main`) as the single source of truth into graphs/nodes/edges, no longer the path-namespaced id (e.g. `l0/00_main`) — path ids remain input-compat only (`--graph-id` / file discovery); ② `check --all` filters graph.json slices with the same declared-value source as export output, so kit-produced root graph.json and check mutually recognize each other; ③ export preserves edge labels for every mark type (`?>` / `~>` / `::…` / `[…]`) — topology-protocol marks are carried as edge attributes instead of dropping the label text; ④ the Mermaid class block emitted by compile is driven by `nodes[].kind` (`flow`/`struct`/`external` → `phase`/`doc`/`infra`), with id-based inference kept as a fallback for nodes without `kind`. Exit codes are unchanged. **Consumer note**: consumers depending on the old export output (namespaced graph_id / dropped labels) must re-run `graph yaml export`.
 
