@@ -50,11 +50,11 @@
 
 ## 范围
 
-- [ ] W1：`cmdVerify`（`src/cli.ts` L460+）增 `--with-wiki-lint` 旗标：调用 `lintWikiDeltaMissing(target, { scope: 'all' })`（复用 `src/cli-task-extra.ts` 导出，**不复制**逻辑）；fail → BLOCKED + issue 列表 + 复跑命令行 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 CI sample L33 逐字一致，含 `--yes`）；`--json` 增 `wiki_lint` 块（ok/issues/scanned）
-- [ ] W2：usage/help（`src/cli.ts` L85）与 `README.md` / `README.zh-CN.md` verify 节补旗标说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链
-- [ ] 决策点（R 轮 + 20 审）：是否引入 preset（如 `fullstack-node-py`）默认开启本旗标——**默认不做**，仅显式旗标（非破坏）；若做则另起 task
-- [ ] 单测：旗标开/关两路径、BLOCKED 文案含 CI 同命令、`--json` 形状、与 `--task`/`--spec` 互斥规则不冲突
-- [ ] CHANGELOG `[Unreleased]` 增条
+- [x] W1：`cmdVerify`（`src/cli.ts` L460+）增 `--with-wiki-lint` 旗标：调用 `lintWikiDeltaMissing(target, { scope: 'all' })`（复用 `src/cli-task-extra.ts` 导出，**不复制**逻辑）；fail → BLOCKED + issue 列表 + 复跑命令行 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 CI sample L33 逐字一致，含 `--yes`）；`--json` 增 `wiki_lint` 块（ok/issues/scanned）
+- [x] W2：usage/help（`src/cli.ts` L85）与 `README.md` / `README.zh-CN.md` verify 节补旗标说明；`assets/ci/samples/lint-wiki-delta.yml.example` 注释互链
+- [x] 决策点（R 轮 + 20 审）：是否引入 preset（如 `fullstack-node-py`）默认开启本旗标——**默认不做**，仅显式旗标（非破坏）；若做则另起 task（本 task 按「不做」交付）
+- [x] 单测：旗标开/关两路径、BLOCKED 文案含 CI 同命令、`--json` 形状、与 `--task`/`--spec` 互斥规则不冲突
+- [x] CHANGELOG `[Unreleased]` 增条
 
 ## 非范围
 
@@ -77,10 +77,10 @@
 
 ## 验收标准
 
-- [ ] 有缺口仓 fixture：`verify --task … --with-wiki-lint` BLOCKED，stdout **全串断言**含完整命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 `assets/ci/samples/lint-wiki-delta.yml.example` L33 逐字一致，含 `--yes`，非子串）
-- [ ] 无缺口 fixture：verify 结果与不加旗标一致；无旗标时行为与 1.7.1 逐字一致（回归测）
-- [ ] `--json` 含 `wiki_lint.ok/issues/scanned`；`--spec` 模式下旗标行为**同生效（20 审 R1 已定）**
-- [ ] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（与 `.github/workflows/ci.yml` 四步全对齐）；help/README/CHANGELOG 已同步
+- [x] 有缺口仓 fixture：`verify --task … --with-wiki-lint` BLOCKED，stdout **全串断言**含完整命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（与 `assets/ci/samples/lint-wiki-delta.yml.example` L33 逐字一致，含 `--yes`，非子串）
+- [x] 无缺口 fixture：verify 结果与不加旗标一致；无旗标时行为与 1.7.1 逐字一致（回归测）
+- [x] `--json` 含 `wiki_lint.ok/issues/scanned`；`--spec` 模式下旗标行为**同生效（20 审 R1 已定）**
+- [x] `typecheck` → `npm test` → `build` → `npm run test:lib` 全绿（与 `.github/workflows/ci.yml` 四步全对齐）；help/README/CHANGELOG 已同步
 
 ---
 
@@ -115,7 +115,28 @@
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+**四步（40 · 2026-08-27 · 本机 macOS）**：
+
+| 步 | 命令 | 退出码 | 结果 |
+|----|------|--------|------|
+| 1 | `npm run typecheck` | 0 | ✅ |
+| 2 | `npm_config_cache=$(mktemp -d) npm test` | 0 | ✅ **279/279**（基线 269 + 新增 10） |
+| 3 | `npm run build` | 0 | ✅ |
+| 4 | `npm_config_cache=$(mktemp -d) npm run test:lib` | 0 | ✅ 4/4 |
+
+> 注：本机 `~/.npm` 存在 root-owned 文件，裸跑 `npm test` 时 2 个 D8 pack 测试 EPERM（预存环境问题 · 非本次交付引入）；以 `npm_config_cache=<干净目录>` 规避后四步全绿。
+
+**dogfood（bin 实跑）**：
+
+- `node bin/dsh-coding-kit.js verify --task docs/tasks/active/task_verify_with_wiki_lint.md --with-wiki-lint` → exit 0 · `verify: wiki-lint PASS · scanned: 6 · scope: all`（本仓无缺口）
+- 临时 fixture 仓（兄弟 active task 缺 `wiki_delta`）：文本 exit 2 · 输出含逐字复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .` 与缺口行；`--json` exit 2 · `wiki_lint{ok:false, issues:[wiki_delta_missing], scanned:2}`
+
+**实现备忘（30）**：
+
+- `src/cli.ts`：`cmdVerify` 解析 `--with-wiki-lint`（task 模式在既有全部硬闸之后追加 · spec 模式经 `verifySpecMode` opts 同生效，skip_spec_audit 豁免路径同闸）；复用 `lintWikiDeltaMissing(target, {scope:'all'})` 导出（import 自 `cli-task-extra.ts` · 未复制逻辑）；新增 `WikiLintGateResult`/`wikiLintJson`/`printWikiLintIssues` 三个模块内 helper；`--json` 增 `wiki_lint{ok,issues,scanned}`（仅旗标开启时输出）；usage L85 与 `verify --help` 同步
+- 测试：`test/cli-verify-with-wiki-lint.test.ts`（10 测 · 先红后绿）——旗标开/关、BLOCKED 文案全串断言（含 CI sample L33 锁步测）、`--json` 形状、scanned:0 边缘（task 落仓根不在扫描目录）、`--spec` 同生效、互斥规则不动、help/usage 列出旗标、无旗标回归（输出不得出现 wiki_delta 字样）
+- 文档：README.md / README.zh-CN.md verify 节、CI sample 注释互链、CHANGELOG `[Unreleased]`（置顶消费者提示 + Added + Docs）
+- 顺序语义：wiki-lint 闸位于既有硬闸（gate-check → test → review → invoke）**之后**；早前 BLOCKED 路径不附加 `wiki_lint` 块（保持既有输出面不变）
 
 ---
 
