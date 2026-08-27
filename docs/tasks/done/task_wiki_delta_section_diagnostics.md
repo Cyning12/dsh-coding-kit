@@ -1,6 +1,6 @@
 # Task：lint-wiki-delta 错节诊断码 + task lint 对齐 close 口径（K1/K2）
 
-> **状态**：`draft`  
+> **状态**：`done`  
 > **关联图谱**：无（`graph_change_layer=none`）  
 > **关联证据**：`ops-desk-api` 仓 `docs/harness/evidence/FEEDBACK_agent_host_plan_ci_20260827.md` §3 **K1（P1）/ K2（P1）** · §5 CI 失败日志  
 > **拟发版**：`dsh-coding-kit@1.8.0`（建议与本批 K3/K5/K4+K6+K7 同波；可独立 PR）  
@@ -143,13 +143,18 @@ ops-desk-api PR #72（run 33037752469）：执行 Agent 手写出 `docs/tasks/do
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 90
+
+- 验收 5/5 勾选实证 · 四步验证全绿（269/269）· 50 独立复检一次 PASS
+- 20 审 R1 一次签收（零退回）；扣点：实现期两棒 turn 管理损耗（00 误判 interrupt ×2，调度侧非交付质量）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- 错节检测的节域口径必须与 extractSection 的 '###' 边界严格对齐（仅 level≥3 标题终结节域），否则 '## 附录' 内合法行会被误判为 meta 缺失——helper 单列在 cli-shared 是正解
+- E8 仅查存在性、词表/路径校验留给 close 与 --strict，避免了 lint 家族的规则复制；新规则落地首选「先红 fixture + dogfood 自仓」双证
+- 长分析型子 Agent 单 turn 可跨多个调度检查轮，零落盘 ≠ 卡死；interrupt 前应先取残句诊断（本 task 两次误判的教训）
 
 ---
 
