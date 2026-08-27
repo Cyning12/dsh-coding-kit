@@ -51,7 +51,7 @@
 
 ## 范围
 
-- [ ] W1（K4）：`assets/harness/prompts/00-orchestrator.md` 默认行为表增行——「bulk-split（一次拆 ≥2 个 active task）后、派第一棒 30 前，必跑 `npx dsh-coding-kit task lint-wiki-delta --target .`」；`assets/harness/prompts/10-task-requirements.md` 补「批量拆 task 时每个文件必须预填 `## Harness 元信息` + `wiki_delta`」；附 `--scope all|active` trade-off 两行说明（`--scope changed` 不存在，文案禁止虚构旗标）
+- [ ] W1（K4）：`assets/harness/prompts/00-orchestrator.md` 默认行为表增行——「bulk-split（一次拆 ≥2 个 active task）后、派第一棒 30 前，必跑 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`」；`assets/harness/prompts/10-task-requirements.md` 补「批量拆 task 时每个文件必须预填 `## Harness 元信息` + `wiki_delta`」；附 `--scope all|active` trade-off 两行说明（`--scope changed` 不存在，文案禁止虚构旗标）
 - [ ] W2（K6）：`assets/harness/templates/TASK_TEMPLATE.md` 验收标准占位增默认两行——「全量测试命令（与本仓 CI workflow 一致，如 `pytest tests -q` / `pnpm test`）」+「`task lint-wiki-delta --target .`」；`assets/harness/prompts/40-self-check.md`「与子仓 CI 对齐者优先」后补：task 未列全量命令时按 `.github/workflows/` 真值补齐再自检
 - [ ] W3（K7）：`assets/harness/prompts/20-task-audit.md`「只做什么」checklist 增一条——行为变更类 task（改默认值 / 校验 / 策略门 / fallback 语义）验收须含「旧测 grep 影响面」项，缺则退回 10-task
 - [ ] W4：`assets/harness/prompts/README.md` 与各文件修订记录同步；`assets/docs/POINTER_RUNBOOK_wiki_delta.md` 若列 lint 时机则互链
