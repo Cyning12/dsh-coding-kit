@@ -9,6 +9,7 @@
 
 | 关账日 | task | 摘要 |
 |--------|------|------|
+| 2026-08-27 | [`task_sync_prompts.md`](./task_sync_prompts.md) | sync prompts 子命令 · SHA-256 三分 · v1.9.0（拟 · 未 tag） |
 | 2026-08-27 | [`task_prompts_ci_alignment.md`](./task_prompts_ci_alignment.md) | prompts/模板与 CI 对齐（K4/K6/K7）· v1.8.0（拟） |
 | 2026-08-27 | [`task_close_done_snapshot.md`](./task_close_done_snapshot.md) | task close PASS 快照 + --json · v1.8.0（拟） |
 | 2026-08-27 | [`task_verify_with_wiki_lint.md`](./task_verify_with_wiki_lint.md) | verify --with-wiki-lint 追加闸 · 与 CI 锁步 · v1.8.0（拟） |
@@ -23,3 +24,4 @@
 | 日期 | 摘要 |
 |------|------|
 | 2026-08-26 | 初建 Hub（doc-health 关账） |
+| 2026-08-27 | 增 sync-prompts 关账行 |
