@@ -53,10 +53,10 @@ ops-desk-api PR #72（run 33037752469）：执行 Agent 手写出 `docs/tasks/do
 
 ## 范围
 
-- [ ] W1（K1）：`lintWikiDeltaMissing`（`src/cli-task-extra.ts` L79）增错节检测——文件在 `## Harness 元信息` 之外存在 `wiki_delta` 行（任意 `##`/`###` 节或表格行）时，报 `wiki_delta_wrong_section`（**替代** `wiki_delta_missing`，不双报）；完全无该行 → 仍 `wiki_delta_missing`；`--json` 与人读 summary 同码同文案；`--strict` 追加检查（invalid / path_missing）语义不变
-- [ ] W2（K2）：`lintTaskFile` 新增规则 **E8**：`## Harness 元信息` 节存在但缺 `wiki_delta` 行 → error（仅查存在性，词表与路径存在性仍归 close/strict）；错节场景 E8 文案指向正确节名；`task lint` 人读输出与 `--strict` 不冲突
-- [ ] 单测钉死：错节 fixture（`## Harness` / `## harness 元信息` 大小写变体 / 字段在正文表格）、缺失 fixture、正常 fixture；`lint-wiki-delta` exit 码族不变（0/1/2）
-- [ ] CHANGELOG `[Unreleased]` 增条；CLI help（`src/cli.ts` L103 附近）与 `assets/docs/POINTER_RUNBOOK_wiki_delta.md` 诊断码表补 `wiki_delta_wrong_section`
+- [x] W1（K1）：`lintWikiDeltaMissing`（`src/cli-task-extra.ts` L79）增错节检测——文件在 `## Harness 元信息` 之外存在 `wiki_delta` 行（任意 `##`/`###` 节或表格行）时，报 `wiki_delta_wrong_section`（**替代** `wiki_delta_missing`，不双报）；完全无该行 → 仍 `wiki_delta_missing`；`--json` 与人读 summary 同码同文案；`--strict` 追加检查（invalid / path_missing）语义不变
+- [x] W2（K2）：`lintTaskFile` 新增规则 **E8**：`## Harness 元信息` 节存在但缺 `wiki_delta` 行 → error（仅查存在性，词表与路径存在性仍归 close/strict）；错节场景 E8 文案指向正确节名；`task lint` 人读输出与 `--strict` 不冲突
+- [x] 单测钉死：错节 fixture（`## Harness` / `## harness 元信息` 大小写变体 / 字段在正文表格）、缺失 fixture、正常 fixture；`lint-wiki-delta` exit 码族不变（0/1/2）
+- [x] CHANGELOG `[Unreleased]` 增条；CLI help（`src/cli.ts` L103 附近）与 `assets/docs/POINTER_RUNBOOK_wiki_delta.md` 诊断码表补 `wiki_delta_wrong_section`
 
 ## 非范围
 
@@ -80,11 +80,11 @@ ops-desk-api PR #72（run 33037752469）：执行 Agent 手写出 `docs/tasks/do
 
 ## 验收标准
 
-- [ ] 错节 fixture 下 `lint-wiki-delta` 输出含 `wiki_delta_wrong_section` 且 **不含** `wiki_delta_missing`；exit≠0
-- [ ] `--json` issues 元素含 `code: wiki_delta_wrong_section`、detail 含「须在 `## Harness 元信息` 表格内」
-- [ ] `task lint --file` 对缺 `wiki_delta` 的 fixture 报 E8 error；补齐后 pass；错节 fixture E8 文案含正确节名
-- [ ] `--strict` 既有断言全绿（invalid/path_missing 不回退）；既有 lint/close 测全绿
-- [ ] `npm test` / `npm run typecheck` / `npm run build` 全绿；CHANGELOG + RUNBOOK 诊断码表已补
+- [x] 错节 fixture 下 `lint-wiki-delta` 输出含 `wiki_delta_wrong_section` 且 **不含** `wiki_delta_missing`；exit≠0
+- [x] `--json` issues 元素含 `code: wiki_delta_wrong_section`、detail 含「须在 `## Harness 元信息` 表格内」
+- [x] `task lint --file` 对缺 `wiki_delta` 的 fixture 报 E8 error；补齐后 pass；错节 fixture E8 文案含正确节名
+- [x] `--strict` 既有断言全绿（invalid/path_missing 不回退）；既有 lint/close 测全绿
+- [x] `npm test` / `npm run typecheck` / `npm run build` / `npm run test:lib` 全绿（与 `.github/workflows/ci.yml` 四步对齐 · 20 审非阻塞建议①落实）；CHANGELOG + RUNBOOK 诊断码表已补
 
 ---
 
@@ -119,7 +119,25 @@ ops-desk-api PR #72（run 33037752469）：执行 Agent 手写出 `docs/tasks/do
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+**四步验证（与 `.github/workflows/ci.yml` 对齐 · 2026-08-27 · 分支 `task/wiki-delta-section-diagnostics`）**：
+
+| 命令 | 退出码 | 结果 |
+|------|--------|------|
+| `npm run typecheck` | 0 | tsc --noEmit 无错 |
+| `npm test` | 0 | **269/269 pass**（`npm_config_cache` 指向干净目录；见实现备忘③） |
+| `npm run build` | 0 | tsc 产出 lib/ 无错 |
+| `npm run test:lib` | 0 | 4/4 pass |
+
+**dogfood**：`node bin/dsh-coding-kit.js task lint-wiki-delta --target .` → PASS（scanned 6 · exit 0）；`task lint --file docs/tasks/active/task_wiki_delta_section_diagnostics.md` → PASS；手测错节 fixture（`## Harness` 节写 wiki_delta 行）→ exit 2，人读与 `--json` 均报 `wiki_delta_wrong_section` 且不含 `wiki_delta_missing`，detail 含节名/行号/「须在 `## Harness 元信息` 表格内」。
+
+**实现备忘**：
+
+- ① `src/cli-shared.ts` 新 helper `findWikiDeltaOutsideMetaSection`（两 lint 同源）：节域口径与 `extractSection(content, '## Harness 元信息', '###')` 对齐——仅 level≥3 标题终结解析节域；若按 level≤3 终结，`## 附录` 内 wiki_delta 行会被解析器视为 meta 内而误报 wrong_section（开发期实测发现）。key 单元格恰为 `wiki_delta`（不误伤 `wiki_delta_note`）。
+- ② `test/cli-p0.test.ts` `taskMd` fixture 增 `wikiDelta` 选项：C6「仅风格 W 不挡」用例补 `wiki_delta: none` 行维绿（E8 起 wiki_delta 为 lint 必备行）；其余既有 lint/close/strict 测零改动全绿。
+- ③ 本机 `~/.npm` 含 root-owned 文件 → 2 个 D8 `npm pack --dry-run` 测试 EPERM：预存环境问题，`git stash` 复现确认与改动无关；干净 cache 下 269/269 全绿，CI（ubuntu）无此问题。
+- ④ 里程碑：M2 `55ef53f`（7 红 4 绿先红）→ M3 `ef9acd4`（转绿）→ M4 `cfa64a7`（usage/RUNBOOK 诊断码表/CHANGELOG 含存量 E8 置顶提示）→ M5 本回填。
+
+**已知残留**：错节启发式命中正文代码块示例的误判风险（residual_risks 已登记 · detail 带行号便于人判）；分支保持本地未 push，并 main 由 00 在 CLOSE 阶段执行。
 
 ---
 
@@ -140,3 +158,4 @@ ops-desk-api PR #72（run 33037752469）：执行 Agent 手写出 `docs/tasks/do
 | 日期 | 说明 |
 |------|------|
 | 2026-08-27 | 初稿：自 ops-desk-api FEEDBACK K1/K2 起草（00 单窗） |
+| 2026-08-27 | 30/40 执行回填：W1/W2 落地（M2–M5）· 四步验证 269/269 全绿 · 验收 5/5 勾选（第 5 条补 `npm run test:lib` 对齐 ci.yml） |
