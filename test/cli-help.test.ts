@@ -53,6 +53,7 @@ describe('DEF-010 子命令 --help 分发（D1 方案 A：仅 argv[0] 拦截）'
     [['lifecycle', '--help'], /lifecycle dry-run --transition/],
     [['discipline', '--help'], /discipline show/],
     [['sync', '--help'], /sync index/],
+    [['sync', 'prompts', '--help'], /sync prompts/],
     [['status', '--help'], /status \[--target PATH\]/],
     [['timeline', '--help'], /timeline --task FILE/],
   ]

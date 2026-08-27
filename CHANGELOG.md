@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+> **消费者提示（置顶）**：
+>
+> - **新命令 `sync prompts`（兑现 1.7.1/1.8.0 CHANGELOG 滞后承诺）**：`npx dsh-coding-kit sync prompts [--target PATH] [--yes] [--force] [--json]` 将包内 Starter prompts（9 文件）与 `TASK_TEMPLATE.md` 同步到目标仓 `docs/harness/prompts/` 与 `docs/harness/templates/`。默认 dry-run（三分清单：skip/add/conflict · 零写入）；`--yes` 写入 add 项；本地已改文件列为 conflict 且**默认不覆盖**（`--force` 显式覆盖）。前置须已有 `.cyning-harness/manifest.json`。1.7.1 与 1.8.0 消费者提示中的「sync prompts 后生效」此前无对应命令——本版补齐。
+> - **`upgrade` 新增只读提示行**：manifest 写入成功后提示运行 `sync prompts --yes`（不改 upgrade 写面）。
+
+### Added
+
+- `sync prompts` 子命令：Starter 白名单同步（SHA-256 三分 · dry-run 默认 · `--yes`/`--force`/`--json`）；`src/cli-sync-prompts.ts`
+
+### Changed
+
+- `upgrade`：stdout 追加 prompts 未自动同步提示行
+- CLI usage / README（en/zh-CN）：`sync prompts` 说明
+
 ## [1.8.0] - 2026-08-27
 
 > 主题：**wiki_delta 链路缝隙收口**（ops-desk-api FEEDBACK K1–K7 · agent-host-plan CI 复盘）——`lint-wiki-delta` 错节诊断码（K1）· `task lint` E8 早拦（K2）· `verify --with-wiki-lint` 双轨对齐（K3）· `task close` done 快照 + `--json`（K5）· Starter prompts/TASK_TEMPLATE 与 CI 对齐（K4/K6/K7）。四 task 串行交付 · 20 审 R1×4/R2×2 · 50 复检全 PASS · 测试 269 → 297。

@@ -96,6 +96,7 @@ function usage(version: string): void {
   npx dsh-coding-kit graph yaml compile|check|export …
   npx dsh-coding-kit graph ingest|snapshot|axioms …
   npx dsh-coding-kit sync index [--target PATH]
+  npx dsh-coding-kit sync prompts [--target PATH] [--yes] [--force] [--json]
   npx dsh-coding-kit skills install [--target DIR] [--out DIR] [--global] [--force] [--with-execute-hats]
   npx dsh-coding-kit skills build [--with-execute-hats]
   npx dsh-coding-kit skills check
@@ -221,6 +222,9 @@ async function cmdUpgrade(args: string[], pkgVersion: string): Promise<void> {
   } catch {
     // 提示级：扫描异常不影响 upgrade 语义
   }
+  console.log(
+    '提示: manifest 已升级 · prompts 未自动同步 · 运行 `npx dsh-coding-kit sync prompts --yes`（先 `sync prompts` dry-run 看清单）。',
+  )
 }
 
 async function cmdCheck(args: string[], pkgVersion: string): Promise<void> {
