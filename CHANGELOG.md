@@ -4,7 +4,14 @@
 
 ## [Unreleased]
 
-> 主题：**拟发版 1.9.1**（self-tech-graph 收口 · **本波不 bump**）——kit 自图谱 dogfood 互链、tech-graph CI、inventory 迁回 reference；维护者发版时再切带日期的版本节并 bump。
+## [1.9.1] - 2026-08-28
+
+> 主题：**self-tech-graph 收口**——kit 源码仓自图谱 dogfood、tech-graph CI、inventory 迁回 reference。
+>
+> **消费者提示（置顶）**：
+>
+> - **本版无新 CLI 行为**（docs / CI / 仓内图谱）。消费仓 `upgrade` 后命令面不变。
+> - **`docs/` 不随 npm 包发布**：kit 自图只在源码仓 `docs/_tech_graph/`（https://github.com/Cyning12/dsh-coding-kit/tree/main/docs/_tech_graph），不在 tarball 内。
 
 ### Docs
 
