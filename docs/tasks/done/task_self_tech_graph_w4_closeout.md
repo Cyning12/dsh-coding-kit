@@ -1,6 +1,6 @@
 # Task：self-tech-graph W4 收口 · dogfood 互链 + CHANGELOG Docs
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **关联图谱**：`docs/_tech_graph/`（W2/W3 已齐 · 本波不改 yaml 拓扑）  
 > **关联 SPEC**：`docs/spec/self-tech-graph/`（`04_execution_waves.md` **W4** · `01_problem_and_goals.md` 完成态）  
 > **拟发版**：**1.9.1**（CHANGELOG `[Unreleased]` Docs）· **本波不 bump / 不 tag / 不 publish**  
@@ -35,6 +35,7 @@
 | **entry_invoke_30** | `docs/harness/invokes/by-task/self-tech-graph-w4-closeout/invoke_20260828_30_40_self-tech-graph-w4-closeout.md` |
 | **planned_release** | `1.9.1` |
 | **maintainer_release_hold** | `true` — merge 后停于发版前 · 无 bump/tag/publish |
+| **related_pr** | `#25` |
 
 ### 00 维护者授权（2026-08-27 延续 · 2026-08-28 W4 签收）
 
@@ -168,13 +169,18 @@ W0–W3 已交付盘点、L1 表、L0/L2 yaml、CI 与迁回。W4 收口两件�
 
 ### KPI（00）
 
-（关账回溯填写）
+Task_KPI%: 95
+
+- W4-1~W4-4 全勾 · PR #25 squash merge · CI `ci` + `tech-graph` compile 绿
+- Unreleased 仅 `### Docs` · `package.json` 仍 1.9.0 · 无 dated `[1.9.1]`
+- templates 命令面保留 · 310/310 · freeze yaml/protocol/.example 未动
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- dogfood 互链必须写 **源码仓路径 + docs/ 不进 npm**；消费方从 tarball 看不到 `docs/_tech_graph/`
+- 无 bump 时只写 `[Unreleased]` Docs；维护者发 1.9.1 时再切带日期节并 bump
 
 ---
 
@@ -184,3 +190,4 @@ W0–W3 已交付盘点、L1 表、L0/L2 yaml、CI 与迁回。W4 收口两件�
 |------|------|
 | 2026-08-28 | 00 起草并签收：W4 收口 · Unreleased Docs 拟 1.9.1 · 不 bump |
 | 2026-08-28 | 30/40：互链 + SPEC 完成态 + Unreleased Docs · 勾选 · 自检 · 不 CLOSE |
+| 2026-08-28 | 00 CLOSE：PR #25 merge · KPI/经验 · Hub |

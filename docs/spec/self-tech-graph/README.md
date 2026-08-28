@@ -54,3 +54,4 @@
 | 2026-08-28 | W3 开工：`self-tech-graph-w3-ci-migrate` · 本波不 bump |
 | 2026-08-28 | W4 开工：`self-tech-graph-w4-closeout` · CHANGELOG Unreleased Docs · 不 bump |
 | 2026-08-28 | W4 文档已落盘（互链 + Unreleased Docs）· 待 CLOSE · 不 bump |
+| 2026-08-28 | W4 CLOSE（PR #25）· epic 仓内收口完毕 · 停发版前 |
