@@ -49,3 +49,4 @@
 | 2026-08-27 | 初稿（00 应维护者要求起草 · 源起：1.8.0 发版后复盘「能力外置不合理」） |
 | 2026-08-27 | R1 审零阻塞 · HG-SPEC-SIGNOFF approved（reviews/spec_self_tech_graph_audit_R1_20260827.md） |
 | 2026-08-28 | W1 开工：`self-tech-graph-w1-struct` · HG-GRAPH-MODULES 仍 pending（01_struct 后签） |
+| 2026-08-28 | W1 30 交付：[`docs/_tech_graph/01_struct.md`](../../_tech_graph/01_struct.md) 已落盘 · 闸仍待 00 签 |

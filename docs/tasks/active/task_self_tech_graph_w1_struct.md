@@ -1,6 +1,6 @@
 # Task：self-tech-graph W1 L1 模块边界表 + W0 人裁执行
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **关联图谱**：`docs/_tech_graph/01_struct.md`（本波新建 · 表而非 yaml flow）  
 > **关联 SPEC**：`docs/spec/self-tech-graph/`（`04_execution_waves.md` **W1** · `02_graph_scheme.md` §1 L1）  
 > **00 颗粒度**：**单 task = SPEC W1 整波** + W0 三项人裁执行 · 纯文档 · 无 `src/` 变更
@@ -70,29 +70,29 @@
 
 ### W1-1 · `01_struct.md`（主交付）
 
-- [ ] 新建 `docs/_tech_graph/01_struct.md`（可仅此一文；**不**建 `*.graph.yaml`）
-- [ ] 模块表覆盖 `src/` 全部 `.ts`（2026-08-28 实勘 17 文件：`cli.ts` · `index.ts` · `cli-shared.ts` · `cli-checks.ts` · `cli-task-extra.ts` · `cli-lifecycle.ts` · `cli-graph.ts` · `cli-graph-yaml.ts` · `cli-graph-hgm.ts` · `cli-skills.ts` · `cli-sync.ts` · `cli-sync-prompts.ts` · `cli-wiki.ts` · `cli-status.ts` · `cli-timeline.ts` · `cli-refresh-ide-blocks.ts` · `yaml.ts`）
-- [ ] 每行四列：**职责 · 读 · 写 · 被谁调**（按 `src/*.ts` 实读 import/export · 禁止照抄 `architecture.md` 1.2.2 句）
-- [ ] 增量节：相对 1.2.2 inventory 新增/拆分的模块（至少点名 `cli-checks` · `cli-refresh-ide-blocks` · `cli-sync-prompts`）
-- [ ] 文首注明：锚版本 1.9.0 · HG-GRAPH-MODULES 待 00 签 · 参考外置 inventory 路径但不作真值
+- [x] 新建 `docs/_tech_graph/01_struct.md`（可仅此一文；**不**建 `*.graph.yaml`）
+- [x] 模块表覆盖 `src/` 全部 `.ts`（2026-08-28 实勘 17 文件：`cli.ts` · `index.ts` · `cli-shared.ts` · `cli-checks.ts` · `cli-task-extra.ts` · `cli-lifecycle.ts` · `cli-graph.ts` · `cli-graph-yaml.ts` · `cli-graph-hgm.ts` · `cli-skills.ts` · `cli-sync.ts` · `cli-sync-prompts.ts` · `cli-wiki.ts` · `cli-status.ts` · `cli-timeline.ts` · `cli-refresh-ide-blocks.ts` · `yaml.ts`）
+- [x] 每行四列：**职责 · 读 · 写 · 被谁调**（按 `src/*.ts` 实读 import/export · 禁止照抄 `architecture.md` 1.2.2 句）
+- [x] 增量节：相对 1.2.2 inventory 新增/拆分的模块（至少点名 `cli-checks` · `cli-refresh-ide-blocks` · `cli-sync-prompts`）
+- [x] 文首注明：锚版本 1.9.0 · HG-GRAPH-MODULES 待 00 签 · 参考外置 inventory 路径但不作真值
 
 ### W1-2 · W0 人裁执行（2026-08-28 维护者裁定）
 
-- [ ] **补录**：`docs/releases/03_defects_debt_ledger.md` 增 DEF-028~033 行；标题计数 27→33；Sources 行同步；one-liner / Fixed in / Commit-PR 以外置 `defect_register.md` + CHANGELOG + git 为准（已闭环，勿改状态为 open）
-- [ ] **R-05**：不回写外置 `known_debts.md`；W0 文已 ruled「外置无内容可关闭」；ledger R-05 保持 closed
-- [ ] **M-3 遗留**：扫描工作区 `docs/harness/tasks/active/` 中 `d_article_series` 与 `self_glayer*`。**有用**（仍服务公众稿/其它活跃轨）→ 从 kit M-3 债剔除、不 stamp、不迁 kit。**无用**（与已 stale 的 a5/g1/y1 同类旧 Epic）→ 加与既有 M-3 同款 stale 横幅，不删文件。00 初判：`self_glayer` 已 stale；`d_article_series` 有用。30 核扫后在 W0 文或本 task 自检留一行结论
+- [x] **补录**：`docs/releases/03_defects_debt_ledger.md` 增 DEF-028~033 行；标题计数 27→33；Sources 行同步；one-liner / Fixed in / Commit-PR 以外置 `defect_register.md` + CHANGELOG + git 为准（已闭环，勿改状态为 open）
+- [x] **R-05**：不回写外置 `known_debts.md`；W0 文已 ruled「外置无内容可关闭」；ledger R-05 保持 closed
+- [x] **M-3 遗留**：扫描工作区 `docs/harness/tasks/active/` 中 `d_article_series` 与 `self_glayer*`。**有用**（仍服务公众稿/其它活跃轨）→ 从 kit M-3 债剔除、不 stamp、不迁 kit。**无用**（与已 stale 的 a5/g1/y1 同类旧 Epic）→ 加与既有 M-3 同款 stale 横幅，不删文件。00 初判：`self_glayer` 已 stale；`d_article_series` 有用。30 核扫后在 W0 文或本 task 自检留一行结论
 
 ### W1-3 · SPEC / 索引伴生
 
-- [ ] `02_graph_scheme.md` 修订记录 +1（链 `docs/_tech_graph/01_struct.md`）
-- [ ] W0 盘点文三项人裁保持 **ruled**（00 已预填裁定表；30 回填执行勾）
-- [ ] `docs/spec/README.md` 索引行可注 W1 in progress（若未写）
+- [x] `02_graph_scheme.md` 修订记录 +1（链 `docs/_tech_graph/01_struct.md`）
+- [x] W0 盘点文三项人裁保持 **ruled**（00 已预填裁定表；30 回填执行勾）
+- [x] `docs/spec/README.md` 索引行可注 W1 in progress（若未写）
 
 ### W1-4 · 审查与闸
 
-- [ ] 20-task-audit R1 落盘（00 签收时完成）
-- [ ] `verify --spec docs/spec/self-tech-graph/README.md` → PASS
-- [ ] `verify --task` 本文件 → PASS
+- [x] 20-task-audit R1 落盘（00 签收时完成）
+- [x] `verify --spec docs/spec/self-tech-graph/README.md` → PASS
+- [x] `verify --task` 本文件 → PASS
 
 ## 非范围
 
@@ -121,14 +121,14 @@
 
 ## 验收标准
 
-- [ ] 存在 `docs/_tech_graph/01_struct.md`，含模块表 + 相对 1.2.2 增量节
-- [ ] `ls src/*.ts` 的每个基名均出现在模块表（可用差集脚本/手工核对）
-- [ ] ledger 含 DEF-028~033 且均为 closed；缺陷表头计数与行数一致
-- [ ] W0 人裁三行均为 ruled（非 pending）
-- [ ] `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w1_struct.md` → PASS
-- [ ] `node bin/dsh-coding-kit.js verify --spec docs/spec/self-tech-graph/README.md` → PASS
-- [ ] `node bin/dsh-coding-kit.js verify --task docs/tasks/active/task_self_tech_graph_w1_struct.md` → PASS
-- [ ] 无 `src/` 变更时：`npm test` / `typecheck` 回归仍绿
+- [x] 存在 `docs/_tech_graph/01_struct.md`，含模块表 + 相对 1.2.2 增量节
+- [x] `ls src/*.ts` 的每个基名均出现在模块表（可用差集脚本/手工核对）
+- [x] ledger 含 DEF-028~033 且均为 closed；缺陷表头计数与行数一致
+- [x] W0 人裁三行均为 ruled（非 pending）
+- [x] `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w1_struct.md` → PASS
+- [x] `node bin/dsh-coding-kit.js verify --spec docs/spec/self-tech-graph/README.md` → PASS
+- [x] `node bin/dsh-coding-kit.js verify --task docs/tasks/active/task_self_tech_graph_w1_struct.md` → PASS
+- [x] 无 `src/` 变更时：`npm test` / `typecheck` 回归仍绿
 
 ---
 
@@ -165,7 +165,21 @@
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+**GATE_VERIFY**：HG-TASK-DRAFT=approved · HG-AUDIT-R1=approved · 可 30。SPEC `HG-GRAPH-MODULES` pending 不挡本波。
+
+**src 覆盖**：17/17（`ls src/*.ts` 基名均在 `docs/_tech_graph/01_struct.md`；无 `.graph.yaml`）。
+
+**M-3 核扫**：`d_article_series` = `in_progress` 公众稿 → 有用，未 stamp、未迁 kit。`self_glayer_meta` 已有 stale；`self_glayer_p1`–`p6` 补同款 stale 横幅（工作区 `docs/harness/tasks/active/`，不入本仓 commit）。
+
+**命令**：
+
+- `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w1_struct.md` → `LINT: PASS`
+- `node bin/dsh-coding-kit.js verify --spec docs/spec/self-tech-graph/README.md` → `VERIFY: PASS`
+- `node bin/dsh-coding-kit.js verify --task docs/tasks/active/task_self_tech_graph_w1_struct.md` → `VERIFY: PASS`
+- `npm run typecheck` → PASS（`tsc --noEmit`）
+- `npm test` → PASS（310/310）
+
+未 `task close` · 未建 PR · 未 bump。KPI/经验总结留 00 CLOSE。
 
 ---
 
@@ -186,3 +200,4 @@
 | 日期 | 说明 |
 |------|------|
 | 2026-08-28 | 00 起草并签收：self-tech-graph SPEC W1 · 含 W0 三项人裁执行 |
+| 2026-08-28 | 30/40：`01_struct.md` 落盘 · ledger DEF-028~033 · M-3 核扫 · 状态 done（关账仍走 00 `task close`） |

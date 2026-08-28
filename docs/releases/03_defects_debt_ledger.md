@@ -1,9 +1,10 @@
 # 03 · Defect & Debt Ledger
 
-> Sources: `01_defects/defect_register.md` (27 items: 26 + DEF-027), `01_defects/known_debts.md`
+> Sources: `01_defects/defect_register.md` (33 items: DEF-001…033), `01_defects/known_debts.md`
 > (18 items: M-1…M-4 + R-01…R-14), CHANGELOG per-version sections, `git log v1.2.1..main`.
+> W1（2026-08-28）补录 DEF-028~033（此前 ledger 止于 027；外置 register 已闭环）。
 
-## Defects (27/27 closed)
+## Defects (33/33 closed)
 
 | ID | One-liner | Fixed in | Commit / PR |
 |----|-----------|----------|-------------|
@@ -34,6 +35,12 @@
 | DEF-025 | Leftover HG-GRAPH-MODULES row in gate-stop template | 1.3.0 | `2c8b4be` |
 | DEF-026 | "Mechanical verification" claim unwired in 30-execute-code | 1.3.0 | `d229ac8` |
 | DEF-027 | package-lock js-yaml integrity corrupted (latent) | 1.3.0 cycle | `cc6ec81` via PR #1 (merge `012d258`) |
+| DEF-028 | check 跨产品线版本比较误报「降级安装」（from_version 非 null 时版本号不可比） | 1.5.2 | PR #13 (`1733673`), PR #14 (`916008f`) · tag `2fc8a32` |
+| DEF-029 | refresh-ide-blocks 对无 marker 的 .mdc 无发现/报告 → `plain_mentions` 仅报告不写盘 | 1.5.2 | PR #13 (`1733673`), PR #14 (`916008f`) · tag `2fc8a32` |
+| DEF-030 | DEF-028 判据过宽（kit 线 from_version 仍输出跨产品线文案）→ 收窄至旧包 2.x 词表 | 1.6.1 | PR #18 (`87c4cc2`), PR #19 (`93abb04`) · tag `48e8d6b` |
+| DEF-031 | graph yaml export 丢边 label（`?>` / `~>` / `::…` / `[…]` mark 强制空 label） | 1.6.1 | PR #18 (`87c4cc2`), PR #19 (`93abb04`) · tag `48e8d6b` |
+| DEF-032 | export graph_id 用路径命名空间而非 yaml 声明值 · check 过滤口径漂移 | 1.6.1 | PR #18 (`87c4cc2`), PR #19 (`93abb04`) · tag `48e8d6b` |
+| DEF-033 | generateMermaid class 硬编码 id 白名单，不消费 `nodes[].kind` | 1.6.1 | PR #18 (`87c4cc2`), PR #19 (`93abb04`) · tag `48e8d6b` |
 
 Debt **R-05** also received a code fix in 1.3.0: `skills install --out` into the package's own
 `assets/skills` is refused (`c17d70e`, red test `30e6188`).
