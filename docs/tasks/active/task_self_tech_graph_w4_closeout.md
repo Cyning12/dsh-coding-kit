@@ -67,29 +67,29 @@ W0–W3 已交付盘点、L1 表、L0/L2 yaml、CI 与迁回。W4 收口两件�
 
 ### W4-1 · 互链（若自然 · 不改模板语义）
 
-- [ ] `assets/graph/templates/README.md`：增一小节 **本包 dogfood**（≤10 行）：源码仓 `docs/_tech_graph/`（L0 `00_main` · L1 `01_struct` · L2 四条 `10_flow_*` · CI `.github/workflows/tech-graph.yml` 用本仓 bin）。**须写明 docs/ 不随 npm 包发布**。保留既有 `npx dsh-coding-kit graph yaml compile|check|export` 命令面（`test/cli-docs-graph-templates.test.ts` ③ 钉死）
-- [ ] **禁止**改 `00_main.graph.yaml` / `10_flow_MAIN.graph.yaml` / `99_mermaid_protocol.md` 正文语义；禁止把 kit 业务节点抄进 templates
-- [ ] `assets/docs/POINTER_ONBOARDING.md`：一行指针 —— kit 自仓 dogfood 见源码 `docs/_tech_graph/`（原文 ONBOARDING 仍在私仓）
-- [ ] `assets/ci/samples/README.md`：`tech-graph.yml.example` 行旁注 —— kit **自身** workflow 是 `.github/workflows/tech-graph.yml`（本仓 bin compile/check），样例仍面向自备 `graph-compile.sh` 的业务仓。**不改** `.example` 文件
-- [ ] 根 `README.md` 与 `README.zh-CN.md`：在 `graph yaml compile|check|export` 命令段后各加 **一句** dogfood 指针（源码仓 `docs/_tech_graph/` · 不进包）
+- [x] `assets/graph/templates/README.md`：增一小节 **本包 dogfood**（≤10 行）：源码仓 `docs/_tech_graph/`（L0 `00_main` · L1 `01_struct` · L2 四条 `10_flow_*` · CI `.github/workflows/tech-graph.yml` 用本仓 bin）。**须写明 docs/ 不随 npm 包发布**。保留既有 `npx dsh-coding-kit graph yaml compile|check|export` 命令面（`test/cli-docs-graph-templates.test.ts` ③ 钉死）
+- [x] **禁止**改 `00_main.graph.yaml` / `10_flow_MAIN.graph.yaml` / `99_mermaid_protocol.md` 正文语义；禁止把 kit 业务节点抄进 templates
+- [x] `assets/docs/POINTER_ONBOARDING.md`：一行指针 —— kit 自仓 dogfood 见源码 `docs/_tech_graph/`（原文 ONBOARDING 仍在私仓）
+- [x] `assets/ci/samples/README.md`：`tech-graph.yml.example` 行旁注 —— kit **自身** workflow 是 `.github/workflows/tech-graph.yml`（本仓 bin compile/check），样例仍面向自备 `graph-compile.sh` 的业务仓。**不改** `.example` 文件
+- [x] 根 `README.md` 与 `README.zh-CN.md`：在 `graph yaml compile|check|export` 命令段后各加 **一句** dogfood 指针（源码仓 `docs/_tech_graph/` · 不进包）
 
 ### W4-2 · SPEC 完成态对齐
 
-- [ ] `docs/spec/self-tech-graph/01_problem_and_goals.md`：问题陈述改为「W0–W4 前」过去时，完成态 1–3 标为已落地（链 `_tech_graph/` · `tech-graph.yml` · POINTERS）；非目标不变
-- [ ] `02_graph_scheme.md` §2 CI 句：「新增」→ 已落地路径 `.github/workflows/tech-graph.yml`
-- [ ] `docs/_tech_graph/02_version.md`：补 W3 CI 入仓、W4 Unreleased Docs（仍上限 1.9.x）
-- [ ] SPEC README / `docs/spec/README.md` 索引：W4 收口（00 已预填开工行，30 可改为 CLOSE 后态或留给 00）
+- [x] `docs/spec/self-tech-graph/01_problem_and_goals.md`：问题陈述改为「W0–W4 前」过去时，完成态 1–3 标为已落地（链 `_tech_graph/` · `tech-graph.yml` · POINTERS）；非目标不变
+- [x] `02_graph_scheme.md` §2 CI 句：「新增」→ 已落地路径 `.github/workflows/tech-graph.yml`
+- [x] `docs/_tech_graph/02_version.md`：补 W3 CI 入仓、W4 Unreleased Docs（仍上限 1.9.x）
+- [x] SPEC README / `docs/spec/README.md` 索引：W4 收口（00 已预填开工行，30 可改为 CLOSE 后态或留给 00）
 
 ### W4-3 · CHANGELOG Docs（拟 1.9.1）
 
-- [ ] 仅改 `CHANGELOG.md` 的 `## [Unreleased]`：加短主题行 + `### Docs`（kit 自图谱 dogfood · `tech-graph.yml` · inventory 迁回 reference）。**不要**新建 `## [1.9.1] - 日期` 节（无 bump 则无日期版）
-- [ ] **禁止**改 `package.json` `version`、禁止 tag、禁止把 Unreleased 写成已发布 1.9.1
+- [x] 仅改 `CHANGELOG.md` 的 `## [Unreleased]`：加短主题行 + `### Docs`（kit 自图谱 dogfood · `tech-graph.yml` · inventory 迁回 reference）。**不要**新建 `## [1.9.1] - 日期` 节（无 bump 则无日期版）
+- [x] **禁止**改 `package.json` `version`、禁止 tag、禁止把 Unreleased 写成已发布 1.9.1
 
 ### W4-4 · 回归
 
-- [ ] `npm test`（含 `cli-docs-graph-templates.test.ts`）绿
-- [ ] `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph` 仍绿
-- [ ] `task lint` / `verify --spec` / `verify --task`
+- [x] `npm test`（含 `cli-docs-graph-templates.test.ts`）绿
+- [x] `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph` 仍绿
+- [x] `task lint` / `verify --spec` / `verify --task`
 
 ## 非范围
 
@@ -115,14 +115,14 @@ W0–W3 已交付盘点、L1 表、L0/L2 yaml、CI 与迁回。W4 收口两件�
 
 ## 验收标准
 
-- [ ] templates README 含 dogfood 小节且仍含三条 `npx dsh-coding-kit graph yaml` 命令
-- [ ] POINTER_ONBOARDING 与双 README 各有源码仓 `_tech_graph` 指针
-- [ ] `01_problem_and_goals.md` 不再写「kit 仓自身没有 `docs/_tech_graph/`」为当前事实
-- [ ] `CHANGELOG.md` `[Unreleased]` 有 `### Docs` 且无 `package.json` version 变更
-- [ ] `node --test --test-concurrency=1 --experimental-strip-types test/cli-docs-graph-templates.test.ts` PASS
-- [ ] `npm test` / `typecheck` 绿
-- [ ] `graph yaml check --all --input docs/_tech_graph` exit 0
-- [ ] `task lint` 本文件 PASS · `verify --spec` / `--task` PASS
+- [x] templates README 含 dogfood 小节且仍含三条 `npx dsh-coding-kit graph yaml` 命令
+- [x] POINTER_ONBOARDING 与双 README 各有源码仓 `_tech_graph` 指针
+- [x] `01_problem_and_goals.md` 不再写「kit 仓自身没有 `docs/_tech_graph/`」为当前事实
+- [x] `CHANGELOG.md` `[Unreleased]` 有 `### Docs` 且无 `package.json` version 变更
+- [x] `node --test --test-concurrency=1 --experimental-strip-types test/cli-docs-graph-templates.test.ts` PASS
+- [x] `npm test` / `typecheck` 绿
+- [x] `graph yaml check --all --input docs/_tech_graph` exit 0
+- [x] `task lint` 本文件 PASS · `verify --spec` / `--task` PASS
 
 ---
 
@@ -158,7 +158,11 @@ W0–W3 已交付盘点、L1 表、L0/L2 yaml、CI 与迁回。W4 收口两件�
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+- GATE_VERIFY：HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES 均为 **approved**；`verify --task` PASS（开工前 + 交付后）。
+- W4-1：templates README 增「本包 dogfood」（≤10 行 · GitHub URL · **docs/ 不进包**）；三条 `npx dsh-coding-kit graph yaml compile|check|export` 字面保留。POINTER_ONBOARDING 一行；ci/samples `tech-graph.yml.example` 行旁注 kit 自身 `.github/workflows/tech-graph.yml` + 本仓 bin；双 README 命令段后各一句。未改 templates yaml / protocol / `.example`。
+- W4-2：`01_problem_and_goals.md` 过去时 + 完成态 1–3 已落地链；`02_graph_scheme.md` §2 CI 已落地；`02_version.md` 补 W3 CI / W4 Docs；SPEC 索引改为「文档已落盘 · 待 CLOSE」。
+- W4-3：仅 `[Unreleased]` 主题句 + `### Docs`（dogfood · tech-graph CI · inventory→reference）。无 `## [1.9.1] - 日期`。`package.json` version 仍 **1.9.0**。
+- W4-4：`cli-docs-graph-templates` / `npm test` / `typecheck` / `graph yaml check --all` / `task lint` / `verify --spec` / `--task` 绿。未 bump / tag / publish / CLOSE / PR。
 
 ---
 
@@ -179,3 +183,4 @@ W0–W3 已交付盘点、L1 表、L0/L2 yaml、CI 与迁回。W4 收口两件�
 | 日期 | 说明 |
 |------|------|
 | 2026-08-28 | 00 起草并签收：W4 收口 · Unreleased Docs 拟 1.9.1 · 不 bump |
+| 2026-08-28 | 30/40：互链 + SPEC 完成态 + Unreleased Docs · 勾选 · 自检 · 不 CLOSE |

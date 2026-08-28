@@ -104,6 +104,8 @@ npx dsh-coding-kit task lint-wiki-delta
 npx dsh-coding-kit task check --file PATH
 ```
 
+kit **源码仓**以 `docs/_tech_graph/` 做 `graph yaml compile|check|export` 的 dogfood（**不随 npm 包发布**；https://github.com/Cyning12/dsh-coding-kit/tree/main/docs/_tech_graph）。
+
 `init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。`sync prompts` 仅写入 Starter 白名单（`docs/harness/prompts/` 9 文件 + `docs/harness/templates/TASK_TEMPLATE.md`）——默认 dry-run；本地内容与包内不同则列为 conflict 且不覆盖（`--force` 显式覆盖）。
 
 `verify --with-wiki-lint`（显式旗标 · 非破坏）：在既有检查之上追加 `lint-wiki-delta`（默认档 · `scope=all`），`--task` 与 `--spec` 模式同生效。有缺口时 verify 判 BLOCKED，列出 issue（缺口可能来自兄弟 active/done task），并打印与 PR CI 逐字一致的复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（见 `assets/ci/samples/lint-wiki-delta.yml.example`）；`--json` 增 `wiki_lint` 块（`ok` / `issues` / `scanned`）。target 无 `docs/tasks/` 目录时 scanned:0，不会误 BLOCKED。无旗标时 `verify` 行为与之前逐字一致。

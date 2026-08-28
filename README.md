@@ -104,6 +104,8 @@ npx dsh-coding-kit task lint-wiki-delta
 npx dsh-coding-kit task check --file PATH
 ```
 
+This **source repo** dogfoods `graph yaml compile|check|export` against `docs/_tech_graph/` (**not** shipped in the npm package; https://github.com/Cyning12/dsh-coding-kit/tree/main/docs/_tech_graph).
+
 `init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`). `sync prompts` writes only the Starter whitelist under `docs/harness/prompts/` and `docs/harness/templates/TASK_TEMPLATE.md` — default dry-run; existing files with different content are listed as conflicts and are not overwritten unless you pass `--force`.
 
 `verify --with-wiki-lint` (opt-in, non-breaking): appends the `lint-wiki-delta` check (default tier, `scope=all`) on top of the existing gates — effective in both `--task` and `--spec` modes. On a gap, verify is BLOCKED, lists the issues (which may come from sibling active/done tasks), and prints the exact same rerun command as PR CI: `npx --yes dsh-coding-kit task lint-wiki-delta --target .` (see `assets/ci/samples/lint-wiki-delta.yml.example`). `--json` gains a `wiki_lint` block (`ok` / `issues` / `scanned`). A target without `docs/tasks/` directories scans 0 files and never false-blocks. Without the flag, `verify` behaves exactly as before.

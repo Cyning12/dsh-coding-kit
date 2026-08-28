@@ -7,6 +7,6 @@
 | slug | 路径 | 状态 | 一句话 |
 |------|------|------|--------|
 | `doc-health` | [`doc-health/`](./doc-health/) | draft · HG-SPEC-SIGNOFF=pending | 文档健康度 + CLOSE 强绑定 · 试点 ops-desk-api |
-| `self-tech-graph` | [`self-tech-graph/`](./self-tech-graph/) | **signed** · W0–W3 CLOSE · **W4** 收口进行中 · 拟发版 **1.9.1**（Unreleased · 未 bump） | kit 自身三层技术图谱 + 外置三树迁留 · 读序见 [`self-tech-graph/README.md`](./self-tech-graph/README.md) |
+| `self-tech-graph` | [`self-tech-graph/`](./self-tech-graph/) | **signed** · W0–W3 CLOSE · **W4** 文档已落盘 · 待 CLOSE · 拟发版 **1.9.1**（Unreleased · 未 bump） | kit 自身三层技术图谱 + 外置三树迁留 · 读序见 [`self-tech-graph/README.md`](./self-tech-graph/README.md) |
 
 **历史过程 SPEC（留外 · 树 B 历史债）**：工作区 `docs/dsh_coding_kit_init/spec/`（SPEC 1.0→1.2.2 过程档）· 现行仓根 [`SPEC.md`](../../SPEC.md) · 指针 [`self-tech-graph/reference/POINTERS.md`](./self-tech-graph/reference/POINTERS.md)
