@@ -1,0 +1,1418 @@
+{
+  "schema_version": "graph_v2",
+  "freeze_id": "TECH_GRAPH_S2_FREEZE_20260519_V2_3",
+  "generated_at": "2026-08-28T01:14:27Z",
+  "nodes": [
+    {
+      "id": "APPLY_STD",
+      "label": "apply_coding_standards",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "BIN",
+      "label": "bin 壳",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "CHECK",
+      "label": "check yaml vs json",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "COMPILE",
+      "label": "compile yaml to md",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "DEST",
+      "label": "解析 done 目标",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "DOC_CLOSE",
+      "label": ">10_flow_task_close.md",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "DOC_GRAPH",
+      "label": ">10_flow_graph_yaml_pipeline.md",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "DOC_STRUCT",
+      "label": ">01_struct.md",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "DOC_UPGRADE",
+      "label": ">10_flow_upgrade.md",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "DOC_VERIFY",
+      "label": ">10_flow_verify.md",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "DONE",
+      "label": "upgrade 完成",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "DRY",
+      "label": "dry-run READY",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "ERR_BLOCKED",
+      "label": "CLOSE BLOCKED 闸失败",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "ERR_DEST",
+      "label": "目标冲突或不在 active",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "ERR_DIFF",
+      "label": "check 切片不一致",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "ERR_GATE",
+      "label": "闸 BLOCKED",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "ERR_MUTEX",
+      "label": "--task 与 --spec 互斥",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "ERR_NO_JSON",
+      "label": "graph.json 不存在",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "ERR_NO_MF",
+      "label": "未接入 无 manifest",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "ERR_NO_YAML",
+      "label": "YAML 源不存在",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "ERR_NOFILE",
+      "label": "task 文件不存在",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "ERR_NOFILE",
+      "label": "文件不存在",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "ERR_REVIEW",
+      "label": "缺 R<n> 审查文",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "ERR_TEST",
+      "label": "测试制品缺口",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "ERR_VALIDATE",
+      "label": "validateGraphYaml 失败",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "ERR_WIKI",
+      "label": "wiki_delta 缺口",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "EXPORT",
+      "label": "export graph.json",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "EXT_CMDS",
+      "label": "延展命令族",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "FILE",
+      "label": "源文件存在?",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "FLOW_GRAPH_YAML",
+      "label": "graph yaml pipeline 子流程",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "FLOW_TASK_CLOSE",
+      "label": "task close 子流程",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "FLOW_UPGRADE",
+      "label": "upgrade 子流程",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "FLOW_VERIFY",
+      "label": "verify 子流程",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "GATES",
+      "label": "formatGateCheck 人工闸",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "GUARDS",
+      "label": "evalCloseGuard 闸链",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "HATS",
+      "label": "checkPre30InvokeHats",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "HINT_IDE",
+      "label": "提示 refresh-ide-blocks",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "HINT_SYNC",
+      "label": "提示 sync prompts",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "HOST",
+      "label": "DSH 宿主",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "IN",
+      "label": "graph yaml",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "IN",
+      "label": "task close --file",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "IN",
+      "label": "upgrade",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "IN",
+      "label": "verify",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "INIT_KIT",
+      "label": "init_coding_kit",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "MODE",
+      "label": "--task 或 --spec?",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "MV",
+      "label": "renameSync active to done",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "OK",
+      "label": "三命令绿",
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "id": "P0_CMDS",
+      "label": "P0 命令族",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "PARSE",
+      "label": "解析 --yes/--json/--allow-*",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "PARSE",
+      "label": "解析 --target/--yes",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "PARSE",
+      "label": "解析 --task/--spec/--with-wiki-lint",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "PASS",
+      "label": "CLOSE PASS",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "PASS",
+      "label": "VERIFY PASS",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "PIN",
+      "label": "钉版写入 manifest.json",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "PLUGIN",
+      "label": "插件面 apply",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "READ_MF",
+      "label": "readManifest",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "REVIEW",
+      "label": "findReview R<n>",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "RUNCLI",
+      "label": "runCli 分发",
+      "graph_id": "00_main"
+    },
+    {
+      "id": "SNAP",
+      "label": "buildDoneSnapshot",
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "id": "SPEC",
+      "label": "verifySpecMode",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "SPEC_REVIEW",
+      "label": "findSpecReview",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "STALE_Q",
+      "label": "IDE 旧字面?",
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "id": "TASK",
+      "label": "读 task 文件",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "TEST",
+      "label": "runTestCheck",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "WIKI",
+      "label": "lintWikiDeltaMissing",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "WIKI_Q",
+      "label": "--with-wiki-lint?",
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "id": "YES",
+      "label": "--yes?",
+      "graph_id": "10_flow_task_close"
+    }
+  ],
+  "edges": [
+    {
+      "from": "BIN",
+      "to": "RUNCLI",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "bin/dsh-coding-kit.js",
+          "symbol": "runCli",
+          "line": 4
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "EXT_CMDS",
+      "to": "FLOW_GRAPH_YAML",
+      "mark": "::triggers",
+      "type": "triggers",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli-graph.ts",
+          "symbol": "cmdGraphYaml",
+          "line": 54
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "FLOW_GRAPH_YAML",
+      "to": "DOC_GRAPH",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "加载",
+      "anchors": [],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "FLOW_TASK_CLOSE",
+      "to": "DOC_CLOSE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "加载",
+      "anchors": [],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "FLOW_UPGRADE",
+      "to": "DOC_UPGRADE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "加载",
+      "anchors": [],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "FLOW_VERIFY",
+      "to": "DOC_VERIFY",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "加载",
+      "anchors": [],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "HOST",
+      "to": "PLUGIN",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/index.ts",
+          "symbol": "apply",
+          "line": 195
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "P0_CMDS",
+      "to": "FLOW_TASK_CLOSE",
+      "mark": "::triggers",
+      "type": "triggers",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "cmdTaskClose",
+          "line": 669
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "P0_CMDS",
+      "to": "FLOW_UPGRADE",
+      "mark": "::triggers",
+      "type": "triggers",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "cmdUpgrade",
+          "line": 187
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "P0_CMDS",
+      "to": "FLOW_VERIFY",
+      "mark": "::triggers",
+      "type": "triggers",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "cmdVerify",
+          "line": 512
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "PLUGIN",
+      "to": "APPLY_STD",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/index.ts",
+          "symbol": "apply_coding_standards",
+          "line": 199
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "PLUGIN",
+      "to": "INIT_KIT",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/index.ts",
+          "symbol": "init_coding_kit",
+          "line": 266
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "RUNCLI",
+      "to": "DOC_STRUCT",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "加载",
+      "anchors": [],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "RUNCLI",
+      "to": "EXT_CMDS",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "runCli",
+          "line": 909
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "RUNCLI",
+      "to": "P0_CMDS",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "runCli",
+          "line": 842
+        }
+      ],
+      "graph_id": "00_main"
+    },
+    {
+      "from": "CHECK",
+      "to": "ERR_DIFF",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "",
+          "line": 567
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "CHECK",
+      "to": "ERR_NO_JSON",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "",
+          "line": 534
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "CHECK",
+      "to": "OK",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-graph.ts",
+          "symbol": "",
+          "line": 125
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "COMPILE",
+      "to": "ERR_NO_YAML",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "",
+          "line": 501
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "COMPILE",
+      "to": "ERR_VALIDATE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "validateGraphYaml",
+          "line": 52
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "COMPILE",
+      "to": "EXPORT",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "exportGraphJson",
+          "line": 324
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "EXPORT",
+      "to": "CHECK",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "checkGraph",
+          "line": 524
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "EXPORT",
+      "to": "ERR_VALIDATE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "",
+          "line": 278
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "IN",
+      "to": "COMPILE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli-graph.ts",
+          "symbol": "cmdGraphYaml",
+          "line": 54
+        },
+        {
+          "path": "src/cli-graph-yaml.ts",
+          "symbol": "compileGraph",
+          "line": 499
+        }
+      ],
+      "graph_id": "10_flow_graph_yaml_pipeline"
+    },
+    {
+      "from": "DEST",
+      "to": "ERR_DEST",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 740
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "DEST",
+      "to": "YES",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 734
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "FILE",
+      "to": "ERR_NOFILE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 703
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "FILE",
+      "to": "GUARDS",
+      "mark": "::gates",
+      "type": "gates",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-checks.ts",
+          "symbol": "evalCloseGuard",
+          "line": 498
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "GUARDS",
+      "to": "DEST",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 721
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "GUARDS",
+      "to": "ERR_BLOCKED",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 748
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "IN",
+      "to": "PARSE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "cmdTaskClose",
+          "line": 669
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "MV",
+      "to": "SNAP",
+      "mark": "::archives",
+      "type": "archives",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli-shared.ts",
+          "symbol": "buildDoneSnapshot",
+          "line": 232
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "PARSE",
+      "to": "FILE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 701
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "SNAP",
+      "to": "PASS",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 799
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "YES",
+      "to": "DRY",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 758
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "YES",
+      "to": "MV",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "renameSync",
+          "line": 773
+        }
+      ],
+      "graph_id": "10_flow_task_close"
+    },
+    {
+      "from": "HINT_IDE",
+      "to": "HINT_SYNC",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 225
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "HINT_SYNC",
+      "to": "DONE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 225
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "IN",
+      "to": "PARSE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "cmdUpgrade",
+          "line": 187
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "PARSE",
+      "to": "READ_MF",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "readManifest",
+          "line": 199
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "PIN",
+      "to": "STALE_Q",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "countStaleIdeLiterals",
+          "line": 216
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "READ_MF",
+      "to": "ERR_NO_MF",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 200
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "READ_MF",
+      "to": "PIN",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 210
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "STALE_Q",
+      "to": "HINT_IDE",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 217
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "STALE_Q",
+      "to": "HINT_SYNC",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 225
+        }
+      ],
+      "graph_id": "10_flow_upgrade"
+    },
+    {
+      "from": "GATES",
+      "to": "ERR_GATE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 575
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "GATES",
+      "to": "TEST",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-checks.ts",
+          "symbol": "runTestCheck",
+          "line": 737
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "HATS",
+      "to": "WIKI_Q",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 608
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "IN",
+      "to": "PARSE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "cmdVerify",
+          "line": 512
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "MODE",
+      "to": "SPEC",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "verifySpecMode",
+          "line": 543
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "MODE",
+      "to": "TASK",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 547
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "PARSE",
+      "to": "ERR_MUTEX",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 542
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "PARSE",
+      "to": "MODE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "->",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 542
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "REVIEW",
+      "to": "ERR_REVIEW",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 594
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "REVIEW",
+      "to": "HATS",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-checks.ts",
+          "symbol": "checkPre30InvokeHats",
+          "line": 100
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "SPEC",
+      "to": "ERR_NOFILE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 459
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "SPEC",
+      "to": "SPEC_REVIEW",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-checks.ts",
+          "symbol": "findSpecReview",
+          "line": 588
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "SPEC_REVIEW",
+      "to": "ERR_REVIEW",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 483
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "SPEC_REVIEW",
+      "to": "WIKI_Q",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 482
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "TASK",
+      "to": "ERR_NOFILE",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 567
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "TASK",
+      "to": "GATES",
+      "mark": "::gates",
+      "type": "gates",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "formatGateCheck",
+          "line": 276
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "TEST",
+      "to": "ERR_TEST",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 586
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "TEST",
+      "to": "REVIEW",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-checks.ts",
+          "symbol": "findReview",
+          "line": 634
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "WIKI",
+      "to": "ERR_WIKI",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[err]",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 626
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "WIKI",
+      "to": "PASS",
+      "mark": "->",
+      "type": "depends_on",
+      "sync": true,
+      "label": "[ok]",
+      "anchors": [
+        {
+          "path": "src/cli-task-extra.ts",
+          "symbol": "lintWikiDeltaMissing",
+          "line": 80
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "WIKI_Q",
+      "to": "PASS",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 641
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    },
+    {
+      "from": "WIKI_Q",
+      "to": "WIKI",
+      "mark": "?>",
+      "type": "condition",
+      "sync": true,
+      "label": "",
+      "anchors": [
+        {
+          "path": "src/cli.ts",
+          "symbol": "",
+          "line": 624
+        }
+      ],
+      "graph_id": "10_flow_verify"
+    }
+  ],
+  "graphs": [
+    {
+      "id": "00_main",
+      "title": "kit 顶层流程：CLI 分发与插件面",
+      "source_yaml_path": "00_main.graph.yaml"
+    },
+    {
+      "id": "10_flow_graph_yaml_pipeline",
+      "title": "graph yaml pipeline：compile → export → check 自指",
+      "source_yaml_path": "10_flow_graph_yaml_pipeline.graph.yaml"
+    },
+    {
+      "id": "10_flow_task_close",
+      "title": "task close：闸链 + --yes rename + done 快照",
+      "source_yaml_path": "10_flow_task_close.graph.yaml"
+    },
+    {
+      "id": "10_flow_upgrade",
+      "title": "upgrade：manifest 钉版幂等 + 提示 sync prompts",
+      "source_yaml_path": "10_flow_upgrade.graph.yaml"
+    },
+    {
+      "id": "10_flow_verify",
+      "title": "verify：--task / --spec / --with-wiki-lint",
+      "source_yaml_path": "10_flow_verify.graph.yaml"
+    }
+  ]
+}

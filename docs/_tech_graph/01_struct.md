@@ -5,7 +5,7 @@
 > **真值源**：本仓 `src/*.ts`（17 文件 · 按下表基名全覆盖）  
 > **人闸**：`HG-GRAPH-MODULES` = **approved**（2026-08-28 · 00 代签）  
 > **外置 inventory**：工作区 `docs/dsh_coding_kit_optimization/00_inventory/architecture.md`（锚 1.2.2 · mtime 2026-08-22）**仅 R0 参考，非真值** —— 禁止照抄其分层句；列值均来自 1.9.0 import/export/调用实读。  
-> **非本波**：不写 `.graph.yaml`（W2 起）；本目录可仅此一文。
+> **yaml 见 W2**：`00_main.graph.yaml` + 四条 `10_flow_*.graph.yaml`（compile 生成同名 `.md`）；本文件仍为手写 L1 模块表，compile 不覆盖。
 
 ---
 
@@ -74,3 +74,4 @@
 |------|------|
 | 2026-08-28 | W1 初稿：按 1.9.0 `src/*.ts` 17 文件实读成表；相对 1.2.2 inventory 点名三增量模块 |
 | 2026-08-28 | HG-GRAPH-MODULES approved（00 代签） |
+| 2026-08-28 | W2：文首改为 yaml 见 W2（本表仍手写 · 无对应 yaml） |

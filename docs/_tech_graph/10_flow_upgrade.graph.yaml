@@ -1,0 +1,85 @@
+schema_version: inform_graph.v3
+graph_id: "10_flow_upgrade"
+title: "upgrade：manifest 钉版幂等 + 提示 sync prompts"
+description: "cmdUpgrade Happy Path：读 .cyning-harness/manifest.json → 写入当前包版本（同版本再跑仍成功，from_version 保留）→ 提示 sync prompts。无 manifest 侧链失败。IDE 旧字面仅为提示，不改 exit。"
+version: "2026-08-28"
+
+nodes:
+  - id: "IN"
+    label: "upgrade"
+    kind: "flow"
+  - id: "PARSE"
+    label: "解析 --target/--yes"
+  - id: "READ_MF"
+    label: "readManifest"
+  - id: "PIN"
+    label: "钉版写入 manifest.json"
+  - id: "STALE_Q"
+    label: "IDE 旧字面?"
+  - id: "HINT_IDE"
+    label: "提示 refresh-ide-blocks"
+  - id: "HINT_SYNC"
+    label: "提示 sync prompts"
+  - id: "DONE"
+    label: "upgrade 完成"
+  - id: "ERR_NO_MF"
+    label: "未接入 无 manifest"
+
+edges:
+  - from: "IN"
+    to: "PARSE"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 187
+        symbol: "cmdUpgrade"
+  - from: "PARSE"
+    to: "READ_MF"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 199
+        symbol: "readManifest"
+  - from: "READ_MF"
+    to: "PIN"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 210
+  - from: "READ_MF"
+    to: "ERR_NO_MF"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 200
+  - from: "PIN"
+    to: "STALE_Q"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 216
+        symbol: "countStaleIdeLiterals"
+  - from: "STALE_Q"
+    to: "HINT_IDE"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 217
+  - from: "STALE_Q"
+    to: "HINT_SYNC"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 225
+  - from: "HINT_IDE"
+    to: "HINT_SYNC"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 225
+  - from: "HINT_SYNC"
+    to: "DONE"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 225

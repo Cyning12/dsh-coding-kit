@@ -7,4 +7,4 @@
 | slug | 路径 | 状态 | 一句话 |
 |------|------|------|--------|
 | `doc-health` | [`doc-health/`](./doc-health/) | draft · HG-SPEC-SIGNOFF=pending | 文档健康度 + CLOSE 强绑定 · 试点 ops-desk-api |
-| `self-tech-graph` | [`self-tech-graph/`](./self-tech-graph/) | **signed** · HG-SPEC-SIGNOFF=approved · W0 定稿 [`reference/W0_inventory_diff_20260827.md`](./self-tech-graph/reference/W0_inventory_diff_20260827.md) · **W1** L1 表 [`../_tech_graph/01_struct.md`](../_tech_graph/01_struct.md)（HG-GRAPH-MODULES 待 00 签） | kit 自身三层技术图谱 + 外置三树迁留 · 读序见 [`self-tech-graph/README.md`](./self-tech-graph/README.md) |
+| `self-tech-graph` | [`self-tech-graph/`](./self-tech-graph/) | **signed** · HG-GRAPH-MODULES=approved · W1 L1 [`../_tech_graph/01_struct.md`](../_tech_graph/01_struct.md) · W2 L0/L2 yaml 已落盘 [`../_tech_graph/`](../_tech_graph/) · 拟发版 **1.9.x** | kit 自身三层技术图谱 + 外置三树迁留 · 读序见 [`self-tech-graph/README.md`](./self-tech-graph/README.md) |
