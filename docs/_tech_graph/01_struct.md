@@ -3,7 +3,7 @@
 > **锚版本**：`dsh-coding-kit@1.9.0`（`package.json`）  
 > **实读日**：2026-08-28  
 > **真值源**：本仓 `src/*.ts`（17 文件 · 按下表基名全覆盖）  
-> **人闸**：`HG-GRAPH-MODULES` 待 00 签（本表为签收物 · 不挡本波文档 30）  
+> **人闸**：`HG-GRAPH-MODULES` = **approved**（2026-08-28 · 00 代签）  
 > **外置 inventory**：工作区 `docs/dsh_coding_kit_optimization/00_inventory/architecture.md`（锚 1.2.2 · mtime 2026-08-22）**仅 R0 参考，非真值** —— 禁止照抄其分层句；列值均来自 1.9.0 import/export/调用实读。  
 > **非本波**：不写 `.graph.yaml`（W2 起）；本目录可仅此一文。
 
@@ -73,3 +73,4 @@
 | 日期 | 摘要 |
 |------|------|
 | 2026-08-28 | W1 初稿：按 1.9.0 `src/*.ts` 17 文件实读成表；相对 1.2.2 inventory 点名三增量模块 |
+| 2026-08-28 | HG-GRAPH-MODULES approved（00 代签） |
