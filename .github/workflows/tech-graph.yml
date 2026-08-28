@@ -1,0 +1,29 @@
+# kit 自用 tech-graph：对本仓 docs/_tech_graph 跑 compile + md 锁步 + check
+# 用本仓 bin（非 npx 远包）；简化编译流，不走 Python 样例脚本
+# 不对 shared/graph.json 做 git diff（export 会改 generated_at）
+name: tech-graph
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+      - run: npm ci
+      - name: Graph yaml compile
+        run: node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph
+      # compile 每次写 wall-clock generated_at（与 export 改 graph.json 同源）。
+      # 忽略该行才能锁步正文漂移；禁止对 shared/graph.json 做 diff。
+      - name: Fail on uncommitted compile drift
+        run: git diff -I '^generated_at:' --exit-code -- docs/_tech_graph/*.md
+      - name: Graph yaml check
+        run: node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph

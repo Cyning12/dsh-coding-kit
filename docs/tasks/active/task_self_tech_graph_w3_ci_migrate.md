@@ -71,47 +71,47 @@ W2 已 dogfood 五图；缺仓内 CI 锁步、缺 `02_version`、W0 矩阵中 **
 
 ### W3-1 · CI `tech-graph.yml`
 
-- [ ] 新建 `.github/workflows/tech-graph.yml`
-- [ ] **参照** `assets/ci/samples/tech-graph.yml.example` 的触发面（PR + push main）与「compile/check 红即 fail」
-- [ ] **禁止**照抄样例的 Python `pyyaml` + `./scripts/graph-compile.sh`（kit 无该脚本 · 简化编译流）
-- [ ] 与现有 `.github/workflows/ci.yml` 对齐：`actions/checkout` / `setup-node` 主版本、`npm ci`（prepare 会 build）
-- [ ] job 步骤（cwd 仓根 · 用 **本仓 bin** 非 npx 远包）：
+- [x] 新建 `.github/workflows/tech-graph.yml`
+- [x] **参照** `assets/ci/samples/tech-graph.yml.example` 的触发面（PR + push main）与「compile/check 红即 fail」
+- [x] **禁止**照抄样例的 Python `pyyaml` + `./scripts/graph-compile.sh`（kit 无该脚本 · 简化编译流）
+- [x] 与现有 `.github/workflows/ci.yml` 对齐：`actions/checkout` / `setup-node` 主版本、`npm ci`（prepare 会 build）
+- [x] job 步骤（cwd 仓根 · 用 **本仓 bin** 非 npx 远包）：
   1. `node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph`
   2. `git diff --exit-code -- docs/_tech_graph/*.md`（捕获未提交的 compile 漂移；**不要**对 `shared/graph.json` 做 diff —— export 会改 `generated_at`）
   3. `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph`（对照**已入库** `shared/graph.json`，CI **不**重跑 export）
-- [ ] 单 Node 即可（建议 24.x，与 engines 上限一致）；无需双矩阵
+- [x] 单 Node 即可（建议 24.x，与 engines 上限一致）；无需双矩阵
 
 ### W3-2 · `02_version.md` 首版
 
-- [ ] 新建 `docs/_tech_graph/02_version.md`（手写时间线 · **不是** yaml compile 产物）
-- [ ] 里程碑从简：至少含 graph 能力关键点（1.2.4 DEF-006 命令面 · 1.2.3 DEF-023 emit · 1.6.1 DEF-031~033 · 1.9.0 现行包 · 2026-08-28 W2 自仓 dogfood）
-- [ ] 上限叙述 **1.9.x**（禁止写成即将 1.10.0）；勿把 templates 的 YYYY-MM-DD 占位当 kit 史实
+- [x] 新建 `docs/_tech_graph/02_version.md`（手写时间线 · **不是** yaml compile 产物）
+- [x] 里程碑从简：至少含 graph 能力关键点（1.2.4 DEF-006 命令面 · 1.2.3 DEF-023 emit · 1.6.1 DEF-031~033 · 1.9.0 现行包 · 2026-08-28 W2 自仓 dogfood）
+- [x] 上限叙述 **1.9.x**（禁止写成即将 1.10.0）；勿把 templates 的 YYYY-MM-DD 占位当 kit 史实
 
 ### W3-3 · 获批迁移（W0 矩阵 W3 行）
 
-- [ ] **迁回副本**（工作区 `docs/dsh_coding_kit_optimization/00_inventory/` → kit `docs/spec/self-tech-graph/reference/`）：
+- [x] **迁回副本**（工作区 `docs/dsh_coding_kit_optimization/00_inventory/` → kit `docs/spec/self-tech-graph/reference/`）：
   - `architecture.md` → `architecture_1.2.2.md`
   - `cli_surface.md` → `cli_surface_1.2.2.md`
   - `plugin_surface.md` → `plugin_surface_1.2.2.md`
   - `assets_catalog.md` → `assets_catalog_1.2.2.md`
-- [ ] 每份文首加历史锚块（版本 1.2.2 · 原工作区路径 · 「非现行真值 · 现行 L1 见 `docs/_tech_graph/01_struct.md`」）然后 **原样正文**；禁止改写历史
-- [ ] **不删**工作区原树
-- [ ] `reference/POINTERS.md`：状态从 skeleton → filled；填实 `02_compare_speckit` / `03_directions` / `04_decisions` 工作区相对路径；树 B `spec/` 历史债；树 C `json_graph` / `query_graph`；锚点 **#R07**（PRD 留外 · 链工作区 `06_epics/PRD_R07_ide_block_rewrite.md`）
-- [ ] `docs/spec/README.md`：加一行历史过程 SPEC 指针（树 B `dsh_coding_kit_init/spec/` 留外 · 现行仓根 `SPEC.md`）
-- [ ] `02_graph_scheme.md` 模块表起点句：外置 architecture 旁链 `reference/architecture_1.2.2.md`
+- [x] 每份文首加历史锚块（版本 1.2.2 · 原工作区路径 · 「非现行真值 · 现行 L1 见 `docs/_tech_graph/01_struct.md`」）然后 **原样正文**；禁止改写历史
+- [x] **不删**工作区原树
+- [x] `reference/POINTERS.md`：状态从 skeleton → filled；填实 `02_compare_speckit` / `03_directions` / `04_decisions` 工作区相对路径；树 B `spec/` 历史债；树 C `json_graph` / `query_graph`；锚点 **#R07**（PRD 留外 · 链工作区 `06_epics/PRD_R07_ide_block_rewrite.md`）
+- [x] `docs/spec/README.md`：加一行历史过程 SPEC 指针（树 B `dsh_coding_kit_init/spec/` 留外 · 现行仓根 `SPEC.md`）
+- [x] `02_graph_scheme.md` 模块表起点句：外置 architecture 旁链 `reference/architecture_1.2.2.md`
 
 ### W3-4 · 死链 / 改链（W0 引用扫描）
 
-- [ ] `src/cli-refresh-ide-blocks.ts` 文件头 SPEC 注释：`dsh_coding_kit_optimization/06_epics/PRD_R07_...` → `docs/spec/self-tech-graph/reference/POINTERS.md#R07`（**只改注释** · 不改行为）
-- [ ] `test/cli-refresh-ide-blocks.test.ts` 同步改同一注释
-- [ ] 全仓再扫：`dsh_coding_kit_optimization` / `dsh_coding_kit_init` / 单独的假仓内路径；分类维持「已 POINTER / 明示外部指针 / 本波已改链」；**SPEC.md / assets/README / releases/README / 否定断言 test** 保持为明示外部指针，不必改成仓内假路径
-- [ ] 禁止把 106 份 init 过程档迁入本仓
+- [x] `src/cli-refresh-ide-blocks.ts` 文件头 SPEC 注释：`dsh_coding_kit_optimization/06_epics/PRD_R07_...` → `docs/spec/self-tech-graph/reference/POINTERS.md#R07`（**只改注释** · 不改行为）
+- [x] `test/cli-refresh-ide-blocks.test.ts` 同步改同一注释
+- [x] 全仓再扫：`dsh_coding_kit_optimization` / `dsh_coding_kit_init` / 单独的假仓内路径；分类维持「已 POINTER / 明示外部指针 / 本波已改链」；**SPEC.md / assets/README / releases/README / 否定断言 test** 保持为明示外部指针，不必改成仓内假路径
+- [x] 禁止把 106 份 init 过程档迁入本仓
 
 ### W3-5 · 回归
 
-- [ ] 本地跑与 CI 相同的 compile + md diff + check
-- [ ] `task lint` / `verify --spec` / `verify --task`
-- [ ] `npm test` / `typecheck` 绿（注释改链不得红）
+- [x] 本地跑与 CI 相同的 compile + md diff + check
+- [x] `task lint` / `verify --spec` / `verify --task`
+- [x] `npm test` / `typecheck` 绿（注释改链不得红）
 
 ## 非范围
 
@@ -139,16 +139,16 @@ W2 已 dogfood 五图；缺仓内 CI 锁步、缺 `02_version`、W0 矩阵中 **
 
 ## 验收标准
 
-- [ ] 存在 `.github/workflows/tech-graph.yml`，含 compile --all 与 check --all（本仓 bin），无 `graph-compile.sh` / `pip install pyyaml`
-- [ ] 存在 `docs/_tech_graph/02_version.md` 且含 1.9.x 上限
-- [ ] `reference/` 下四份 `*_1.2.2.md` 存在且文首有历史锚
-- [ ] `POINTERS.md` 含 #R07 且 02–04 / json_graph 行已填路径
-- [ ] `src/cli-refresh-ide-blocks.ts` 与对应 test 头注释不再含 `06_epics/PRD_R07`
-- [ ] `node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph` 后 `git diff --exit-code -- docs/_tech_graph/*.md`
-- [ ] `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph` exit 0
-- [ ] `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w3_ci_migrate.md` → PASS
-- [ ] `verify --spec` / `verify --task` 本文件 → PASS
-- [ ] `npm test` 绿
+- [x] 存在 `.github/workflows/tech-graph.yml`，含 compile --all 与 check --all（本仓 bin），无 `graph-compile.sh` / `pip install pyyaml`
+- [x] 存在 `docs/_tech_graph/02_version.md` 且含 1.9.x 上限
+- [x] `reference/` 下四份 `*_1.2.2.md` 存在且文首有历史锚
+- [x] `POINTERS.md` 含 #R07 且 02–04 / json_graph 行已填路径
+- [x] `src/cli-refresh-ide-blocks.ts` 与对应 test 头注释不再含 `06_epics/PRD_R07`
+- [x] `node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph` 后 `git diff --exit-code -- docs/_tech_graph/*.md`
+- [x] `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph` exit 0
+- [x] `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w3_ci_migrate.md` → PASS
+- [x] `verify --spec` / `verify --task` 本文件 → PASS
+- [x] `npm test` 绿
 
 ---
 
@@ -185,7 +185,14 @@ W2 已 dogfood 五图；缺仓内 CI 锁步、缺 `02_version`、W0 矩阵中 **
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+- GATE_VERIFY：HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES 均为 **approved**；`verify --task` PASS（开工前 + 交付后）。
+- W3-1：`.github/workflows/tech-graph.yml` 用本仓 `node bin/dsh-coding-kit.js`；`actions/checkout@v4` + `setup-node@v4`；单 Node `24.x`；`npm ci`；无 export、无 graph.json diff、无 Python 样例脚本。
+- **CI 偏差（须 00 知悉）**：`graph yaml compile` 每次重写 md frontmatter `generated_at`（wall-clock）。裸 `git diff --exit-code -- docs/_tech_graph/*.md` **恒红**。workflow 改为 `git diff -I '^generated_at:' --exit-code`（与禁 graph.json diff 同源）。**未改编译器**（src 仅注释改链）。
+- W3-2：`docs/_tech_graph/02_version.md` 含 1.2.3 DEF-023 · 1.2.4 DEF-006 · 1.6.1 DEF-031~033 · 1.9.0 现行 · 2026-08-28 W2 dogfood；上限 1.9.x；未抄模板 YYYY-MM-DD 占位。
+- W3-3：四份 `reference/*_1.2.2.md` 文首历史锚 + 正文与工作区 `00_inventory/` 字节一致；原树未删；POINTERS `filled`（02/03/04 路径 · 树 B spec 历史债 · 树 C json_graph/query_graph · `#R07`）。
+- W3-4：`src/cli-refresh-ide-blocks.ts` 与对应 test 头注释改为 `docs/spec/self-tech-graph/reference/POINTERS.md#R07`。再扫：SPEC.md / assets/README / releases/README / `test/cli-p0.test.ts` 否定断言维持明示外部指针。
+- 验证：compile 5 图 OK · `git diff -I` PASS · check 5/5 OK · task lint PASS · `verify --spec` / `--task` PASS · typecheck PASS · `npm test` 310/310。
+- 未 bump / 未 tag / 未 publish；未改 yaml 拓扑；未关账 / 未开 PR。
 
 ---
 
