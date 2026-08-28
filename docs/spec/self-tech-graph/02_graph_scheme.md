@@ -13,7 +13,7 @@
 | **L2 关键子流程** | `10_flow_<slug>.graph.yaml` → `.md` ×4 | 首批：`task_close`（闸链+done 快照）· `verify`（--task/--spec/--with-wiki-lint）· `upgrade`（manifest 钉版 · 幂等）· `graph_yaml_pipeline`（compile→export→check 自指 dogfood） | 各 cmd 实现 |
 | 辅 | `02_version.md` | 版本时间线（1.0.0→**1.9.x** · 允许首版从简 · **W3**） | CHANGELOG.md |
 
-**模块表起点**：工作区 `docs/dsh_coding_kit_optimization/00_inventory/architecture.md`（1.2.2 锚）仅作 R0 参考输入，**必须按 1.9.0 src/ 实读重核**（新增 cli-refresh-ide-blocks · E8/wrong_section · close 快照/--json · --with-wiki-lint 等）——禁止照抄旧档。
+**模块表起点**：工作区 `docs/dsh_coding_kit_optimization/00_inventory/architecture.md`（1.2.2 锚）· 仓内历史副本 [`reference/architecture_1.2.2.md`](./reference/architecture_1.2.2.md) 仅作 R0 参考输入，**必须按 1.9.0 src/ 实读重核**（新增 cli-refresh-ide-blocks · E8/wrong_section · close 快照/--json · --with-wiki-lint 等）——禁止照抄旧档。
 
 ## 2. dogfood 工具链（自证闭环）
 
@@ -44,3 +44,4 @@ npx dsh-coding-kit graph yaml check --all --input docs/_tech_graph
 | 2026-08-28 | W1：L1 模块表已落盘 [`docs/_tech_graph/01_struct.md`](../../_tech_graph/01_struct.md)（1.9.0 `src/*.ts` 17 文件实读 · 无 yaml）；`HG-GRAPH-MODULES` **approved** |
 | 2026-08-28 | 拟发版钉 1.9.x；`02_version` 时间线上限改为 1.9.x（W3 落盘） |
 | 2026-08-28 | W2：L0/L2 yaml 落盘 [`docs/_tech_graph/`](../../_tech_graph/)（`00_main` + 四条 `10_flow_*`）· compile/export/check dogfood |
+| 2026-08-28 | W3：模块表起点旁链 [`reference/architecture_1.2.2.md`](./reference/architecture_1.2.2.md) |

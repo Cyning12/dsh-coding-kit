@@ -8,7 +8,7 @@ import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
 // R-07：refresh-ide-blocks 子命令测试矩阵 M01–M19
-// SPEC: docs/dsh_coding_kit_optimization/06_epics/PRD_R07_ide_block_rewrite.md §7
+// SPEC: docs/spec/self-tech-graph/reference/POINTERS.md#R07
 const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CLI_TS = path.join(KIT, 'src', 'cli.ts')
 

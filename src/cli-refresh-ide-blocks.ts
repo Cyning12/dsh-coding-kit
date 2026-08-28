@@ -1,5 +1,5 @@
 // R-07：消费者仓 IDE marker 块旧命令字面自动刷写
-// SPEC: docs/dsh_coding_kit_optimization/06_epics/PRD_R07_ide_block_rewrite.md
+// SPEC: docs/spec/self-tech-graph/reference/POINTERS.md#R07
 // 分层：T1 parseBlocks（§3 纯函数）→ T2 rewriteBody（§4 映射表）→ T3 拒写闸/备份（§6）→ T4 命令与报告（§5）
 import { execFileSync } from 'node:child_process'
 import {
