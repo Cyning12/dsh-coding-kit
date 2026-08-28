@@ -3,7 +3,7 @@
 > **状态**：`signed`（HG-SPEC-SIGNOFF=approved · 2026-08-27 · 00 代签）  
 > **track**：`epic`  
 > **拟发版**：不定版（图谱/docs 轨 · 若带 CLI 变更再钉）  
-> **人闸**：`HG-SPEC-SIGNOFF` = **approved**（2026-08-27 · 00 代签）· `HG-GRAPH-MODULES` = pending（W1 · 01_struct）  
+> **人闸**：`HG-SPEC-SIGNOFF` = **approved**（2026-08-27 · 00 代签）· `HG-GRAPH-MODULES` = **approved**（2026-08-28 · 00 代签 · 签收物 `docs/_tech_graph/01_struct.md`）  
 > **关联**：仓根 `SPEC.md`（产品总 SPEC · 不动）· `docs/spec/doc-health/03_spec_layout_convention.md`（本夹依其 §1 落专属夹）  
 > **外置盘点对象**：工作区 `docs/dsh_coding_kit_init/`（106 文件）· `docs/dsh_coding_kit_optimization/` · `docs/tech_graph/`
 
@@ -27,7 +27,7 @@
 | human_gate_id | status | blocks | 说明 |
 |---------------|--------|--------|------|
 | HG-SPEC-SIGNOFF | approved | 10-task/30 | 2026-08-27 20-spec R1 零阻塞 · 00 依授权代签 |
-| HG-GRAPH-MODULES | pending | 30 | W1 01_struct 落盘后签 |
+| HG-GRAPH-MODULES | approved | 30（**W2 构图/改码**） | 2026-08-28 00 代签 · 签收物 [`docs/_tech_graph/01_struct.md`](../../_tech_graph/01_struct.md) · 17/17 src 实读 |
 
 ---
 
@@ -48,3 +48,6 @@
 |------|------|
 | 2026-08-27 | 初稿（00 应维护者要求起草 · 源起：1.8.0 发版后复盘「能力外置不合理」） |
 | 2026-08-27 | R1 审零阻塞 · HG-SPEC-SIGNOFF approved（reviews/spec_self_tech_graph_audit_R1_20260827.md） |
+| 2026-08-28 | W1 开工：`self-tech-graph-w1-struct` · HG-GRAPH-MODULES 仍 pending（01_struct 后签） |
+| 2026-08-28 | HG-GRAPH-MODULES approved（00 代签 · `docs/_tech_graph/01_struct.md` 17/17） |
+| 2026-08-28 | W1 30 交付：[`docs/_tech_graph/01_struct.md`](../../_tech_graph/01_struct.md) 已落盘 · 闸仍待 00 签 |
