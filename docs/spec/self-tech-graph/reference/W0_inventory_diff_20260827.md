@@ -68,7 +68,7 @@
 | 子树/路径 | approved 动作 | 执行波次 | 备注 |
 |-----------|---------------|----------|------|
 | 树 A · `00_inventory/`（architecture / cli_surface / plugin_surface / assets_catalog） | **内容 W1 按 1.9.0 src/ 实读重生** → 输入 `01_struct` + L0；**原文 W3 迁** `reference/`（标历史锚 1.2.2 + 原路径） | W1（内容）· W3（原文） | 禁止照抄旧 inventory；HG-GRAPH-MODULES 人签在 W1 |
-| 树 A · `01_defects/`（defect_register · known_debts · investigations） | **ledger 为仓内 DEF/债务真值**；外置 register 作 R1 证据库 **留外**；DEF-028~033 **后续补入 ledger**（非 W0 合并） | W0（diff 完成）· W4（ledger 补全可选） | investigations 留外 · POINTER 可选 |
+| 树 A · `01_defects/`（defect_register · known_debts · investigations） | **ledger 为仓内 DEF/债务真值**；外置 register 作 R1 证据库 **留外**；DEF-028~033 **W1 补入 ledger**（2026-08-28 裁定补录） | W0（diff 完成）· **W1**（ledger 补录） | investigations 留外 · POINTER 可选 |
 | 树 A · `02_compare_speckit/` · `03_directions/` · `04_decisions/` | **留外 + POINTER**（治理叙事 · 非仓事实源） | W3 | 目标：`reference/POINTERS.md` + `docs/spec/README.md` |
 | 树 A · `05_fix_plans/` · `06_epics/` | **留外**（过程档 · PRD 均已交付） | none | 仓内终态：`docs/tasks/done/` · CHANGELOG · releases 系列 |
 | 树 B · `dsh_coding_kit_init/spec/` | **留外**（历史 SPEC 1.0→1.2.2）；仓根 `SPEC.md` 为现行 | W3 | `docs/spec/README.md` 加历史债索引指针行 |
@@ -103,11 +103,13 @@
 
 ## 人裁 pending
 
-| ID | 主题 | 说明 | 建议 |
-|----|------|------|------|
-| **PENDING-DEF-028-033** | ledger 是否补录 DEF-028~033 | 外置 register 已闭环 6 条 · ledger 止于 DEF-027 · 无状态冲突 | 维护者确认：W4 或独立 docs task 补 ledger + CHANGELOG 交叉引用 |
-| **PENDING-R05-STALE** | 外置 `known_debts.md` R-05 开放表述 | 2026-08-22 快照 vs ledger 1.3.0 已 closed | 外置树可选同步（非 kit 仓职责）或 W3 POINTER 注记「债务真值见 ledger」 |
-| **PENDING-M3-SUBSET** | init 树 M-3 遗留 | known_debts §1：`d_article_series` 与 `self_glayer p` 系列未判 | 留人工 · 不影响 kit 图谱轨 |
+**已关（2026-08-28 · 维护者裁定 · 00 代录）** — 执行见 W1 task `self-tech-graph-w1-struct`。
+
+| ID | 主题 | 裁定 | 执行波 |
+|----|------|------|--------|
+| **PENDING-DEF-028-033** | ledger 是否补录 DEF-028~033 | **补录** · 按外置 register 已闭环 6 条写入仓内 ledger（33/33 closed） | **W1**（原矩阵写 W4 可选 · 本裁定提前） |
+| **PENDING-R05-STALE** | 外置 `known_debts.md` R-05 开放表述 | **关闭** · 外置无增量内容可改；ledger 1.3.0 已 closed 为仓内真值；不回写外置树 | none（关 pending 即可） |
+| **PENDING-M3-SUBSET** | init/工作区 M-3 遗留子集 | **自行处理**：无用则与 M-3 同款 stale 处置；有用则从 kit 债剔除。00 初判：`self_glayer` 系列已 stale 横幅 → 无增量；`d_article_series` 仍 `in_progress` 公众稿轨 → **有用、不 stamp、不迁 kit**。30 扫描确认后关本 pending | **W1**（工作区侧仅 stamp 无用项 · 不迁 kit） |
 
 ---
 
@@ -116,3 +118,4 @@
 | 日期 | 摘要 |
 |------|------|
 | 2026-08-27 | W0 30+40 交付：实勘 · DEF diff · 迁留定稿 · 引用扫描 |
+| 2026-08-28 | 人裁三项 ruled：DEF-028~033 补录 · R-05 关闭 · M-3 遗留自行处理（见上表） |
