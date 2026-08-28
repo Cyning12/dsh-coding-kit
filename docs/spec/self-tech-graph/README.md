@@ -2,7 +2,7 @@
 
 > **状态**：`signed`（HG-SPEC-SIGNOFF=approved · 2026-08-27 · 00 代签）  
 > **track**：`epic`  
-> **拟发版**：**1.9.x**（建议 epic 收口钉 **1.9.1** · **禁止** 1.10+；W2/W3 不 bump，W4 CHANGELOG Docs 条）  
+> **拟发版**：**1.9.1**（**已发布** 2026-08-28 · npm `latest` · tag `v1.9.1` @ `a4e8827` · **禁止** 1.10+）  
 > **人闸**：`HG-SPEC-SIGNOFF` = **approved**（2026-08-27 · 00 代签）· `HG-GRAPH-MODULES` = **approved**（2026-08-28 · 00 代签 · 签收物 `docs/_tech_graph/01_struct.md`）  
 > **关联**：仓根 `SPEC.md`（产品总 SPEC · 不动）· `docs/spec/doc-health/03_spec_layout_convention.md`（本夹依其 §1 落专属夹）  
 > **外置盘点对象**：工作区 `docs/dsh_coding_kit_init/`（106 文件）· `docs/dsh_coding_kit_optimization/` · `docs/tech_graph/`
@@ -55,3 +55,4 @@
 | 2026-08-28 | W4 开工：`self-tech-graph-w4-closeout` · CHANGELOG Unreleased Docs · 不 bump |
 | 2026-08-28 | W4 文档已落盘（互链 + Unreleased Docs）· 待 CLOSE · 不 bump |
 | 2026-08-28 | W4 CLOSE（PR #25）· epic 仓内收口完毕 · 停发版前 |
+| 2026-08-28 | **已发 1.9.1**（npm `latest` · tag `v1.9.1` · PR #26） |

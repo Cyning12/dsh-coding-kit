@@ -9,11 +9,11 @@
 
 | 关账日 | task | 摘要 |
 |--------|------|------|
-| 2026-08-28 | [`task_self_tech_graph_w4_closeout.md`](./task_self_tech_graph_w4_closeout.md) | self-tech-graph W4 dogfood 互链 + Unreleased Docs · 拟 1.9.1 · 停发版前 |
-| 2026-08-28 | [`task_self_tech_graph_w3_ci_migrate.md`](./task_self_tech_graph_w3_ci_migrate.md) | self-tech-graph W3 CI + 02_version + inventory 迁回 · 拟 1.9.x · 停发版前 |
-| 2026-08-28 | [`task_self_tech_graph_w2_yaml.md`](./task_self_tech_graph_w2_yaml.md) | self-tech-graph W2 yaml L0+L2 dogfood · 拟 1.9.x · 停发版前 |
-| 2026-08-28 | [`task_self_tech_graph_w1_struct.md`](./task_self_tech_graph_w1_struct.md) | self-tech-graph W1 `01_struct` · ledger DEF-028~033 · HG-GRAPH-MODULES · 停发版前 |
-| 2026-08-27 | [`task_self_tech_graph_w0_inventory.md`](./task_self_tech_graph_w0_inventory.md) | self-tech-graph W0 外置三树盘点 · 迁留定稿 · docs-only · 停发版前 |
+| 2026-08-28 | [`task_self_tech_graph_w4_closeout.md`](./task_self_tech_graph_w4_closeout.md) | self-tech-graph W4 dogfood 互链 + Docs · **已发 1.9.1** |
+| 2026-08-28 | [`task_self_tech_graph_w3_ci_migrate.md`](./task_self_tech_graph_w3_ci_migrate.md) | self-tech-graph W3 CI + 02_version + inventory 迁回 · 随 1.9.1 发布 |
+| 2026-08-28 | [`task_self_tech_graph_w2_yaml.md`](./task_self_tech_graph_w2_yaml.md) | self-tech-graph W2 yaml L0+L2 dogfood · 随 1.9.1 发布 |
+| 2026-08-28 | [`task_self_tech_graph_w1_struct.md`](./task_self_tech_graph_w1_struct.md) | self-tech-graph W1 `01_struct` · ledger DEF-028~033 · HG-GRAPH-MODULES · 随 1.9.1 发布 |
+| 2026-08-27 | [`task_self_tech_graph_w0_inventory.md`](./task_self_tech_graph_w0_inventory.md) | self-tech-graph W0 外置三树盘点 · 迁留定稿 · 随 1.9.1 发布 |
 | 2026-08-27 | [`task_sync_prompts.md`](./task_sync_prompts.md) | sync prompts 子命令 · SHA-256 三分 · v1.9.0 |
 | 2026-08-27 | [`task_prompts_ci_alignment.md`](./task_prompts_ci_alignment.md) | prompts/模板与 CI 对齐（K4/K6/K7）· v1.8.0（拟） |
 | 2026-08-27 | [`task_close_done_snapshot.md`](./task_close_done_snapshot.md) | task close PASS 快照 + --json · v1.8.0（拟） |
@@ -34,3 +34,4 @@
 | 2026-08-28 | 增 self-tech-graph W2 关账行 |
 | 2026-08-28 | 增 self-tech-graph W3 关账行 |
 | 2026-08-28 | 增 self-tech-graph W4 关账行 |
+| 2026-08-28 | 1.9.1 已发布（npm latest · tag v1.9.1） |

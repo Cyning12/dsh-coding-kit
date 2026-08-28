@@ -3,7 +3,7 @@
 > **状态**：`done`  
 > **关联图谱**：`docs/_tech_graph/`（W2/W3 已齐 · 本波不改 yaml 拓扑）  
 > **关联 SPEC**：`docs/spec/self-tech-graph/`（`04_execution_waves.md` **W4** · `01_problem_and_goals.md` 完成态）  
-> **拟发版**：**1.9.1**（CHANGELOG `[Unreleased]` Docs）· **本波不 bump / 不 tag / 不 publish**  
+> **拟发版**：**1.9.1**（**已发布** 2026-08-28 · npm `latest` · tag `v1.9.1` @ `a4e8827`）  
 > **00 颗粒度**：**单 task = SPEC W4 整波** · epic 末棒
 
 ---
@@ -33,8 +33,8 @@
 | **close_pr_policy** | `exempt` |
 | **close_pr_exempt_note** | kit docs 轨；合入由 00 push |
 | **entry_invoke_30** | `docs/harness/invokes/by-task/self-tech-graph-w4-closeout/invoke_20260828_30_40_self-tech-graph-w4-closeout.md` |
-| **planned_release** | `1.9.1` |
-| **maintainer_release_hold** | `true` — merge 后停于发版前 · 无 bump/tag/publish |
+| **planned_release** | `1.9.1`（已发布 2026-08-28） |
+| **maintainer_release_hold** | `false` — 2026-08-28 npm publish + tag `v1.9.1` @ `a4e8827` |
 | **related_pr** | `#25` |
 
 ### 00 维护者授权（2026-08-27 延续 · 2026-08-28 W4 签收）
@@ -191,3 +191,4 @@ Task_KPI%: 95
 | 2026-08-28 | 00 起草并签收：W4 收口 · Unreleased Docs 拟 1.9.1 · 不 bump |
 | 2026-08-28 | 30/40：互链 + SPEC 完成态 + Unreleased Docs · 勾选 · 自检 · 不 CLOSE |
 | 2026-08-28 | 00 CLOSE：PR #25 merge · KPI/经验 · Hub |
+| 2026-08-28 | 00 ⑨：1.9.1 已发布（npm latest · tag v1.9.1） |
