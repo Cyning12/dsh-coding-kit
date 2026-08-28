@@ -47,3 +47,4 @@ npx dsh-coding-kit graph yaml check --all --input docs/_tech_graph
 | 2026-08-28 | W3：模块表起点旁链 [`reference/architecture_1.2.2.md`](./reference/architecture_1.2.2.md) |
 | 2026-08-28 | W4：§2 CI 改为已落地 [`.github/workflows/tech-graph.yml`](../../../.github/workflows/tech-graph.yml) |
 | 2026-08-28 | 拟 1.9.2：§2 注明 compile stamp 幂等、CI 裸 git diff md |
+| 2026-08-28 | 1.9.2 发版：compile `generated_at` 幂等入包 |
