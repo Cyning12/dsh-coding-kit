@@ -1,6 +1,6 @@
 # Task：self-tech-graph W2 L0+L2 graph yaml 构图与 dogfood 校验
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **关联图谱**：`docs/_tech_graph/00_main.md` + `10_flow_*.md`（本波由 yaml compile 生成）  
 > **关联 SPEC**：`docs/spec/self-tech-graph/`（`04_execution_waves.md` **W2** · `02_graph_scheme.md` §1–§2）  
 > **拟发版**：**1.9.x**（建议收口 **1.9.1** · 禁止 1.10+）· **本波不 bump**  
@@ -35,6 +35,7 @@
 | **entry_invoke_30** | `docs/harness/invokes/by-task/self-tech-graph-w2-yaml/invoke_20260828_30_40_self-tech-graph-w2-yaml.md` |
 | **planned_release** | `1.9.x`（建议 1.9.1） |
 | **maintainer_release_hold** | `true` — merge 后停于发版前 · 无 bump/tag/publish |
+| **related_pr** | `#23` |
 
 ### 00 维护者授权（2026-08-27 延续 · 2026-08-28 W2 签收）
 
@@ -193,13 +194,19 @@ compile / export / check `--input docs/_tech_graph` 均 exit 0。`rg` `src/main.
 
 ### KPI（00）
 
-（关账回溯填写）
+Task_KPI%: 94
+
+- W2-0~W2-4 全勾 · 5 yaml + compile/export/check 绿 · PR #23 squash merge
+- 锚点均落 src/bin · 零 TBD · 未抄 templates 假路径
+- 拟发版 1.9.x · 无 bump/tag（maintainer_release_hold）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- kit 自图必须用 `node bin/dsh-coding-kit.js` 而非 npx 远包，否则 dogfood 的是已发布版不是工作树
+- `nodes[].id` 不能以数字开头（`00_main` 作 graph_id 可以，作 node id 不行）
+- `export` 每次改 `generated_at`：关账前只提交一次 `shared/graph.json`
 
 ---
 
