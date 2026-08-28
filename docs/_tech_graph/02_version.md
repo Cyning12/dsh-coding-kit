@@ -1,7 +1,7 @@
 # 02 · 版本时间线（kit 图谱 / 包里程碑）
 
 > **性质**：手写时间线 · **不是** yaml compile 产物。  
-> **上限**：**1.9.x**（现行发布包 **1.9.1** · 禁止叙述 1.10+）。  
+> **上限**：**1.9.x**（现行发布包 **1.9.2** · 禁止叙述 1.10+）。  
 > **真值**：仓根 `CHANGELOG.md` · `package.json`。不把 `assets/graph/templates/02_version.md` 的 YYYY-MM-DD 占位当 kit 史实。
 
 | 日期 | 版本 | 事件 |
@@ -12,8 +12,8 @@
 | 2026-08-27 | 1.9.0 | sync prompts 子命令（当时现行包） |
 | 2026-08-28 | 1.9.x | **W2 自仓 dogfood**：`docs/_tech_graph/` 五图 yaml compile / export / check（当时不 bump） |
 | 2026-08-28 | 1.9.x | **W3 CI 入仓**：`.github/workflows/tech-graph.yml`（本仓 bin compile/check · 当时不 bump） |
-| 2026-08-28 | 1.9.1 | **现行发布包**：self-tech-graph 收口（仓内三层图谱 · tech-graph CI · dogfood 互链 · inventory→reference） |
-| 2026-08-28 | 1.9.x | **拟 1.9.2**：compile/export `generated_at` 源内容派生（`sha256-<16hex>`）· tech-graph CI 去掉 `-I` |
+| 2026-08-28 | 1.9.1 | self-tech-graph 收口（仓内三层图谱 · tech-graph CI · dogfood 互链 · inventory→reference） |
+| 2026-08-28 | 1.9.2 | **现行发布包**：compile/export `generated_at` 源内容派生（`sha256-<16hex>`）· tech-graph CI 去掉 `-I` |
 
 ## 修订记录
 
@@ -23,4 +23,4 @@
 | 2026-08-28 | W4：补 W3 CI 入仓、W4 Unreleased Docs 行（仍上限 1.9.x） |
 | 2026-08-28 | 1.9.1 发版准备：现行包改为 1.9.1 |
 | 2026-08-28 | npm `latest=1.9.1` · tag `v1.9.1` @ `a4e8827` |
-| 2026-08-28 | 拟 1.9.2：compile/export `generated_at` 幂等 · CI 裸 git diff md |
+| 2026-08-28 | 1.9.2 发版准备：compile/export `generated_at` 幂等 · CI 裸 git diff md |

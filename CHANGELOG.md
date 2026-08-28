@@ -4,16 +4,24 @@
 
 ## [Unreleased]
 
-> 拟 **1.9.2**：`graph yaml compile` / `export` 的 `generated_at` 改为 yaml 源内容派生戳，tech-graph CI 去掉 `-I`。**不 bump 本 commit 的 `package.json`**（仍 1.9.1）。
+## [1.9.2] - 2026-08-28
+
+> 主题：**compile / export `generated_at` 幂等**——yaml 源内容戳，tech-graph CI 去掉 `-I`。
+>
+> **消费者提示（置顶）**：
+>
+> - **无新子命令**。`upgrade` 后 CLI 用法与 1.9.1 相同。
+> - **`generated_at` 不再是 ISO 时间**：`graph yaml compile` / `export` 写 `sha256-<16hex>`（yaml 源 UTF-8 的 SHA-256 前 16 hex）。同字节重编译 / export 幂等。若脚本把该字段当日期解析，须改。升级后请重跑 `graph yaml compile --all`（md frontmatter 会从旧 ISO 变成内容戳）。
+> - HGM snapshot / `sync index` 的时钟 `generated_at` **未改**。
 
 ### Changed
 
-- `graph yaml compile` / `export`：`generated_at` 改为 yaml 源 UTF-8 的 SHA-256 前 16 hex（形态 `sha256-<hex>`），同输入字节幂等；不再写 wall-clock ISO。HGM snapshot / `sync index` 的时钟字段不变。
+- `graph yaml compile` / `export`：`generated_at` 改为 yaml 源 UTF-8 的 SHA-256 前 16 hex（形态 `sha256-<hex>`），同输入字节幂等；不再写 wall-clock ISO。
 - `.github/workflows/tech-graph.yml`：裸 `git diff --exit-code -- docs/_tech_graph/*.md`（去掉 `-I '^generated_at:'`）。仍不对 `shared/graph.json` 做 git diff（`check` 比对切片、不比 stamp）。
 
 ### Docs
 
-- `99_mermaid_protocol` §0 补 `generated_at` 幂等契约；`02_version` 补拟 1.9.2 行。
+- `99_mermaid_protocol` §0 补 `generated_at` 幂等契约；`02_version` 记 1.9.2。
 
 ## [1.9.1] - 2026-08-28
 
