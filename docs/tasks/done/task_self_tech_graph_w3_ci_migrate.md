@@ -1,6 +1,6 @@
 # Task：self-tech-graph W3 CI + 02_version + 获批迁移
 
-> **状态**：`in_progress`  
+> **状态**：`done`  
 > **关联图谱**：`docs/_tech_graph/02_version.md`（本波新建 · 时间线 · 非 yaml）  
 > **关联 SPEC**：`docs/spec/self-tech-graph/`（`04_execution_waves.md` **W3** · `03_external_docs_migration.md` §2 · W0 迁留矩阵）  
 > **拟发版**：**1.9.x**（建议收口 **1.9.1** · 禁止 1.10+）· **本波不 bump**  
@@ -35,6 +35,7 @@
 | **entry_invoke_30** | `docs/harness/invokes/by-task/self-tech-graph-w3-ci-migrate/invoke_20260828_30_40_self-tech-graph-w3-ci-migrate.md` |
 | **planned_release** | `1.9.x`（建议 1.9.1） |
 | **maintainer_release_hold** | `true` — merge 后停于发版前 · 无 bump/tag/publish |
+| **related_pr** | `#24` |
 
 ### 00 维护者授权（2026-08-27 延续 · 2026-08-28 W3 签收）
 
@@ -198,13 +199,18 @@ W2 已 dogfood 五图；缺仓内 CI 锁步、缺 `02_version`、W0 矩阵中 **
 
 ### KPI（00）
 
-（关账回溯填写）
+Task_KPI%: 93
+
+- W3-1~W3-5 全勾 · tech-graph CI compile job 8s 绿 · PR #24 squash merge
+- 四份 1.2.2 迁回未改写 · POINTERS #R07 · 注释改链 · 310/310
+- 拟发版 1.9.x · 无 bump（maintainer_release_hold）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- 消费仓 sample 的 Python `graph-compile.sh` 不能用于 kit 自 CI；本仓 bin + npm ci 才是 dogfood
+- compile 与 export 都会写 wall-clock `generated_at`：CI 对 md 用 `git diff -I '^generated_at:'`，且不要 diff `graph.json`
 
 ---
 

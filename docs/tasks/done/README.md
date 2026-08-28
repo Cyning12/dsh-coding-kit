@@ -9,6 +9,7 @@
 
 | 关账日 | task | 摘要 |
 |--------|------|------|
+| 2026-08-28 | [`task_self_tech_graph_w3_ci_migrate.md`](./task_self_tech_graph_w3_ci_migrate.md) | self-tech-graph W3 CI + 02_version + inventory 迁回 · 拟 1.9.x · 停发版前 |
 | 2026-08-28 | [`task_self_tech_graph_w2_yaml.md`](./task_self_tech_graph_w2_yaml.md) | self-tech-graph W2 yaml L0+L2 dogfood · 拟 1.9.x · 停发版前 |
 | 2026-08-28 | [`task_self_tech_graph_w1_struct.md`](./task_self_tech_graph_w1_struct.md) | self-tech-graph W1 `01_struct` · ledger DEF-028~033 · HG-GRAPH-MODULES · 停发版前 |
 | 2026-08-27 | [`task_self_tech_graph_w0_inventory.md`](./task_self_tech_graph_w0_inventory.md) | self-tech-graph W0 外置三树盘点 · 迁留定稿 · docs-only · 停发版前 |
@@ -30,3 +31,4 @@
 | 2026-08-27 | 增 sync-prompts 关账行 |
 | 2026-08-28 | 增 self-tech-graph W1 关账行 |
 | 2026-08-28 | 增 self-tech-graph W2 关账行 |
+| 2026-08-28 | 增 self-tech-graph W3 关账行 |
