@@ -23,7 +23,7 @@ npx dsh-coding-kit graph yaml export --input docs/_tech_graph
 npx dsh-coding-kit graph yaml check --all --input docs/_tech_graph
 ```
 
-- **CI**：已落地 [`.github/workflows/tech-graph.yml`](../../../.github/workflows/tech-graph.yml)（本仓 bin compile/check；样例对照仍见 `assets/ci/samples/tech-graph.yml.example`）；compile/check 红即 fail
+- **CI**：已落地 [`.github/workflows/tech-graph.yml`](../../../.github/workflows/tech-graph.yml)（本仓 bin compile/check；样例对照仍见 `assets/ci/samples/tech-graph.yml.example`）；compile/check 红即 fail。compile `generated_at` 由 yaml 源派生（幂等），CI 对 `docs/_tech_graph/*.md` 裸 `git diff --exit-code`（不对 `shared/graph.json` 做 git diff）
 - **自指验证**：`graph_yaml_pipeline` flow 描绘的正是上述三条命令——图谱描述工具、工具校验图谱
 - 模板包定位不变：本仓走**简化编译流**（非 manifest/contract CI · 那是复杂业务仓档位）
 
@@ -46,3 +46,4 @@ npx dsh-coding-kit graph yaml check --all --input docs/_tech_graph
 | 2026-08-28 | W2：L0/L2 yaml 落盘 [`docs/_tech_graph/`](../../_tech_graph/)（`00_main` + 四条 `10_flow_*`）· compile/export/check dogfood |
 | 2026-08-28 | W3：模块表起点旁链 [`reference/architecture_1.2.2.md`](./reference/architecture_1.2.2.md) |
 | 2026-08-28 | W4：§2 CI 改为已落地 [`.github/workflows/tech-graph.yml`](../../../.github/workflows/tech-graph.yml) |
+| 2026-08-28 | 拟 1.9.2：§2 注明 compile stamp 幂等、CI 裸 git diff md |

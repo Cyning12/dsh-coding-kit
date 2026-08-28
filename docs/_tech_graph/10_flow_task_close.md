@@ -1,7 +1,7 @@
 ---
 graph_id: 10_flow_task_close
 version: 2026-08-28
-generated_at: 2026-08-28T01:14:27Z
+generated_at: sha256-656c595d610666c4
 source: 10_flow_task_close.graph.yaml
 ---
 
