@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+> 拟 **1.9.2**：`graph yaml compile` / `export` 的 `generated_at` 改为 yaml 源内容派生戳，tech-graph CI 去掉 `-I`。**不 bump 本 commit 的 `package.json`**（仍 1.9.1）。
+
+### Changed
+
+- `graph yaml compile` / `export`：`generated_at` 改为 yaml 源 UTF-8 的 SHA-256 前 16 hex（形态 `sha256-<hex>`），同输入字节幂等；不再写 wall-clock ISO。HGM snapshot / `sync index` 的时钟字段不变。
+- `.github/workflows/tech-graph.yml`：裸 `git diff --exit-code -- docs/_tech_graph/*.md`（去掉 `-I '^generated_at:'`）。仍不对 `shared/graph.json` 做 git diff（`check` 比对切片、不比 stamp）。
+
+### Docs
+
+- `99_mermaid_protocol` §0 补 `generated_at` 幂等契约；`02_version` 补拟 1.9.2 行。
+
 ## [1.9.1] - 2026-08-28
 
 > 主题：**self-tech-graph 收口**——kit 源码仓自图谱 dogfood、tech-graph CI、inventory 迁回 reference。

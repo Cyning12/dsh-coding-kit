@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { yamlLoad } from './yaml.ts'
@@ -180,8 +181,21 @@ export function resolveGraphJsonPath(inputRoot: string, explicitPath: string | n
   return path.join(inputRoot, 'graph.json')
 }
 
-function utcNowIsoZ(): string {
-  return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
+/**
+ * 源内容派生戳：同 UTF-8 字节 → 同 stamp。形态 `sha256-<16hex>`，YAML 当纯量（非嵌套键）。
+ * 用于 compile md frontmatter 与 export graph.json 的 generated_at，去掉 wall-clock。
+ */
+export function contentStamp(source: string): string {
+  const hex = createHash('sha256').update(source, 'utf8').digest('hex').slice(0, 16)
+  return `sha256-${hex}`
+}
+
+function stampYamlCorpus(inputRoot: string, graphIds: string[]): string {
+  const parts: string[] = []
+  for (const graphId of graphIds) {
+    parts.push(`${graphId}\n${readFileSync(yamlPathFor(inputRoot, graphId), 'utf8')}`)
+  }
+  return contentStamp(parts.join('\0'))
 }
 
 function classifyLabel(label: string): [string, boolean] {
@@ -314,7 +328,7 @@ export function buildGraphPayload(
   return {
     schema_version: 'graph_v2',
     freeze_id: freezeId,
-    generated_at: opts.generatedAt || utcNowIsoZ(),
+    generated_at: opts.generatedAt || stampYamlCorpus(inputRoot, graphIds),
     nodes,
     edges,
     graphs,
@@ -461,12 +475,15 @@ function generateSubGraphLinks(graphId: string): string {
   ].join('\n')
 }
 
-export function generateMarkdown(data: YamlGraph, opts: { sourcePath?: string | null } = {}): string {
+export function generateMarkdown(
+  data: YamlGraph,
+  opts: { sourcePath?: string | null; sourceRaw?: string | null; generatedAt?: string | null } = {},
+): string {
   const graphId = data.graph_id || 'main'
   const title = data.title || graphId
   const description = data.description || ''
   const version = data.version || ''
-  const generatedAt = utcNowIsoZ()
+  const generatedAt = opts.generatedAt || contentStamp(opts.sourceRaw ?? JSON.stringify(data))
   const src = opts.sourcePath || `docs/_tech_graph/${graphId}.graph.yaml`
   const frontmatter = `---
 graph_id: ${graphId}
@@ -499,11 +516,13 @@ ${generateEdgeTable(data)}${notes}${subLinks ? `\n\n${subLinks}` : ''}
 export function compileGraph(graphId: string, inputRoot: string, outputPath: string | null = null): string {
   const yamlPath = yamlPathFor(inputRoot, graphId)
   if (!existsSync(yamlPath)) throw new GraphYamlError(`YAML 源不存在: ${yamlPath}`)
+  const raw = readFileSync(yamlPath, 'utf8')
   const data = loadYaml(yamlPath)
   const validationErrors = validateGraphYaml(data, yamlPath)
   if (validationErrors.length > 0) throw new GraphYamlError(validationErrors.join('\n'))
   const md = generateMarkdown(data, {
     sourcePath: path.relative(inputRoot, yamlPath).replace(/\\/g, '/'),
+    sourceRaw: raw,
   })
   const outPath = outputPath || mdPathFor(inputRoot, graphId)
   writeFileSync(outPath, md, 'utf8')
