@@ -72,15 +72,15 @@
 
 ### W2-0 · 协议副本（不改语义）
 
-- [ ] 复制 `assets/graph/templates/99_mermaid_protocol.md` → `docs/_tech_graph/99_mermaid_protocol.md`（可改文首「嵌入用户仓」为 kit 自用一句；**禁止**改 §1–§7 协议正文）
+- [x] 复制 `assets/graph/templates/99_mermaid_protocol.md` → `docs/_tech_graph/99_mermaid_protocol.md`（可改文首「嵌入用户仓」为 kit 自用一句；**禁止**改 §1–§7 协议正文）
 
 ### W2-1 · L0 `00_main.graph.yaml`
 
-- [ ] `graph_id: 00_main` · `schema_version: inform_graph.v3` · 必填 `title` / `nodes` / `edges`
-- [ ] 主干：bin 壳 → `runCli` 分发 → P0 命令族 / 延展命令族 → 插件面（`apply_coding_standards` / `init_coding_kit`）
-- [ ] 文档指针节点：`>01_struct.md`；四条 L2 用 `::triggers`（或 doc 指针 `>10_flow_*.md`），子图内部不在 L0 展开
-- [ ] 硬边 `anchors.path` 指向真实 `src/` 或 `bin/`（禁止模板里的 `src/main.py`）
-- [ ] `nodes[].id` 须匹配 `^[A-Za-z_][A-Za-z0-9_]*$`（**不能**以数字开头）
+- [x] `graph_id: 00_main` · `schema_version: inform_graph.v3` · 必填 `title` / `nodes` / `edges`
+- [x] 主干：bin 壳 → `runCli` 分发 → P0 命令族 / 延展命令族 → 插件面（`apply_coding_standards` / `init_coding_kit`）
+- [x] 文档指针节点：`>01_struct.md`；四条 L2 用 `::triggers`（或 doc 指针 `>10_flow_*.md`），子图内部不在 L0 展开
+- [x] 硬边 `anchors.path` 指向真实 `src/` 或 `bin/`（禁止模板里的 `src/main.py`）
+- [x] `nodes[].id` 须匹配 `^[A-Za-z_][A-Za-z0-9_]*$`（**不能**以数字开头）
 
 ### W2-2 · L2 四条 flow（`02_graph_scheme.md` 钉死 slug）
 
@@ -91,23 +91,23 @@
 | `10_flow_upgrade` | manifest 钉版 · 幂等 · 提示 `sync prompts` |
 | `10_flow_graph_yaml_pipeline` | compile → export → check **自指** dogfood |
 
-- [ ] 四文件均 `schema_version: inform_graph.v3`；Happy Path 主干、异常侧链
-- [ ] 硬边有 `anchors`（`path` 必填）；未知处才 `path: TBD` 并在 task 自检列出（尽量零 TBD）
-- [ ] 异常分支外挂，勿让 Happy Path 走错边标记（`->` / `[ok]` / `[err]` / `?>` / `::gates` 等按协议）
+- [x] 四文件均 `schema_version: inform_graph.v3`；Happy Path 主干、异常侧链
+- [x] 硬边有 `anchors`（`path` 必填）；未知处才 `path: TBD` 并在 task 自检列出（尽量零 TBD）
+- [x] 异常分支外挂，勿让 Happy Path 走错边标记（`->` / `[ok]` / `[err]` / `?>` / `::gates` 等按协议）
 
 ### W2-3 · compile / export / check
 
-- [ ] `node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph` 生成 5 份 `.md`
-- [ ] `node bin/dsh-coding-kit.js graph yaml export --input docs/_tech_graph` → `shared/graph.json` **入库**
-- [ ] `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph` 绿
-- [ ] **禁止**手改生成的 `.md`；改图只改 yaml 后重跑三命令
-- [ ] **禁止**覆盖手写 `01_struct.md`（compile 只处理 `.graph.yaml`）
+- [x] `node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph` 生成 5 份 `.md`
+- [x] `node bin/dsh-coding-kit.js graph yaml export --input docs/_tech_graph` → `shared/graph.json` **入库**
+- [x] `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph` 绿
+- [x] **禁止**手改生成的 `.md`；改图只改 yaml 后重跑三命令
+- [x] **禁止**覆盖手写 `01_struct.md`（compile 只处理 `.graph.yaml`）
 
 ### W2-4 · SPEC / 索引伴生
 
-- [ ] `02_graph_scheme.md` 修订记录 +1（链本波 yaml）
-- [ ] `01_struct.md` 文首「非本波：不写 yaml」改为「yaml 见 W2」
-- [ ] `docs/spec/README.md` 索引可注 W2（若 00 未写）
+- [x] `02_graph_scheme.md` 修订记录 +1（链本波 yaml）
+- [x] `01_struct.md` 文首「非本波：不写 yaml」改为「yaml 见 W2」
+- [x] `docs/spec/README.md` 索引可注 W2（若 00 未写）
 
 ## 非范围
 
@@ -137,17 +137,17 @@
 
 ## 验收标准
 
-- [ ] 存在且仅由 yaml 编译出：`00_main.md` · `10_flow_task_close.md` · `10_flow_verify.md` · `10_flow_upgrade.md` · `10_flow_graph_yaml_pipeline.md`
-- [ ] 存在 `docs/_tech_graph/shared/graph.json`
-- [ ] 下列三条命令 **exit 0**（cwd = 仓根）：
+- [x] 存在且仅由 yaml 编译出：`00_main.md` · `10_flow_task_close.md` · `10_flow_verify.md` · `10_flow_upgrade.md` · `10_flow_graph_yaml_pipeline.md`
+- [x] 存在 `docs/_tech_graph/shared/graph.json`
+- [x] 下列三条命令 **exit 0**（cwd = 仓根）：
   - `node bin/dsh-coding-kit.js graph yaml compile --all --input docs/_tech_graph`
   - `node bin/dsh-coding-kit.js graph yaml export --input docs/_tech_graph`
   - `node bin/dsh-coding-kit.js graph yaml check --all --input docs/_tech_graph`
-- [ ] `rg -n "src/main.py|handlers/resource.py" docs/_tech_graph/*.graph.yaml` 无命中
-- [ ] `01_struct.md` 仍在且未被 compile 覆盖（仍含模块边界表）
-- [ ] `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w2_yaml.md` → PASS
-- [ ] `verify --spec` / `verify --task` 本文件 → PASS
-- [ ] `npm test` / `typecheck` 仍绿（无 src 变更）
+- [x] `rg -n "src/main.py|handlers/resource.py" docs/_tech_graph/*.graph.yaml` 无命中
+- [x] `01_struct.md` 仍在且未被 compile 覆盖（仍含模块边界表）
+- [x] `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_self_tech_graph_w2_yaml.md` → PASS
+- [x] `verify --spec` / `verify --task` 本文件 → PASS
+- [x] `npm test` / `typecheck` 仍绿（无 src 变更）
 
 ---
 
@@ -183,7 +183,11 @@
 
 ### 自检结论（执行者）
 
-（30/40 回填）
+GATE_VERIFY：HG-TASK-DRAFT / HG-AUDIT-R1 / HG-GRAPH-MODULES 均为 approved；`verify --task` PASS 后写 yaml。
+
+5 yaml：`00_main.graph.yaml` · `10_flow_task_close.graph.yaml` · `10_flow_verify.graph.yaml` · `10_flow_upgrade.graph.yaml` · `10_flow_graph_yaml_pipeline.graph.yaml`（`schema_version: inform_graph.v3`）。协议副本仅改文首「kit 自用」；§1–§7 与模板一致。锚点均落 `src/` 或 `bin/`；零 TBD；未抄 templates 的 Python/HTTP 路径。
+
+compile / export / check `--input docs/_tech_graph` 均 exit 0。`rg` `src/main.py|handlers/resource.py` 无命中。`01_struct.md` 模块边界表仍在。生成 `.md` 未手改。无 src 变更、无 bump、无 CI、无 1.10 叙述。
 
 ---
 

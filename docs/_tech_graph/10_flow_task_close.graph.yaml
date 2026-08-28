@@ -1,0 +1,116 @@
+schema_version: inform_graph.v3
+graph_id: "10_flow_task_close"
+title: "task close：闸链 + --yes rename + done 快照"
+description: "cmdTaskClose Happy Path：解析 --file → evalCloseGuard 闸链 → 解析 done 目标 → 无 --yes 则 dry-run READY；--yes 则 renameSync 后 buildDoneSnapshot。异常侧链 BLOCKED。"
+version: "2026-08-28"
+
+nodes:
+  - id: "IN"
+    label: "task close --file"
+    kind: "flow"
+  - id: "PARSE"
+    label: "解析 --yes/--json/--allow-*"
+  - id: "FILE"
+    label: "源文件存在?"
+  - id: "GUARDS"
+    label: "evalCloseGuard 闸链"
+    kind: "flow"
+  - id: "DEST"
+    label: "解析 done 目标"
+  - id: "YES"
+    label: "--yes?"
+  - id: "DRY"
+    label: "dry-run READY"
+  - id: "MV"
+    label: "renameSync active to done"
+  - id: "SNAP"
+    label: "buildDoneSnapshot"
+  - id: "PASS"
+    label: "CLOSE PASS"
+  - id: "ERR_NOFILE"
+    label: "task 文件不存在"
+  - id: "ERR_BLOCKED"
+    label: "CLOSE BLOCKED 闸失败"
+  - id: "ERR_DEST"
+    label: "目标冲突或不在 active"
+
+edges:
+  - from: "IN"
+    to: "PARSE"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 669
+        symbol: "cmdTaskClose"
+  - from: "PARSE"
+    to: "FILE"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 701
+  - from: "FILE"
+    to: "GUARDS"
+    label: "[ok]"
+    mark: "::gates"
+    type: "gates"
+    anchors:
+      - path: "src/cli-checks.ts"
+        line: 498
+        symbol: "evalCloseGuard"
+  - from: "FILE"
+    to: "ERR_NOFILE"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 703
+  - from: "GUARDS"
+    to: "DEST"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 721
+  - from: "GUARDS"
+    to: "ERR_BLOCKED"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 748
+  - from: "DEST"
+    to: "YES"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 734
+  - from: "DEST"
+    to: "ERR_DEST"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 740
+  - from: "YES"
+    to: "DRY"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 758
+  - from: "YES"
+    to: "MV"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 773
+        symbol: "renameSync"
+  - from: "MV"
+    to: "SNAP"
+    mark: "::archives"
+    type: "archives"
+    anchors:
+      - path: "src/cli-shared.ts"
+        line: 232
+        symbol: "buildDoneSnapshot"
+  - from: "SNAP"
+    to: "PASS"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 799

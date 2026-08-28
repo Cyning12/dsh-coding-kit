@@ -1,0 +1,192 @@
+schema_version: inform_graph.v3
+graph_id: "10_flow_verify"
+title: "verify：--task / --spec / --with-wiki-lint"
+description: "cmdVerify Happy Path：--task 与 --spec 互斥；--task 走闸/测试/R<n> 审/pre-30 hats；--spec 走 findSpecReview（可 skip_spec_audit）；--with-wiki-lint 追加 lintWikiDeltaMissing。异常侧链 BLOCKED。"
+version: "2026-08-28"
+
+nodes:
+  - id: "IN"
+    label: "verify"
+    kind: "flow"
+  - id: "PARSE"
+    label: "解析 --task/--spec/--with-wiki-lint"
+  - id: "MODE"
+    label: "--task 或 --spec?"
+  - id: "TASK"
+    label: "读 task 文件"
+  - id: "GATES"
+    label: "formatGateCheck 人工闸"
+    kind: "flow"
+  - id: "TEST"
+    label: "runTestCheck"
+  - id: "REVIEW"
+    label: "findReview R<n>"
+  - id: "HATS"
+    label: "checkPre30InvokeHats"
+  - id: "SPEC"
+    label: "verifySpecMode"
+    kind: "flow"
+  - id: "SPEC_REVIEW"
+    label: "findSpecReview"
+  - id: "WIKI_Q"
+    label: "--with-wiki-lint?"
+  - id: "WIKI"
+    label: "lintWikiDeltaMissing"
+  - id: "PASS"
+    label: "VERIFY PASS"
+  - id: "ERR_MUTEX"
+    label: "--task 与 --spec 互斥"
+  - id: "ERR_NOFILE"
+    label: "文件不存在"
+  - id: "ERR_GATE"
+    label: "闸 BLOCKED"
+  - id: "ERR_TEST"
+    label: "测试制品缺口"
+  - id: "ERR_REVIEW"
+    label: "缺 R<n> 审查文"
+  - id: "ERR_WIKI"
+    label: "wiki_delta 缺口"
+
+edges:
+  - from: "IN"
+    to: "PARSE"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 512
+        symbol: "cmdVerify"
+  - from: "PARSE"
+    to: "MODE"
+    label: "->"
+    anchors:
+      - path: "src/cli.ts"
+        line: 542
+  - from: "PARSE"
+    to: "ERR_MUTEX"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 542
+  - from: "MODE"
+    to: "TASK"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 547
+  - from: "MODE"
+    to: "SPEC"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 543
+        symbol: "verifySpecMode"
+  - from: "TASK"
+    to: "GATES"
+    label: "[ok]"
+    mark: "::gates"
+    type: "gates"
+    anchors:
+      - path: "src/cli.ts"
+        line: 276
+        symbol: "formatGateCheck"
+  - from: "TASK"
+    to: "ERR_NOFILE"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 567
+  - from: "GATES"
+    to: "TEST"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-checks.ts"
+        line: 737
+        symbol: "runTestCheck"
+  - from: "GATES"
+    to: "ERR_GATE"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 575
+  - from: "TEST"
+    to: "REVIEW"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-checks.ts"
+        line: 634
+        symbol: "findReview"
+  - from: "TEST"
+    to: "ERR_TEST"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 586
+  - from: "REVIEW"
+    to: "HATS"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-checks.ts"
+        line: 100
+        symbol: "checkPre30InvokeHats"
+  - from: "REVIEW"
+    to: "ERR_REVIEW"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 594
+  - from: "HATS"
+    to: "WIKI_Q"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 608
+  - from: "SPEC"
+    to: "SPEC_REVIEW"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-checks.ts"
+        line: 588
+        symbol: "findSpecReview"
+  - from: "SPEC"
+    to: "ERR_NOFILE"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 459
+  - from: "SPEC_REVIEW"
+    to: "WIKI_Q"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 482
+  - from: "SPEC_REVIEW"
+    to: "ERR_REVIEW"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 483
+  - from: "WIKI_Q"
+    to: "PASS"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 641
+  - from: "WIKI_Q"
+    to: "WIKI"
+    label: "?>"
+    anchors:
+      - path: "src/cli.ts"
+        line: 624
+  - from: "WIKI"
+    to: "PASS"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-task-extra.ts"
+        line: 80
+        symbol: "lintWikiDeltaMissing"
+  - from: "WIKI"
+    to: "ERR_WIKI"
+    label: "[err]"
+    anchors:
+      - path: "src/cli.ts"
+        line: 626

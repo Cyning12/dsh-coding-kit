@@ -1,0 +1,92 @@
+schema_version: inform_graph.v3
+graph_id: "10_flow_graph_yaml_pipeline"
+title: "graph yaml pipeline：compile → export → check 自指"
+description: "自指 dogfood：本图描绘的正是 graph yaml compile → export → check 三条命令。Happy Path 按推荐顺序串联；单条命令失败走侧链。"
+version: "2026-08-28"
+
+nodes:
+  - id: "IN"
+    label: "graph yaml"
+    kind: "flow"
+  - id: "COMPILE"
+    label: "compile yaml to md"
+    kind: "flow"
+  - id: "EXPORT"
+    label: "export graph.json"
+    kind: "flow"
+  - id: "CHECK"
+    label: "check yaml vs json"
+    kind: "flow"
+  - id: "OK"
+    label: "三命令绿"
+  - id: "ERR_VALIDATE"
+    label: "validateGraphYaml 失败"
+  - id: "ERR_NO_YAML"
+    label: "YAML 源不存在"
+  - id: "ERR_NO_JSON"
+    label: "graph.json 不存在"
+  - id: "ERR_DIFF"
+    label: "check 切片不一致"
+
+edges:
+  - from: "IN"
+    to: "COMPILE"
+    label: "->"
+    anchors:
+      - path: "src/cli-graph.ts"
+        line: 54
+        symbol: "cmdGraphYaml"
+      - path: "src/cli-graph-yaml.ts"
+        line: 499
+        symbol: "compileGraph"
+  - from: "COMPILE"
+    to: "EXPORT"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 324
+        symbol: "exportGraphJson"
+  - from: "COMPILE"
+    to: "ERR_VALIDATE"
+    label: "[err]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 52
+        symbol: "validateGraphYaml"
+  - from: "COMPILE"
+    to: "ERR_NO_YAML"
+    label: "[err]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 501
+  - from: "EXPORT"
+    to: "CHECK"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 524
+        symbol: "checkGraph"
+  - from: "EXPORT"
+    to: "ERR_VALIDATE"
+    label: "[err]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 278
+  - from: "CHECK"
+    to: "OK"
+    label: "[ok]"
+    anchors:
+      - path: "src/cli-graph.ts"
+        line: 125
+  - from: "CHECK"
+    to: "ERR_NO_JSON"
+    label: "[err]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 534
+  - from: "CHECK"
+    to: "ERR_DIFF"
+    label: "[err]"
+    anchors:
+      - path: "src/cli-graph-yaml.ts"
+        line: 567
