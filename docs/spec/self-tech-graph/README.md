@@ -51,3 +51,4 @@
 | 2026-08-28 | W1 开工：`self-tech-graph-w1-struct` · HG-GRAPH-MODULES 仍 pending（01_struct 后签） |
 | 2026-08-28 | HG-GRAPH-MODULES approved（00 代签 · `docs/_tech_graph/01_struct.md` 17/17） |
 | 2026-08-28 | W2 开工：`self-tech-graph-w2-yaml` · 拟发版钉 1.9.x |
+| 2026-08-28 | W3 开工：`self-tech-graph-w3-ci-migrate` · 本波不 bump |
