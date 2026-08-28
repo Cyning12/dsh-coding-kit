@@ -33,6 +33,7 @@
 | **close_pr_exempt_note** | kit docs 轨；合入由 00 push |
 | **entry_invoke_30** | `docs/harness/invokes/by-task/self-tech-graph-w1-struct/invoke_20260828_30_40_self-tech-graph-w1-struct.md` |
 | **maintainer_release_hold** | `true` — merge 后停于发版前 · 无 bump/tag/publish |
+| **related_pr** | `#22` |
 
 ### 00 维护者授权（2026-08-27 延续 · 2026-08-28 W1 签收）
 
@@ -185,13 +186,19 @@
 
 ### KPI（00）
 
-（`kpi_aggregator: CLOSE` · 关账回溯填写）
+Task_KPI%: 93
+
+- W1-1~W1-4 全勾 · 01_struct 17/17 · HG-GRAPH-MODULES approved · PR #22 squash merge
+- 人裁三项落地：ledger 33/33 · R-05 未回写外置 · M-3 有用剔除 / 无用 stale
+- docs-only · 无 bump/tag（maintainer_release_hold）
 
 ---
 
 ### 经验总结
 
-（关账回填）
+- HG-GRAPH-MODULES 的签收物是 `01_struct.md` 本身：W1 30 写表时该闸必须保持 pending，否则鸡生蛋；挡的是 **W2 构图/改码** 不是本波文档
+- 1.2.2 inventory 不能当 L1 真值：17 vs 13，增量三模块（checks / refresh-ide-blocks / sync-prompts）必须实读
+- W0 人裁「有用则剔除」比一律 stamp 更安全：`d_article_series` 仍是公众稿轨
 
 ---
 
