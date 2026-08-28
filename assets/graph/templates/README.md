@@ -54,6 +54,11 @@
 - **存量**：按 ONBOARDING 档位 S0～S3；**禁止**首次全 flow 构图
 - **人签**：`01_struct` 模块表 → **HG-GRAPH-MODULES** approved → 允许 30 改码
 
+## 本包 dogfood
+
+kit **源码仓**自图在 `docs/_tech_graph/`（L0 `00_main` · L1 `01_struct` · L2 四条 `10_flow_*`）；CI 为 `.github/workflows/tech-graph.yml`（本仓 bin compile/check）。
+**`docs/` 不随 npm 包发布**；请到源码仓查看：https://github.com/Cyning12/dsh-coding-kit/tree/main/docs/_tech_graph
+
 ## 历史说明
 
 - v0.1 使用 `.md` + `.ai.md` 双轨；v0.2 起改为 YAML-first，`.ai.md` 已弃用。

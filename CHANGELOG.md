@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+> 主题：**拟发版 1.9.1**（self-tech-graph 收口 · **本波不 bump**）——kit 自图谱 dogfood 互链、tech-graph CI、inventory 迁回 reference；维护者发版时再切带日期的版本节并 bump。
+
+### Docs
+
+- kit 源码仓 `docs/_tech_graph/` dogfood 互链（`assets/graph/templates/README.md` · `POINTER_ONBOARDING` · 根 README en/zh-CN）；**`docs/` 不随 npm 包发布**
+- `.github/workflows/tech-graph.yml` 入仓（本仓 bin `graph yaml compile` / `check`）
+- `00_inventory` 四文件迁回 `docs/spec/self-tech-graph/reference/`（历史锚 1.2.2）+ `POINTERS.md`
+
 ## [1.9.0] - 2026-08-27
 
 > 主题：**sync prompts 命令补齐**（ops-desk-api 1.8.0 复发反馈 · 唯一残余摩擦）——`sync prompts` 子命令（SHA-256 三分 · dry-run 默认 · `--yes`/`--force`/`--json`）· `upgrade` 只读提示行 · 测试 297 → 310。

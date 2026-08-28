@@ -11,9 +11,12 @@
 | 2026-08-25 | 1.6.1 | **DEF-031~033**：export 保留边 label；`graph_id` 以 yaml 声明值为真值；Mermaid class 段消费 `nodes[].kind` |
 | 2026-08-27 | 1.9.0 | **现行发布包**（`package.json`） |
 | 2026-08-28 | 1.9.x | **W2 自仓 dogfood**：`docs/_tech_graph/` 五图 yaml compile / export / check（本波不 bump） |
+| 2026-08-28 | 1.9.x | **W3 CI 入仓**：`.github/workflows/tech-graph.yml`（本仓 bin compile/check · 不 bump） |
+| 2026-08-28 | 1.9.x | **W4 Unreleased Docs**：templates / ONBOARDING / 根 README 互链 kit 自图 · CHANGELOG `[Unreleased]` Docs（拟 1.9.1 · 不 bump） |
 
 ## 修订记录
 
 | 日期 | 摘要 |
 |------|------|
 | 2026-08-28 | W3 首版：图谱/包里程碑从简 · 上限 1.9.x |
+| 2026-08-28 | W4：补 W3 CI 入仓、W4 Unreleased Docs 行（仍上限 1.9.x） |

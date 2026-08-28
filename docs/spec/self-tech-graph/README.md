@@ -52,3 +52,5 @@
 | 2026-08-28 | HG-GRAPH-MODULES approved（00 代签 · `docs/_tech_graph/01_struct.md` 17/17） |
 | 2026-08-28 | W2 开工：`self-tech-graph-w2-yaml` · 拟发版钉 1.9.x |
 | 2026-08-28 | W3 开工：`self-tech-graph-w3-ci-migrate` · 本波不 bump |
+| 2026-08-28 | W4 开工：`self-tech-graph-w4-closeout` · CHANGELOG Unreleased Docs · 不 bump |
+| 2026-08-28 | W4 文档已落盘（互链 + Unreleased Docs）· 待 CLOSE · 不 bump |
