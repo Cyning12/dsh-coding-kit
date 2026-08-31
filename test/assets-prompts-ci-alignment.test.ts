@@ -110,3 +110,36 @@ describe('prompts-ci-alignment · 全域防虚构旗标', { concurrency: 1 }, ()
     }
   })
 })
+
+describe('prompts-ci-alignment · hat identity / re-anchor', { concurrency: 1 }, () => {
+  it('prompts README 钉死三分面且 00 链到新 FRAGMENT', () => {
+    const readme = readAsset('assets/harness/prompts/README.md')
+    assert.match(readme, /三分面/)
+    assert.match(readme, /System \/ Re-anchor/)
+    assert.match(readme, /prompts 全文/)
+    assert.match(readme, /verify/)
+    assert.match(readme, /不可互替|不可替代/)
+    assert.match(readme, /偶发亲自落地 = 违规/)
+    assert.match(readme, /FRAGMENT_hat_reanchor_v1_zh\.md/)
+    assert.match(readme, /FRAGMENT_00_delegate_only_v1_zh\.md/)
+    const orch = readAsset('assets/harness/prompts/00-orchestrator.md')
+    assert.match(orch, /长对话须 re-anchor/)
+    assert.match(orch, /FRAGMENT_hat_reanchor_v1_zh\.md/)
+    assert.match(orch, /FRAGMENT_00_delegate_only_v1_zh\.md/)
+  })
+
+  it('re-anchor / 00-delegate FRAGMENT 正文 ≤20 行且带 skill frontmatter', () => {
+    for (const rel of [
+      'assets/harness/prompts/FRAGMENT_hat_reanchor_v1_zh.md',
+      'assets/harness/prompts/FRAGMENT_00_delegate_only_v1_zh.md',
+    ]) {
+      const body = readAsset(rel)
+      assert.match(body, /^---\n/)
+      const m = /^---\n[\s\S]*?\n---\n([\s\S]*)$/.exec(body)
+      assert.ok(m, rel + ' 缺 frontmatter 闭合')
+      const lines = m![1].replace(/^\n/, '').replace(/\n$/, '').split('\n')
+      assert.ok(lines.length <= 20, rel + ' 正文行数 ' + lines.length + ' > 20')
+      assert.match(body, /^name: harness-/m)
+    }
+  })
+})

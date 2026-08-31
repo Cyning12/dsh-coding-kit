@@ -24,8 +24,14 @@
 | [`harness-10-task/`](./harness-10-task/SKILL.md) | 10-task | 起草/修订 Harness task 文件（验收标准、failure_paths、非范围、依赖、思考轮控制表 R0–R5）。 |
 | [`harness-20-spec-audit/`](./harness-20-spec-audit/SKILL.md) | 20-spec-audit | 书面审查 SPEC：核对范围/非范围/验收/failure_paths 与 R0–R5 思考轮控制，结论落盘 docs/harness/reviews/ 审查文。 |
 | [`harness-20-task-audit/`](./harness-20-task-audit/SKILL.md) | 20-task-audit | 书面审查 Harness task 文件（R 轮）：对照 SPEC 核对范围/非范围/验收/failure_paths/思考轮，结论落盘 docs/harness/reviews/ 审查文。 |
+| [`harness-00-delegate-only/`](./harness-00-delegate-only/SKILL.md) | 00 | 你是 00 且仓库已有 SPEC/task 初稿时，禁止亲自实现，只委派子 Agent。 |
+| [`harness-hat-reanchor/`](./harness-hat-reanchor/SKILL.md) | reanchor | 长对话帽身份丢失时先读本片段 re-anchor（hat_id / task_slug / 禁区）。 |
 
 ## 执行帽缺席说明
 
 `harness-30-execute` / `harness-40-self-check`（执行帽）**不在本分发**：其 skill 化须先通过 T1 闸绕开评测（`eval/t1_gate_bypass/` S1–S3）。
 评测/维护者可用 `npx dsh-coding-kit skills build --with-execute-hats` 本地生成（仅供评测环境，勿装入生产 client）。
+
+## 00 全文缺席说明
+
+`00-orchestrator.md`（00 全文）**不在本分发**（仅 prompts 同步）。短片段 `harness-00-delegate-only` / `harness-hat-reanchor` **默认可分发**。
