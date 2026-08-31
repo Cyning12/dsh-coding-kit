@@ -6,7 +6,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { listSyncPromptEntries } from '../src/cli-sync-prompts.ts'
+import { listSyncPromptEntries, SYNC_PROMPT_FILES } from '../src/cli-sync-prompts.ts'
 
 const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CLI_TS = path.join(KIT, 'src', 'cli.ts')
@@ -202,8 +202,10 @@ describe('sync prompts · upgrade 提示行', { concurrency: 1 }, () => {
 })
 
 describe('sync prompts · 白名单钉死', { concurrency: 1 }, () => {
-  it('Starter 9 文件 + TASK_TEMPLATE 共 10 项', () => {
-    assert.equal(listSyncPromptEntries().length, 10)
+  it('Starter 11 文件 + TASK_TEMPLATE 共 12 项', () => {
+    assert.equal(listSyncPromptEntries().length, 12)
     assert.ok(listSyncPromptEntries().every((e) => e.targetRel.startsWith('docs/harness/')))
+    assert.ok(SYNC_PROMPT_FILES.includes('FRAGMENT_hat_reanchor_v1_zh.md'))
+    assert.ok(SYNC_PROMPT_FILES.includes('FRAGMENT_00_delegate_only_v1_zh.md'))
   })
 })

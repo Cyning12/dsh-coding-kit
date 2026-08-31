@@ -4,6 +4,34 @@
 
 ## [Unreleased]
 
+> 主题：**帽 System / Re-anchor + 00 delegate-only Skill**——帽级短身份碎片、默认可分发 Skill、Host×npx Capability 文档。
+>
+> **消费者提示（置顶）**：
+>
+> - **新 prompts 须 `sync prompts --yes`**：`FRAGMENT_hat_reanchor_v1_zh.md`、`FRAGMENT_00_delegate_only_v1_zh.md` 纳入 Starter 白名单。`upgrade` **不**自动拷 prompts（成功提示行已点名这两文件）。
+> - **新默认 Skills**：`harness-hat-reanchor`、`harness-00-delegate-only`（短片段）；**00 全文仍不进默认**。消费仓 `skills install` 后可用。30/40 仍不进默认（T1 前）。
+> - **三分不可互替**：System/Re-anchor = 短身份；prompts 全文 = 换帽加载；`verify` = 机械闸。
+> - **偶发亲自落地 = 违规**：自称 00 且已有 SPEC/task 时不得改 `app/` / `src/`；须用户例外句。本波 **不**把「00 窗 app/ diff」做成硬 BLOCK。
+> - **Host**：Skills ≠ 全覆盖；`verify`/`task` 须 Capability 白名单 + Policy 默认关。
+
+### Added
+
+- `FRAGMENT_hat_reanchor_v1_zh.md` / `FRAGMENT_00_delegate_only_v1_zh.md`（帽级 System / Re-anchor 短碎片 · 随 `sync prompts` 同步）
+- 默认可分发 Skill：`harness-hat-reanchor` / `harness-00-delegate-only`（`skills build` 从 FRAGMENT frontmatter 生成）
+- `eval/hat_identity_00_delegate/`：00 + 已有 task → 须含委派句的**文档 fixture**（仓内无 T1 评测运行器；机械评分 follow-up）
+
+### Changed
+
+- `SYNC_PROMPT_FILES`：Starter prompts 9 → **11** 文件（+ 上述两 FRAGMENT）+ `TASK_TEMPLATE` 共 12 项
+- `loadSkillPrompts`：`FRAGMENT_*` 仅当带合法 skill `name` 才入默认分发；00 全文 / 无 frontmatter 的 GATE_VERIFY 仍排除
+- `00-orchestrator.md`：加「长对话须 re-anchor」一句并链到两 FRAGMENT（不改默认行为表语义）
+- `upgrade` 成功提示行点名新 FRAGMENT
+
+### Docs
+
+- `assets/harness/prompts/README.md`：钉死 System/Re-anchor · prompts 全文 · verify 三分不可互替；偶发亲自落地 = 违规
+- README 双文件：新增 **Host 使用 coding-kit** 节（Capability 白名单 · Policy 默认关 · Skills ≠ 全覆盖）
+
 ## [1.9.2] - 2026-08-28
 
 > 主题：**compile / export `generated_at` 幂等**——yaml 源内容戳，tech-graph CI 去掉 `-I`。

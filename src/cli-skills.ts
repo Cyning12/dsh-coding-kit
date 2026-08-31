@@ -73,13 +73,15 @@ export function validateSkillFrontmatter(fm: Frontmatter | null, source: string)
 export function loadSkillPrompts({ promptsDir }: { promptsDir: string }): SkillPrompt[] {
   const files = readdirSync(promptsDir)
     .filter((f) => f.endsWith('.md'))
-    // 00 入 prompts Starter，但不进 Agent Skills 默认分发（无 frontmatter / 不建 harness-00）
-    .filter((f) => !/^(README|FRAGMENT_|TEMPLATE_|00-)/.test(f))
+    // 00 全文不进默认 Skills（不建 harness-00）；TEMPLATE / README 非 skill
+    // FRAGMENT_* 仅当带合法 skill frontmatter（name）才入分发（re-anchor / 00-delegate）
+    .filter((f) => !/^(README|TEMPLATE_|00-)/.test(f))
     .sort()
   const out: SkillPrompt[] = []
   for (const file of files) {
     const content = readFileSync(path.join(promptsDir, file), 'utf8')
     const { frontmatter, body, parseError } = parseSkillPrompt(content)
+    if (/^FRAGMENT_/.test(file) && !parseError && !frontmatter?.name) continue
     const errors = parseError
       ? [`${file}: frontmatter YAML 解析失败: ${parseError}`]
       : validateSkillFrontmatter(frontmatter, file)
@@ -112,13 +114,18 @@ function renderReadme(skills: SkillPrompt[], { withExecuteHats }: { withExecuteH
         `| [\`${s.frontmatter.name}/\`](./${s.frontmatter.name}/SKILL.md) | ${s.frontmatter.metadata?.hat_id ?? ''} | ${firstSentence(s.frontmatter.description || '')} |`,
     )
     .join('\n')
-  const excluded = withExecuteHats
+  const executeNote = withExecuteHats
     ? ''
     : `
 ## 执行帽缺席说明
 
 \`harness-30-execute\` / \`harness-40-self-check\`（执行帽）**不在本分发**：其 skill 化须先通过 T1 闸绕开评测（\`eval/t1_gate_bypass/\` S1–S3）。
 评测/维护者可用 \`npx dsh-coding-kit skills build --with-execute-hats\` 本地生成（仅供评测环境，勿装入生产 client）。
+`
+  const zeroNote = `
+## 00 全文缺席说明
+
+\`00-orchestrator.md\`（00 全文）**不在本分发**（仅 prompts 同步）。短片段 \`harness-00-delegate-only\` / \`harness-hat-reanchor\` **默认可分发**。
 `
   return `# skills/ · Agent Skills 标准封装（生成物 · 勿手改）
 
@@ -143,7 +150,7 @@ function renderReadme(skills: SkillPrompt[], { withExecuteHats }: { withExecuteH
 | skill | hat_id | 用途 |
 |-------|--------|------|
 ${rows}
-${excluded}`
+${executeNote}${zeroNote}`
 }
 
 export function generateSkills({

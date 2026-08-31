@@ -13,6 +13,8 @@ export const SYNC_PROMPT_FILES = [
   '30-execute-code.md',
   '40-self-check.md',
   'FRAGMENT_30_gate_verify_v1_zh.md',
+  'FRAGMENT_hat_reanchor_v1_zh.md',
+  'FRAGMENT_00_delegate_only_v1_zh.md',
   'TEMPLATE_30_gate_stop.md',
 ] as const
 

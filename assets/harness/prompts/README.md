@@ -33,13 +33,25 @@
 | [`30-execute-code.md`](./30-execute-code.md) | 30 | 实现 · **含 40 自检闭环** |
 | [`40-self-check.md`](./40-self-check.md) | 40 | 与 30 同 Agent · 规则分文件 · CI 全量命令兜底 |
 | [`FRAGMENT_30_gate_verify_v1_zh.md`](./FRAGMENT_30_gate_verify_v1_zh.md) | — | GATE_VERIFY · pre-30 / graph 字段 |
+| [`FRAGMENT_hat_reanchor_v1_zh.md`](./FRAGMENT_hat_reanchor_v1_zh.md) | reanchor | 长对话短身份 · 上下文脏先读 |
+| [`FRAGMENT_00_delegate_only_v1_zh.md`](./FRAGMENT_00_delegate_only_v1_zh.md) | 00 | 已有初稿 → 只委派 · 须例外句 |
 | [`TEMPLATE_30_gate_stop.md`](./TEMPLATE_30_gate_stop.md) | — | 30 拒开工 |
 
 **00**：Starter 已含 [`00-orchestrator.md`](./00-orchestrator.md)（默认编排纪律）。其余 Extended（50 / handoff / 链式 PROMPT / KPI 全文）：工作区或私仓 · 见 SDD_HAT_FLOW_v2_zh.md §6（不随包发布 · 薄指针页 `assets/docs/POINTER_SDD_HAT_FLOW.md`）。
 
+## 三分面（不可互替）
+
+| 面 | 是什么 | 不是什么 |
+|----|--------|----------|
+| **System / Re-anchor** | 短身份碎片（上表 re-anchor / 00-delegate FRAGMENT） | 不可替代 prompts 全文；不可替代 `verify` |
+| **prompts 全文** | 换帽时加载的帽条文（本目录 00/10/20/30/40） | 不可当 always-on system 塞全书；不可替代机械闸 |
+| **verify** | CLI 机械闸（pre-30 / 审查文 / wiki_delta 等） | 不可靠粘贴条文代替 |
+
+**00 偶发亲自落地 = 违规**（已有 SPEC/task 初稿且无例外句时）。**不**把全文帽默认 always 注入 system。
+
 ## Agent Skills 封装（v2.23+）
 
-本目录 **带 Skills frontmatter 的 6 个条文**（10/20×2 + 执行帽）是 **Agent Skills 标准元数据单源**；包根 [`skills/`](../../skills/) 为其标准封装（`npx dsh-coding-kit skills build` 生成物 · **勿手改** · `npx dsh-coding-kit skills check` 拦 drift）。改条文正文后须重跑 build。执行帽（30/40）frontmatter 已备，但**不进默认分发**（T1 闸评测通过前 · 见 `eval/t1_gate_bypass/`）。**00 不进默认 Skills 分发**（仅 prompts 资产同步）。
+本目录 **带 Skills frontmatter 的条文**（10/20×2 + 执行帽 + re-anchor / 00-delegate 短片段）是 **Agent Skills 标准元数据单源**；包根 [`skills/`](../../skills/) 为其标准封装（`npx dsh-coding-kit skills build` 生成物 · **勿手改** · `npx dsh-coding-kit skills check` 拦 drift）。改条文正文后须重跑 build。执行帽（30/40）frontmatter 已备，但**不进默认分发**（T1 闸评测通过前 · 见 `eval/t1_gate_bypass/`）。**00 全文不进默认 Skills 分发**（仅 prompts 资产同步）；**delegate-only / re-anchor 短片段默认可分发**。
 
 > **V2 改名（v2.4.0）**：`10-requirements.md` → `10-task-requirements.md`（+新增 `10-spec-requirements.md`）；`22-task-audit.md` → `20-task-audit.md`（+新增 `20-spec-audit.md`）。旧文件已删除；业务仓升级时 sync 会对残留旧帽 warn 提示人工删除。
 
@@ -52,3 +64,4 @@
 | 2026-07-29 | **v2.1**：路径 D Inform/meta · 链 SDD_HAT_FLOW §5 · GATE_VERIFY fragment 入表 |
 | 2026-08-26 | **v1.7.1**：Starter 入包 `00-orchestrator.md`（默认行为） |
 | 2026-08-27 | K4/K6/K7：00/10-task/20-task-audit/40 与 CI 对齐条文同步（说明列） |
+| 2026-08-31 | 三分面（System/Re-anchor · 全文 · verify）· FRAGMENT re-anchor / 00-delegate · 默认 Skills 短片段 |

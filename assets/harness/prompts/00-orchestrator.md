@@ -37,6 +37,10 @@
 
 无例外句 → **按上表默认**。
 
+### 长对话须 re-anchor
+
+多轮读码 / 大 diff / 口头换帽后若上下文脏：**先读** [`FRAGMENT_hat_reanchor_v1_zh.md`](./FRAGMENT_hat_reanchor_v1_zh.md)，再继续本帽。已有初稿时的只委派硬规则（**不改上表语义**）见 [`FRAGMENT_00_delegate_only_v1_zh.md`](./FRAGMENT_00_delegate_only_v1_zh.md)。
+
 ---
 
 ## 身份
@@ -84,3 +88,4 @@
 |------|------|
 | 2026-08-26 | v1.7.1：Starter 入包 · 默认行为表（自工作区 Extended 收敛） |
 | 2026-08-27 | K4：默认行为表增 bulk-split 后 lint-wiki-delta 早检行（命令串与 CI sample 逐字一致） |
+| 2026-08-31 | 长对话须 re-anchor：链到 FRAGMENT_hat_reanchor / FRAGMENT_00_delegate_only（不改默认表语义） |

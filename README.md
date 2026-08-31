@@ -106,7 +106,7 @@ npx dsh-coding-kit task check --file PATH
 
 This **source repo** dogfoods `graph yaml compile|check|export` against `docs/_tech_graph/` (**not** shipped in the npm package; https://github.com/Cyning12/dsh-coding-kit/tree/main/docs/_tech_graph).
 
-`init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`). `sync prompts` writes only the Starter whitelist under `docs/harness/prompts/` and `docs/harness/templates/TASK_TEMPLATE.md` — default dry-run; existing files with different content are listed as conflicts and are not overwritten unless you pass `--force`.
+`init` / `upgrade` / `sync index` / `skills build` never overwrite the S2 process domain (`docs/tasks/`, `reviews/`, `invokes/by-task/`). `sync prompts` writes only the Starter whitelist under `docs/harness/prompts/` (**11** files) and `docs/harness/templates/TASK_TEMPLATE.md` — default dry-run; existing files with different content are listed as conflicts and are not overwritten unless you pass `--force`.
 
 `verify --with-wiki-lint` (opt-in, non-breaking): appends the `lint-wiki-delta` check (default tier, `scope=all`) on top of the existing gates — effective in both `--task` and `--spec` modes. On a gap, verify is BLOCKED, lists the issues (which may come from sibling active/done tasks), and prints the exact same rerun command as PR CI: `npx --yes dsh-coding-kit task lint-wiki-delta --target .` (see `assets/ci/samples/lint-wiki-delta.yml.example`). `--json` gains a `wiki_lint` block (`ok` / `issues` / `scanned`). A target without `docs/tasks/` directories scans 0 files and never false-blocks. Without the flag, `verify` behaves exactly as before.
 
@@ -220,6 +220,26 @@ Do NOT: GitHub Archive; npm publish / deprecate; make apply auto-inject at load 
 Structure and frontmatter requirements (same source): directory package `<name>/SKILL.md` or flat `<name>.md` (index.ts:724-728); frontmatter must include `name`/`description`, and `name` must be kebab-case (index.ts:810-816); projectRoot = the nearest ancestor directory containing `.git` (index.ts:937-947).
 
 Note: scanning/loading is a **behavioral contract of the DSH runtime** and evolves with upstream versions; the anchors above correspond to 0.1.0-rc.8. This package's responsibility ends at writing skills to the correct target and keeping frontmatter valid (`skills check`).
+
+## Host usage (product Chat / communication agent)
+
+Skills **do not** cover the full process surface. A Host that nests Harness process needs a Process Kernel object + CLI Capability + PromptAssembly slots — not a Skills copy alone.
+
+Recommended Capability allowlist (**Policy / H2 required**: default off · explicit Host-env grant · no arbitrary shell):
+
+- `npx --yes dsh-coding-kit@<pin> verify …`
+- `npx --yes dsh-coding-kit@<pin> task …`
+
+| Capability | Covered by Skills? |
+|------------|-------------------|
+| 10/20 audit guidance | Yes (default install) |
+| 00 delegate-only | Weak: full 00 is not default; short delegate-only Skill is |
+| 30/40 execute | Weak: not default (pre-T1); still needs `verify` |
+| Gates / pre-30 / may_start_30 | **No**: CLI `verify` (or Host wrapping the same CLI) |
+| Always-on hat system prompt | **No**: Skills are on-demand, not system |
+| Host product Q&A | **No**: product Prompt Pack, not a harness Skill |
+
+Three surfaces, not interchangeable: **System/Re-anchor** = short identity; **full prompts** = load on hat switch; **verify** = mechanical.
 
 ## Releasing (maintainers)
 

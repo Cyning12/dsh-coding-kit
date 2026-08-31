@@ -7,6 +7,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
+import { generateSkills } from '../src/cli-skills.ts'
 
 const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CLI_TS = path.join(KIT, 'src', 'cli.ts')
@@ -21,6 +22,8 @@ const DEFAULT_SKILL_DIRS = [
   'harness-10-task',
   'harness-20-spec-audit',
   'harness-20-task-audit',
+  'harness-00-delegate-only',
+  'harness-hat-reanchor',
 ] as const
 const EXECUTE_DIRS = ['harness-30-execute', 'harness-40-self-check'] as const
 
@@ -385,5 +388,19 @@ describe('1.2.1 skills install I1–I12', { concurrency: 1 }, () => {
     assert.equal(unknownFlag.status, 1, unknownFlag.combined)
     assert.match(unknownFlag.combined, /未知/)
     assert.match(unknownFlag.combined, /install/)
+  })
+
+  it('默认 generateSkills 含 re-anchor / 00-delegate；不含 00 全文与 30/40', () => {
+    const promptsDir = path.join(KIT, 'assets', 'harness', 'prompts')
+    const { files, skills } = generateSkills({ promptsDir })
+    const names = skills.map((s) => s.frontmatter.name)
+    assert.ok(names.includes('harness-hat-reanchor'))
+    assert.ok(names.includes('harness-00-delegate-only'))
+    assert.equal(names.includes('harness-00'), false)
+    assert.equal(files.has('harness-30-execute/SKILL.md'), false)
+    assert.equal(files.has('harness-40-self-check/SKILL.md'), false)
+    assert.equal(files.has('harness-hat-reanchor/SKILL.md'), true)
+    assert.equal(files.has('harness-00-delegate-only/SKILL.md'), true)
+    assert.ok(files.get('README.md')?.includes('00-orchestrator.md'))
   })
 })

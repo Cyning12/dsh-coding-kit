@@ -106,7 +106,7 @@ npx dsh-coding-kit task check --file PATH
 
 kit **源码仓**以 `docs/_tech_graph/` 做 `graph yaml compile|check|export` 的 dogfood（**不随 npm 包发布**；https://github.com/Cyning12/dsh-coding-kit/tree/main/docs/_tech_graph）。
 
-`init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。`sync prompts` 仅写入 Starter 白名单（`docs/harness/prompts/` 9 文件 + `docs/harness/templates/TASK_TEMPLATE.md`）——默认 dry-run；本地内容与包内不同则列为 conflict 且不覆盖（`--force` 显式覆盖）。
+`init` / `upgrade` / `sync index` / `skills build` 不覆盖 S2 过程域（`docs/tasks/`、`reviews/`、`invokes/by-task/`）。`sync prompts` 仅写入 Starter 白名单（`docs/harness/prompts/` **11** 文件 + `docs/harness/templates/TASK_TEMPLATE.md`）——默认 dry-run；本地内容与包内不同则列为 conflict 且不覆盖（`--force` 显式覆盖）。
 
 `verify --with-wiki-lint`（显式旗标 · 非破坏）：在既有检查之上追加 `lint-wiki-delta`（默认档 · `scope=all`），`--task` 与 `--spec` 模式同生效。有缺口时 verify 判 BLOCKED，列出 issue（缺口可能来自兄弟 active/done task），并打印与 PR CI 逐字一致的复跑命令 `npx --yes dsh-coding-kit task lint-wiki-delta --target .`（见 `assets/ci/samples/lint-wiki-delta.yml.example`）；`--json` 增 `wiki_lint` 块（`ok` / `issues` / `scanned`）。target 无 `docs/tasks/` 目录时 scanned:0，不会误 BLOCKED。无旗标时 `verify` 行为与之前逐字一致。
 
@@ -220,6 +220,26 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 结构与 frontmatter 要求（同源码）：目录包 `<name>/SKILL.md` 或平铺 `<name>.md`（index.ts:724-728）；frontmatter 必填 `name`/`description`，`name` 须 kebab-case（index.ts:810-816）；projectRoot = 最近含 `.git` 的祖先目录（index.ts:937-947）。
 
 注意：扫描/加载是 **DSH runtime 的行为契约**，随上游版本演进；以上锚点对应 0.1.0-rc.8。本包职责止于把 skill 写入正确落点并保持 frontmatter 合法（`skills check`）。
+
+## Host 使用 coding-kit（沟通 Agent / 产品 Chat）
+
+Skills **不能**覆盖全部过程能力。Host 要嵌套 Harness 过程，须同时具备：Process Kernel 对象 + CLI Capability + PromptAssembly 槽，而不是只拷 Skills。
+
+推荐 Capability 白名单（**须走 Policy / H2**：默认关 · Host env 显式授权 · 禁止任意 shell）：
+
+- `npx --yes dsh-coding-kit@<pin> verify …`
+- `npx --yes dsh-coding-kit@<pin> task …`
+
+| 能力 | Skills 能否覆盖 |
+|------|----------------|
+| 10/20 审过程指引 | 能（默认分发） |
+| 00 委派纪律 | 弱：全文不进默认；delegate-only 短 Skill 可默认装 |
+| 30/40 执行 | 弱：不进默认（T1 前）；且执行仍须 `verify` |
+| 闸 / pre-30 / may_start_30 | **否**：须 CLI `verify`（或 Host 封装同一 CLI） |
+| 帽身份常驻 system | **否**：Skills 为 on-demand，非 system |
+| Host 业务答题 | **否**：属产品 Prompt Pack |
+
+三分：**System/Re-anchor** = 短身份；**prompts 全文** = 换帽加载；**verify** = 机械。不可互替。
 
 ## 发版（维护者）
 

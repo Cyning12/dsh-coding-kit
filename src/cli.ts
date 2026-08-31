@@ -223,7 +223,7 @@ async function cmdUpgrade(args: string[], pkgVersion: string): Promise<void> {
     // 提示级：扫描异常不影响 upgrade 语义
   }
   console.log(
-    '提示: manifest 已升级 · prompts 未自动同步 · 运行 `npx dsh-coding-kit sync prompts --yes`（先 `sync prompts` dry-run 看清单）。',
+    '提示: manifest 已升级 · prompts 未自动同步（含 FRAGMENT_hat_reanchor / FRAGMENT_00_delegate_only） · 运行 `npx dsh-coding-kit sync prompts --yes`（先 `sync prompts` dry-run 看清单）。',
   )
 }
 
