@@ -3,7 +3,7 @@
 > **Open Folder**：`/Users/cyning/Desktop/Projects/dsh-coding-kit`  
 > **分支**：`feat/hat-identity-system-reanchor`（已建）  
 > **上游 FEEDBACK**：[`docs/feedback/FEEDBACK_ops_desk_api_hat_identity_system_prompt_20260831.md`](../../feedback/FEEDBACK_ops_desk_api_hat_identity_system_prompt_20260831.md)  
-> **基线**：`package.json` 现为 **1.9.2** · Unreleased → 目标建议 **1.10.0**（minor：新 prompts/Skills 面；**禁止**本 Agent `npm version` / `npm publish`）  
+> **基线**：目标 **1.10.0**（minor：新 prompts/Skills 面；维护者按 RELEASING 发版）
 > **试点回写仓**：`/Users/cyning/Desktop/Ops-desk/ops-desk-api`（升级后校验）
 
 ---

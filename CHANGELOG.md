@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-08-31
+
 > 主题：**帽 System / Re-anchor + 00 delegate-only Skill**——帽级短身份碎片、默认可分发 Skill、Host×npx Capability 文档。
 >
 > **消费者提示（置顶）**：
