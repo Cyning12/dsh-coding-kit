@@ -1,10 +1,10 @@
 # Migration · `@cyning/harness` / `dsh-coding-kit` → **SpecWave**（`spec-wave`）
 
-> **⚠️ `dsh-coding-kit` 已 deprecate** —— 请**直接**安装正式包：`npm i spec-wave@3.1.0`（**minor · 待发版** · 技术图谱脚手架 · scaffold/drift/vocab **可选启用** · **无强制迁移**；registry `latest` 仍为 `3.0.2` 直至人 publish。`3.0.0` 为 **major · 架构跃迁**，见下方「2.4.2 → 3.0.0」节）。**勿再**把废弃中间包当作迁移终点。  
-> **现行包**：**`spec-wave@3.1.0`**（**待发版** · 正式包名 / 正式 bin；曾用名 `dsh-coding-kit`）  
+> **⚠️ `dsh-coding-kit` 已 deprecate** —— 请**直接**安装正式包：`npm i spec-wave@3.2.0`（**minor · 待发版** · 图谱 IB / struct_rel / indexes · yaml 双栈迁移文档 · **无强制迁移**；registry `latest` 仍为 `3.1.0` 直至人 publish。`3.0.0` 为 **major · 架构跃迁**，见下方「2.4.2 → 3.0.0」节）。**勿再**把废弃中间包当作迁移终点。  
+> **现行包**：**`spec-wave@3.2.0`**（**待发版** · 正式包名 / 正式 bin；曾用名 `dsh-coding-kit`）  
 > **过渡 bin（同入口 · 非终点）**：`specgate` · `dsh-coding-kit`（仍可调用，**不要**再 `npm i dsh-coding-kit` 当终点）  
 > **状态**：1.12 收口 **DONE** · kit **`2.0.0` published** · `@cyning/harness` **已 deprecate**（2026-09-10）· **`dsh-coding-kit` 已 deprecate**（文案指向 `spec-wave`）  
-> **包钉**：请钉 `spec-wave@3.1.0`（**待发版** · 本文件不代替 `package.json`）  
+> **包钉**：请钉 `spec-wave@3.2.0`（**待发版** · 本文件不代替 `package.json`）  
 > **布局真值（F4 方案 B）**：新落盘根 = **`.coding-kit/`**；**`.cyning-harness/`** = legacy **只读**（探测 / 升级源；**不删除**）  
 > **人闸**：`HG-EOS-DATE` / `HG-PUBLISH` = **approved**（人实操 · 2026-09-10）· **禁止** Agent 执行 `npm deprecate` / `npm publish`  
 > **F6 归档**：[`docs/roadmap/ACCEPTANCE_2x_host_adapt_2_0_0_zh.md`](docs/roadmap/ACCEPTANCE_2x_host_adapt_2_0_0_zh.md) · 规划 [`docs/roadmap/PLAN_2x_host_adapt_v1_zh.md`](docs/roadmap/PLAN_2x_host_adapt_v1_zh.md)  
@@ -14,7 +14,7 @@
 
 ## SpecWave 最短路径（现行）
 
-1. **依赖**：`package.json` 将 `dsh-coding-kit`（或 `@cyning/harness`）改为 **`spec-wave`**（钉 `3.1.0`；CHANGELOG 见 `[3.1.0]` 节 · **待发版** · registry `latest` 仍 `3.0.2` 直至人 publish）。  
+1. **依赖**：`package.json` 将 `dsh-coding-kit`（或 `@cyning/harness`）改为 **`spec-wave`**（钉 `3.2.0`；CHANGELOG 见 `[3.2.0]` 节 · **待发版** · registry `latest` 仍 `3.1.0` 直至人 publish）。  
 2. **升级**：`npx spec-wave upgrade --yes`  
 3. **字面**：CI / 脚本 `npx dsh-coding-kit` / `npx @cyning/harness` → **`npx spec-wave`**  
 4. **推荐**：`npx spec-wave refresh-ide-blocks --yes`（默认 dry-run；含 B-REFRESH：旧 `npx dsh-coding-kit` / `npx specgate` → `npx spec-wave`）
@@ -82,7 +82,7 @@
 DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave/blob/main/MIGRATION.md — pin dsh-coding-kit@1.12.0 and run: npx spec-wave upgrade --yes
 ```
 
-> **链式风险**：上列 harness 文案仍指向已 deprecate 的 `dsh-coding-kit`。**请忽略该钉点**，直接 `npm i spec-wave@3.1.0`。registry 改文案仅人（`HG-DEPRECATE-HARNESS`）。
+> **链式风险**：上列 harness 文案仍指向已 deprecate 的 `dsh-coding-kit`。**请忽略该钉点**，直接 `npm i spec-wave@3.2.0`。registry 改文案仅人（`HG-DEPRECATE-HARNESS`）。
 
 ### 过渡窗规则
 
@@ -186,6 +186,47 @@ DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave
   - `.spec-wave/graph-vocab.yaml` —— F-1② 仓级词表扩展（与内置合并 · 冲突 fail-loud · 缺省文件=3.0.2 行为）· 诊断可用 `graph vocab show`
 - 指针：[`README.md`](./README.md) / [`README.zh-CN.md`](./README.zh-CN.md) 图谱节 · 使用手册 §10 · CHANGELOG `[3.1.0]`。
 - `3.0.0` 的 breaking 迁移仍见「2.4.2 → 3.0.0」节。
+- **3.2 图谱保真闸（文档见下节）**：`graph ib check` / `graph indexes check`（opt-in）· 与 `graph yaml *` 分责；**不**宣称已含 AST 深闸。
+
+## 消费仓 `graph:ci` / Python yaml 工具 → SpecWave `graph yaml`（双栈 · 无强制删脚本）
+
+> **状态：可选迁移**（2026-10-11 · 3.2 W4 文档）——消费仓可继续自备 Python / `graph:ci` 脚本；本包**不**强制删除。目标是能切（或双栈并行）到 `npx spec-wave graph yaml …`，并把保真闸与编译链分清。
+
+### ① 何时需要
+
+- 业务仓已有 `graph:ci`（或等价）用 Python/`pyyaml` 编译 `docs/_tech_graph/**/*.graph.yaml`，希望与 SpecWave CLI 对齐产物与 `graph_id` / label 口径。  
+- 或希望在 CI 中逐步用 CLI 替代自备脚本，同时保留旧脚本作对照。
+
+### ② 推荐步骤（可双栈并行）
+
+1. **钉包**：`package.json` 使用 `spec-wave`（版本以仓内 `package.json` / CHANGELOG 为准；`3.2.0` bump 属 W5 · 本波不发版）。  
+2. **编译链对照**（与自备脚本同输入目录，常见 `docs/_tech_graph`）：
+
+   ```bash
+   npx --yes spec-wave graph yaml compile --all --input docs/_tech_graph
+   npx --yes spec-wave graph yaml export --input docs/_tech_graph
+   npx --yes spec-wave graph yaml check --all --input docs/_tech_graph
+   ```
+
+3. **口径注意**（与旧 Python 栈差异最常见处）：  
+   - `graph_id` 以 yaml **声明值**（`data.graph_id`）为真值写入 export / check，不再用路径命名空间 id（见 README 图谱节 · 1.7.0+）。  
+   - 边 label / 拓扑协议标记（`?>` / `~>` / `::…`）在 export 侧保留；勿假设旧脚本丢 label。  
+   - 锚点注释 emit 为 Mermaid `%%`（非 `//`）；升级后须重跑 compile 再生 `*.md`。  
+4. **保真闸另跑**（**不是** `graph yaml *` 的替代）：见使用手册 §10「保真分责」——`graph drift`（边+模块表）· `graph ib check`（点 path）· `graph indexes check`（倒排双向 · **opt-in** · 须 `.spec-wave/graph-indexes.yaml` · **不**进默认 `verify`）。  
+5. **切 CI**：可将 `graph:ci` job 改为上列 `npx` 步骤，或注释保留旧脚本作对照；样例见 [`assets/ci/samples/tech-graph.yml.example`](./assets/ci/samples/tech-graph.yml.example)（可选注释步含 `graph drift` / `graph ib check`；**indexes 默认不写硬门禁**）。  
+6. **删 Python 脚本**：非本包义务；确认产物与闸绿后再由消费仓自行决定。
+
+### ③ 禁止事项
+
+- **禁止**宣称 SpecWave「已含 AST 深闸 / 符号级实现核对」——符号层 **未交付**（另 Epic）。  
+- **禁止**把 `graph indexes check` 绑进默认 `verify` 或 Starter CI 硬门禁样例。  
+- **禁止**用本迁移节暗示 breaking：不切 CLI 时既有自备脚本行为不变。
+
+### ④ 指针
+
+- 保真分责表：[`docs/guides/使用手册-v3.0.0-zh.md`](./docs/guides/使用手册-v3.0.0-zh.md) §10  
+- 双语总览：[`README.zh-CN.md`](./README.zh-CN.md) / [`README.md`](./README.md) 图谱节  
+- SPEC：`docs/spec/3_2-graph-ib-and-indexes/`（`03` §2 · `04` W4）
 
 ---
 ## 修订记录
@@ -207,3 +248,4 @@ DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave
 | 2026-09-18 | **3.0.1 patch**：增「3.0.0 → 3.0.1 无强制动作项」（粘性向后兼容 · 无强制迁移 · 可选了解 W5 旗标 / W6 WARN） |
 | 2026-09-23 | **3.0.2 patch**：增「3.0.1 → 3.0.2 无强制动作项」（additive 能力面 · F-1 词汇登记仅减告警 · consumer pins 可选启用 · 待发版 publish 仅人） |
 | 2026-10-10 | **3.1.0 minor**：增「3.0.2 → 3.1.0 无强制动作项」（scaffold/drift/vocab 可选启用 · 待发版 tag/push/publish 仅人 · 不暗示 breaking）· 头栏包钉对齐 `3.1.0` |
+| 2026-10-11 | **3.2 W4**：增「消费仓 graph:ci / Python yaml → SpecWave graph yaml」双栈可选迁移节 · 保真分责指针 · 禁 AST 已交付宣称 · indexes 不进硬门禁 |

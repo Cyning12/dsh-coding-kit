@@ -305,4 +305,99 @@ edges:
     assert.match(r.combined, /graph scaffold/)
     assert.match(r.combined, /graph yaml/)
   })
+
+  // —— 3.2 W2 · struct_rel ——
+  it('W2-A1 · 无配置 / 无 struct_rel → 仍读 01_struct.md（=3.1）', async () => {
+    await withTemp(async (dir) => {
+      await seedCovered(dir)
+      const none = await runCore(['graph', 'drift', '--target', dir], KIT)
+      assert.equal(none.status, 0, none.combined)
+      await mkdir(path.join(dir, '.spec-wave'), { recursive: true })
+      await writeFile(path.join(dir, GRAPH_DRIFT_CONFIG_REL), 'version: 1\nexempt_dirs: []\n')
+      const noKey = await runCore(['graph', 'drift', '--target', dir], KIT)
+      assert.equal(noKey.status, 0, noKey.combined)
+    })
+  })
+
+  it('W2-A2 · struct_rel: l1/01_modules.md 协议表覆盖 → 绿（相对 --input）', async () => {
+    await withTemp(async (dir) => {
+      await mkdir(path.join(dir, 'src'), { recursive: true })
+      await writeFile(path.join(dir, 'src/index.ts'), 'export {}\n')
+      const input = path.join(dir, 'docs/_tech_graph')
+      await mkdir(path.join(input, 'l1'), { recursive: true })
+      // 故意不写 01_struct.md；模块表在 l1/
+      await writeFile(
+        path.join(input, 'l1/01_modules.md'),
+        protocolStruct([{ id: 'src', glob: 'src/**' }]),
+      )
+      await writeFile(
+        path.join(input, '00_main.graph.yaml'),
+        minimalGraphYaml({ anchors: [{ path: 'src/index.ts' }] }),
+      )
+      // 诱饵：相对 target 同名路径若被误读会覆盖错表（不可解析）
+      await mkdir(path.join(dir, 'l1'), { recursive: true })
+      await writeFile(path.join(dir, 'l1/01_modules.md'), '# POINTER only\n')
+      await mkdir(path.join(dir, '.spec-wave'), { recursive: true })
+      await writeFile(
+        path.join(dir, GRAPH_DRIFT_CONFIG_REL),
+        'version: 1\nstruct_rel: l1/01_modules.md\n',
+      )
+      const r = await runCore(['graph', 'drift', '--target', dir], KIT)
+      assert.equal(r.status, 0, r.combined)
+      assert.doesNotMatch(r.combined, /struct_missing|struct_unparseable/)
+      assert.match(r.combined, /protocol/)
+    })
+  })
+
+  it('W2-A3 · struct_rel 指向不存在 → exit 2 · struct_missing', async () => {
+    await withTemp(async (dir) => {
+      await seedCovered(dir)
+      await mkdir(path.join(dir, '.spec-wave'), { recursive: true })
+      await writeFile(
+        path.join(dir, GRAPH_DRIFT_CONFIG_REL),
+        'version: 1\nstruct_rel: l1/missing_modules.md\n',
+      )
+      const r = await runCore(['graph', 'drift', '--target', dir], KIT)
+      assert.equal(r.status, 2, r.combined)
+      assert.match(r.combined, /struct_missing/)
+      assert.match(r.combined, /l1\/missing_modules\.md/)
+    })
+  })
+
+  it('W2-A4 · struct_rel 指向不可解析 → exit 2 · struct_unparseable', async () => {
+    await withTemp(async (dir) => {
+      await mkdir(path.join(dir, 'src'), { recursive: true })
+      await writeFile(path.join(dir, 'src/index.ts'), 'export {}\n')
+      const input = path.join(dir, 'docs/_tech_graph')
+      await mkdir(path.join(input, 'l1'), { recursive: true })
+      await writeFile(path.join(input, 'l1/01_modules.md'), '# POINTER · 无模块表\n')
+      await writeFile(
+        path.join(input, '00_main.graph.yaml'),
+        minimalGraphYaml({ anchors: [{ path: 'TBD' }] }),
+      )
+      await mkdir(path.join(dir, '.spec-wave'), { recursive: true })
+      await writeFile(
+        path.join(dir, GRAPH_DRIFT_CONFIG_REL),
+        'version: 1\nstruct_rel: l1/01_modules.md\n',
+      )
+      const r = await runCore(['graph', 'drift', '--target', dir], KIT)
+      assert.equal(r.status, 2, r.combined)
+      assert.match(r.combined, /struct_unparseable/)
+      assert.match(r.combined, /l1\/01_modules\.md/)
+    })
+  })
+
+  it('W2-A5 · struct_rel 非 string → exit 2 fail-closed', async () => {
+    await withTemp(async (dir) => {
+      await seedCovered(dir)
+      await mkdir(path.join(dir, '.spec-wave'), { recursive: true })
+      await writeFile(
+        path.join(dir, GRAPH_DRIFT_CONFIG_REL),
+        'version: 1\nstruct_rel:\n  - not-a-string\n',
+      )
+      const r = await runCore(['graph', 'drift', '--target', dir], KIT)
+      assert.equal(r.status, 2, r.combined)
+      assert.match(r.combined, /struct_rel/)
+    })
+  })
 })

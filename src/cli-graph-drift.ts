@@ -154,7 +154,30 @@ function listPresentCandidateDirs(target: string): string[] {
   return out
 }
 
-function loadWhitelist(target: string): { whitelist: Whitelist; relLabel: string } {
+function resolveStructRel(raw: unknown): string {
+  if (raw == null) return STRUCT_REL_DEFAULT
+  if (typeof raw !== 'string') {
+    fail(
+      `graph drift: 白名单键 struct_rel 须为 string: ${GRAPH_DRIFT_CONFIG_REL}`,
+      2,
+    )
+  }
+  const rel = raw.replace(/\\/g, '/').trim()
+  if (!rel) return STRUCT_REL_DEFAULT
+  if (path.isAbsolute(raw) || path.isAbsolute(rel) || /^[A-Za-z]:\//.test(rel)) {
+    fail(
+      `graph drift: struct_rel 须为相对 --input 的路径（禁止绝对路径）: ${GRAPH_DRIFT_CONFIG_REL}`,
+      2,
+    )
+  }
+  return rel.replace(/^\/+/, '')
+}
+
+function loadWhitelist(target: string): {
+  whitelist: Whitelist
+  relLabel: string
+  structRel: string
+} {
   const abs = path.join(target, GRAPH_DRIFT_CONFIG_REL)
   if (!existsSync(abs)) {
     return {
@@ -164,6 +187,7 @@ function loadWhitelist(target: string): { whitelist: Whitelist; relLabel: string
         exemptAnchorPrefixes: [],
       },
       relLabel: '(none)',
+      structRel: STRUCT_REL_DEFAULT,
     }
   }
   let data: unknown
@@ -197,9 +221,11 @@ function loadWhitelist(target: string): { whitelist: Whitelist; relLabel: string
   const exemptAnchorPrefixes = asStringList('exempt_anchor_prefixes').map((p) =>
     p.replace(/\\/g, '/'),
   )
+  const structRel = resolveStructRel(obj.struct_rel)
   return {
     whitelist: { exemptDirs, exemptAnchorPaths, exemptAnchorPrefixes },
     relLabel: GRAPH_DRIFT_CONFIG_REL,
+    structRel,
   }
 }
 
@@ -251,16 +277,16 @@ export function runGraphDrift(opts: {
   inputRoot: string
 }): DriftReport {
   const drifts: DriftItem[] = []
-  const { whitelist, relLabel } = loadWhitelist(opts.target)
-  const structAbs = path.join(opts.inputRoot, STRUCT_REL_DEFAULT)
+  const { whitelist, relLabel, structRel } = loadWhitelist(opts.target)
+  const structAbs = path.join(opts.inputRoot, structRel)
   let structLayout: DriftReport['struct_layout'] = 'none'
   let globs: string[] = []
 
   if (!existsSync(structAbs)) {
     drifts.push({
       kind: 'struct_missing',
-      path: path.relative(opts.target, structAbs).split(path.sep).join('/') || STRUCT_REL_DEFAULT,
-      detail: '01_struct.md 缺失',
+      path: path.relative(opts.target, structAbs).split(path.sep).join('/') || structRel,
+      detail: `${structRel} 缺失`,
     })
   } else {
     try {
@@ -270,7 +296,7 @@ export function runGraphDrift(opts: {
     } catch (e) {
       drifts.push({
         kind: 'struct_unparseable',
-        path: STRUCT_REL_DEFAULT,
+        path: structRel,
         detail: (e as Error).message,
       })
     }
