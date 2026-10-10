@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-1-w4-graph-vocab
 
 > **日期**：2026-10-10 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_1_w4_graph_vocab.md`](../../tasks/active/task_3_1_w4_graph_vocab.md)  
+> **task**：[`docs/tasks/done/task_3_1_w4_graph_vocab.md`](../../tasks/done/task_3_1_w4_graph_vocab.md)  
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md) · [`04` W4](../../spec/3_1-tech-graph-scaffold/04_execution_waves.md) · [`02` §4.2](../../spec/3_1-tech-graph-scaffold/02_product_scheme.md) · [`03` §1.4 / failure 词表冲突 exit 2](../../spec/3_1-tech-graph-scaffold/03_cli_and_review.md)（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) **W4 · 仓级词表（F-1②）**（HG-NEXT-PLAN=approved）  
 > **3.0.2 延后**：[`PLAN_3_0_2_patch_v1_zh.md`](../../roadmap/PLAN_3_0_2_patch_v1_zh.md) 非范围 F-1②  

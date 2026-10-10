@@ -11,7 +11,7 @@
 - [x] **HG-SPEC-SIGNOFF=approved**（2026-10-10 维护者 · 「签收，拆W1」）  
 - [x] **HG-NEXT-PLAN=approved**（同窗）  
 - [x] 00 拆 **W1** task（本棒）；W2–W5 后续按波拆  
-- [ ] W4–W5 task（**W3 已关** · W4–W5 未开）  
+- [ ] W5 task（**W4 已关** · W5 未开）  
 
 ## W1 · 脚手架 + 生成后轻检 + 审核清单（核心 · 轨 A + 轨 B 轻量）
 
@@ -50,11 +50,13 @@
 
 ## W4 · 仓级词表（轨 C · 承接 F-1②）
 
-- [ ] 加载 `.spec-wave/graph-vocab.yaml` 与内置合并  
-- [ ] 冲突 fail-loud；缺省文件 = 行为与 3.0.2 一致  
-- [ ] 登记扩展边型零 Warning；未登记仍 Warning  
-- [ ] 文档：消费仓如何声明扩展  
-- [ ] 四门绿 · HG-AUDIT-R1 · gate-check  
+> **00 验收**：2026-10-10 · task `3-1-w4-graph-vocab` · A1–A9 · A-opt1 · `e979c57`
+
+- [x] 加载 `.spec-wave/graph-vocab.yaml` 与内置合并  
+- [x] 冲突 fail-loud；缺省文件 = 行为与 3.0.2 一致  
+- [x] 登记扩展边型零 Warning；未登记仍 Warning  
+- [x] 文档：消费仓如何声明扩展  
+- [x] 四门绿 · HG-AUDIT-R1 · gate-check  
 
 ## W5 · 收尾对外 + release 簿记
 

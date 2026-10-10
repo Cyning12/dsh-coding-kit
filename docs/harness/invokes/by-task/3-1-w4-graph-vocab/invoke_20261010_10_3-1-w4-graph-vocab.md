@@ -8,7 +8,7 @@
 ## 动作
 
 1. 实读 R0：`src/cli-graph-yaml.ts:56-86`（`loadTechGraphVocab` 仅内置）· `:90-106`（钩②）· `:361`/`:593`/`:624`（compile/check/export 挂载）· `assets/tech-graph-vocab.yaml:7-28` · `src/cli-pins.ts:20`/`:118-128` · `src/cli-graph-drift.ts:12`/`:157-176` · `test/f1-unify.test.ts` 钩②钉 · PLAN_3_0_2 非范围 F-1② · SPEC `02` §4.2 / `03` §1.4 / §3  
-2. 新建 [`docs/tasks/active/task_3_1_w4_graph_vocab.md`](../../../../tasks/active/task_3_1_w4_graph_vocab.md)  
+2. 新建 [`docs/tasks/done/task_3_1_w4_graph_vocab.md`](../../../../tasks/done/task_3_1_w4_graph_vocab.md)  
 3. `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_3_1_w4_graph_vocab.md` → **LINT: PASS**
 
 ## 闸态（task 表）

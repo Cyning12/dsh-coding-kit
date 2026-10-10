@@ -1,6 +1,7 @@
 # Task：3.1 W4 · 仓级词表扩展（轨 C · F-1②）
 
-> **状态**：`in_progress` · **00 签收双闸** 2026-10-10（20 审 R1 PASS · blocking 0）  
+> **状态**：`done` · **00 验收关账** 2026-10-10（A1–A9 · A-opt1 · `e979c57`）  
+
 
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md)（**HG-SPEC-SIGNOFF=approved** · 2026-10-10 · epic 级已签）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md)（**HG-NEXT-PLAN=approved** · 同窗）· **W4 · 仓级词表（F-1②）**  
@@ -119,7 +120,7 @@
 - [x] **A6 加载面**（必做）：合并挂在 `graph yaml compile|check`（R0 钩②调用点）；**禁止**仅 `vocab show` 接线而 compile/check 仍只读内置
 - [x] **A7 文档**（必做）：README / 使用手册 / `MIGRATION.md` 至少一处最小节说明仓级扩展声明与 fail-loud
 - [x] **A8 零回归**（必做）：既有 `f1-unify` 内容钉/钩②/恒等 fixture · `graph-drift` · scaffold 相关测不因本波改语义红（只增仓级面测）
-- [x] **A9 四门 + 关账**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿；`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W4): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**（四门+gate-check+commit 已齐 · **close 留 00**）
+- [x] **A9 四门 + 关账**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿；`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W4): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**
 - [x] **A-opt1 `graph vocab show`**（可选 · 未做不挡 A9）：help 列出 · 可展示合并后 edge_types/kinds（形态 30 自裁）
 
 ---
@@ -216,7 +217,7 @@ A1–A8 临时 fixture + exit/stderr 断言；A9 四门+gate-check；A-opt1 命�
 |----|------|
 | GATE_VERIFY | PASS · HG-AUDIT-R1 approved · ✅ 可 30（2026-10-10） |
 | A1–A8 | ✅ 全过（`test/graph-vocab.test.ts` + README 节） |
-| A9 | 四门绿 · gate-check exit 0 · commit 本波 · **`task close` 留 00** |
+| A9 | 四门绿 · gate-check · commit `e979c57` · **00 close** |
 | A-opt1 | ✅ `graph vocab show [--target] [--json]` |
 | 四门 | typecheck / test(959p) / build / test:lib 全绿 |
 | 未 bump/tag/push/publish | ✅ |
@@ -229,7 +230,7 @@ invoke：[`invoke_20261010_30_40_3-1-w4-graph-vocab.md`](../../harness/invokes/b
 
 ### KPI（00）
 
-Task_KPI%: （占位 · 关账时由 00 填）
+Task_KPI%: 97（A1–A9 + A-opt1 全绿 · 缺省=3.0.2 · 冲突 fail-loud · 登记≠封闭 · 四门绿；扣分：无）
 
 - rubric：`KPI_RUBRIC_v1_2` · 30/40 实现 + 00 签闸/关账
 
@@ -242,3 +243,4 @@ Task_KPI%: （占位 · 关账时由 00 填）
 | 2026-10-10 | 10-task 初稿 · 00 开拆 W4 · HG-TASK-DRAFT / HG-AUDIT-R1 **pending** |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
 | 2026-10-10 | 30/40：仓级 graph-vocab 合并加载 · A1–A9/A-opt1 · 四门绿 · gate-check · 待 00 close |
+| 2026-10-10 | **00 验收关账** · A9 close · SPEC04 W4 勾选 · W5 未开 |
