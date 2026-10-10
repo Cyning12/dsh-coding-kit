@@ -256,7 +256,7 @@ This **source repo** dogfoods `graph yaml compile|check|export` against `docs/_t
 
 **Tech-graph scaffold (`graph scaffold`, planned 3.1)**: from a business-repo root, generates a **reviewable draft** under `docs/_tech_graph/` (main graph · module table · primary flow · `REVIEW_CHECKLIST.md`). Default is dry-run; `--yes` writes. Output is draft-marked — **not** signed architecture truth (`HG-GRAPH-MODULES` remains for humans). Do not call it an “authoritative auto graph”.
 
-**Drift gate (`graph drift`, 3.1 W3)**: checks `01_struct` module coverage and registered **edge** anchors (`edges[].anchors[].path`; skip `TBD` / empty); drift → **exit 2**. Optional whitelist `.spec-wave/graph-drift.yaml` (missing file = full check; bad YAML fail-closed). **Report only — does not redraw** graphs.
+**Drift gate (`graph drift`, 3.1 W3 / 3.2 W2)**: checks module-table coverage and registered **edge** anchors (`edges[].anchors[].path`; skip `TBD` / empty); drift → **exit 2**. Optional `.spec-wave/graph-drift.yaml`: whitelist exemptions (missing file = full check) + optional `struct_rel` (module table path relative to `--input`; default `01_struct.md`; bad path / illegal type fail-closed). **Report only — does not redraw** graphs.
 
 **Node IB path gate (`graph ib check`, 3.2 W1)**: checks `nodes[].implementedBy.path` exists under `--target` (skip empty / `TBD` case-insensitive; missing → **exit 2** · `missing_ib_path`). Nodes without IB stay legal (checked=0 → exit 0). **No** symbol AST. Split of responsibility: drift = edges + module table · ib = nodes. Report only — no writes.
 

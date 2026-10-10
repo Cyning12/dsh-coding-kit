@@ -255,7 +255,7 @@ kit **源码仓**以 `docs/_tech_graph/` 做 `graph yaml compile|check|export` �
 
 **技术图谱脚手架（`graph scaffold` · 规划 3.1）**：在业务仓根执行可生成 `docs/_tech_graph/` **可审草稿**（顶层图 · 模块表 · 主流程 · `REVIEW_CHECKLIST.md`）。默认 dry-run；`--yes` 写盘。产物带草稿标记，**不是**已签收架构真值——`HG-GRAPH-MODULES` 须维护者人签。勿称「自动生成权威技术图谱」。
 
-**漂移闸（`graph drift` · 3.1 W3）**：对照 `01_struct` 模块表与 `*.graph.yaml` **边**锚点（`edges[].anchors[].path`），报告一级包目录未覆盖 / 已登记 path 消失（`TBD`/空 path 跳过）；漂移 **exit 2**。可选白名单 `.spec-wave/graph-drift.yaml`（缺省无文件=全检；坏 YAML fail-closed）。**只报告，不自动重画**图谱。
+**漂移闸（`graph drift` · 3.1 W3 / 3.2 W2）**：对照模块表与 `*.graph.yaml` **边**锚点（`edges[].anchors[].path`），报告一级包目录未覆盖 / 已登记 path 消失（`TBD`/空 path 跳过）；漂移 **exit 2**。可选 `.spec-wave/graph-drift.yaml`：白名单豁免（缺省无文件=全检）+ 可选 `struct_rel`（相对 `--input` 的模块表路径；缺省 `01_struct.md`；坏路径/非法类型 fail-closed）。**只报告，不自动重画**图谱。
 
 **点路径闸（`graph ib check` · 3.2 W1）**：扫描 `nodes[].implementedBy.path` 相对 `--target` 的文件存在性（空/`TBD` 大小写不敏感跳过；缺文件 **exit 2** · `missing_ib_path`）。节点无 IB → 合法且不咬红（checked=0 → exit 0）。**不做** symbol AST。与 drift **分责**：drift=边+模块表 · ib=点。只报告不写盘。
 
