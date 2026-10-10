@@ -63,31 +63,31 @@
 
 严格对齐 SPEC `04` **W5** + PLAN **W5 · release** + 验收总表（不得改 W1–W4 已交付行为 · 不得触 schema · 不得扩模板业务占位）。
 
-- [ ] **① bump 真值源**：`package.json#version` `3.0.2` → `3.1.0`（**唯一手工版本改动点** · **不用** `npm version` 防顺手 tag）；`package-lock.json` 同步（根 `"version"` / `packages[""].version`）
-- [ ] **② CHANGELOG**（**顺序硬约束 · 先于 pins fix** · 同 3.0.2 先例 · 防 pin-13 回写历史头）
-  - 新增 `## [3.1.0] - <日期>`：主题行（**minor** · 技术图谱脚手架 · PLAN/SPEC 链接）+ **Added**（W1 scaffold · W2 DX 入手链 · W3 drift · W4 仓级 vocab）+ **发布状态行**：「**待发版（tag/push/publish 仅人）**（bump 已落 · registry `latest` 仍为 `3.0.2` 直至人 publish · pin-10 打 tag 前设计红）」
+- [x] **① bump 真值源**：`package.json#version` `3.0.2` → `3.1.0`（**唯一手工版本改动点** · **不用** `npm version` 防顺手 tag）；`package-lock.json` 同步（根 `"version"` / `packages[""].version`）
+- [x] **② CHANGELOG**（**顺序硬约束 · 先于 pins fix** · 同 3.0.2 先例 · 防 pin-13 回写历史头）
+  - 新增 `## [3.1.0] - 2026-10-10`：主题行（**minor** · 技术图谱脚手架 · PLAN/SPEC 链接）+ **Added**（W1 scaffold · W2 DX 入手链 · W3 drift · W4 仓级 vocab）+ **发布状态行**：「**待发版（tag/push/publish 仅人）**（bump 已落 · registry `latest` 仍为 `3.0.2` 直至人 publish · pin-10 打 tag 前设计红）」
   - Unreleased 仅留空壳；**禁止**把待发版写成已 published
-- [ ] **③ `pins fix --yes`**：先 `pins check` 观察偏差 → `node bin/specgate.js pins fix --yes` 对齐钉面 → 复跑；**打 tag 前唯一可接受偏差** = pin-10 git tag `v3.1.0` 缺失（**设计红** · 人打 tag 后须 17/17 · 本棒不打 tag）
-- [ ] **④ 叙事漂移巡检**：机械替换造成的假叙事改回真值；pins 未钉的现行版引用与测试版本断言联改留痕（perl 双模式 · 历史标题/红测留证注释保留）；全仓 grep 无「3.1.0 已 published」假叙事；registry latest 叙事写 `3.0.2` 直至人 publish
-- [ ] **⑤ ACCEPTANCE 档**：新建 [`docs/roadmap/ACCEPTANCE_3_1_tech_graph_scaffold_3_1_0_zh.md`](../../roadmap/ACCEPTANCE_3_1_tech_graph_scaffold_3_1_0_zh.md)（结构参照 [`ACCEPTANCE_3_0_architecture_leap_3_0_0_zh.md`](../../roadmap/ACCEPTANCE_3_0_architecture_leap_3_0_0_zh.md) / [`ACCEPTANCE_3_0_2_patch_3_0_2_zh.md`](../../roadmap/ACCEPTANCE_3_0_2_patch_3_0_2_zh.md)）
+- [x] **③ `pins fix --yes`**：先 `pins check` 观察偏差 → `node bin/specgate.js pins fix --yes` 对齐钉面 → 复跑；**打 tag 前唯一可接受偏差** = pin-10 git tag `v3.1.0` 缺失（**设计红** · 人打 tag 后须 17/17 · 本棒不打 tag）
+- [x] **④ 叙事漂移巡检**：机械替换造成的假叙事改回真值；pins 未钉的现行版引用与测试版本断言联改留痕（perl 双模式 · 历史标题/红测留证注释保留）；全仓 grep 无「3.1.0 已 published」假叙事；registry latest 叙事写 `3.0.2` 直至人 publish
+- [x] **⑤ ACCEPTANCE 档**：新建 [`docs/roadmap/ACCEPTANCE_3_1_tech_graph_scaffold_3_1_0_zh.md`](../../roadmap/ACCEPTANCE_3_1_tech_graph_scaffold_3_1_0_zh.md)（结构参照 [`ACCEPTANCE_3_0_architecture_leap_3_0_0_zh.md`](../../roadmap/ACCEPTANCE_3_0_architecture_leap_3_0_0_zh.md) / [`ACCEPTANCE_3_0_2_patch_3_0_2_zh.md`](../../roadmap/ACCEPTANCE_3_0_2_patch_3_0_2_zh.md)）
   - W1–W4 台账摘要（commit 哈希 · 各波 A*）
   - SPEC `04` **验收总表**勾选对照（fixture scaffold→compile/check→清单→闸 pending · `graph yaml *` 零回归 · drift/vocab 正负向 · 无「自动权威图谱」违纪）
   - release 门禁基线 + pin-10 设计红登记（清偿路径 = **人**打 tag 后）
   - 发布边界：「bump 已落 · tag/push/publish 待人」
-- [ ] **⑥ spec 索引行**：`docs/spec/README.md` **既有** `3_1-tech-graph-scaffold` 行（起草棒 L27）状态格翻到 **IMPLEMENTED** + `` `3.1.0` 待发版（planned） ``（publish 仅人 · tag/push 仅人）· 链 ACCEPTANCE 档 · pin-08 语义格位合格 · **禁止**写成 published
-- [ ] **⑦ 使用手册 §图谱更新**（[`docs/guides/使用手册-v3.0.0-zh.md`](../../guides/使用手册-v3.0.0-zh.md) · 保留文件名）
+- [x] **⑥ spec 索引行**：`docs/spec/README.md` **既有** `3_1-tech-graph-scaffold` 行（起草棒 L27）状态格翻到 **IMPLEMENTED** + `` `3.1.0` 待发版（planned） ``（publish 仅人 · tag/push 仅人）· 链 ACCEPTANCE 档 · pin-08 语义格位合格 · **禁止**写成 published
+- [x] **⑦ 使用手册 §图谱更新**（[`docs/guides/使用手册-v3.0.0-zh.md`](../../guides/使用手册-v3.0.0-zh.md) · 保留文件名）
   - 头栏「版本 / 适用包」钉 `spec-wave@3.1.0`（**待发版 · tag/push/publish 待人**）；手册基线行续写「3.1.0 minor 差异见 CHANGELOG `[3.1.0]` / MIGRATION『3.0.2 → 3.1.0』」
   - **§10 图谱与本体**：补 `graph drift` / 仓级 `graph-vocab`（及可选 `graph vocab show`）命令与「可审草稿」口径；与 README 已有 W3/W4 节对齐；禁「自动权威图谱」
   - 文内**现行钉** `npx spec-wave@3.0.2 …` 等示例改 `@3.1.0`（历史对照句可保留）
-- [ ] **⑧ RELEASING 台账 + 人 checklist**【**双重敏感**】
+- [x] **⑧ RELEASING 台账 + 人 checklist**【**双重敏感**】
   - 「最近一次发版」表：工作树行写 `3.1.0` bump 已落 · tag/push/publish 待人（registry `latest` 真值仍 `3.0.2`）；`3.0.2` 下沉为「前一 latest（已 published）」；主题/验收行增 3.1.0
   - 新增 `### 人 checklist · 3.1.0 发版` 节：**预勾**本棒已验证项（工作树 commit 就绪 · 四门绿 · pins 打 tag 前仅 pin-10 · CHANGELOG/ACCEPTANCE/索引齐）· **tag / push / publish / 打 tag 后 pins 17/17 / ⑨ 回填** 全**未勾**（待人）
   - 改后**必跑全量** `npm test`
-- [ ] **⑨ MIGRATION**：新增「3.0.2 → 3.1.0（minor）· 无强制动作项」节
+- [x] **⑨ MIGRATION**：新增「3.0.2 → 3.1.0（minor）· 无强制动作项」节
   - **不必做**：改 schema / 强制启用 scaffold·drift·vocab / 改既有 `graph yaml *` 缺省判定
   - **可选启用**：`graph scaffold`（可审草稿）· `graph drift`（F-2）· `.spec-wave/graph-vocab.yaml`（F-1②）· 指针 README/手册 §10
   - 头栏/包钉随 pins fix 对齐 `3.1.0`（待发版措辞 · 不暗示 breaking）
-- [ ] **⑩ 四门 + 关账**：波末 `gate-check` → `task close --yes`（或留 00 close · 按当次授权）；提交约定：簿记 `chore(release): bump to 3.1.0`（独立 · 逐文件显式 add）
+- [x] **⑩ 四门 + 关账**：波末 `gate-check`（本棒）· **`task close` 留给 00**；提交约定：簿记 `chore(release): bump to 3.1.0`（独立 · 逐文件显式 add）
 
 ## 非范围
 
@@ -228,14 +228,42 @@ A1–A12 全机检（grep 叙事 · pins 仅 pin-10 · 索引行 pin-08 · 四�
 
 ### 自检结论（执行者）
 
-> **占位**：待 HG-AUDIT-R1=approved 后由 30/40 回填（GATE_VERIFY · A1–A12 · 四门 · pins 仅 pin-10 · 未 tag/push/publish）。
+**帽**：30 簿记 + 40 自证（同棒）· **日期**：2026-10-10 · **未** tag / push / publish / deprecate · **未** task close（留给 00）
+
+#### GATE_VERIFY
+
+```text
+$ node bin/specgate.js verify --target . --task docs/tasks/active/task_3_1_w5_release.md
+| HG-TASK-DRAFT | approved | 20, 30 | — |
+| HG-AUDIT-R1 | approved | 30 | ✅ 可 30 |
+VERIFY: PASS · task_3_1_w5_release.md
+```
+
+#### 验收勾选
+
+- [x] A1 bump 单点（package.json + lock ×2 · 未用 npm version）
+- [x] A2 CHANGELOG `[3.1.0]`（minor · W1–W4 Added · 待发版 · tag/push/publish 仅人）· Unreleased 空壳
+- [x] A3 pins 打 tag 前仅 pin-10（设计红 · 人打 tag 后须 17/17）
+- [x] A4 叙事真值（假「3.1.0 已 published」零命中 · registry latest 一律 3.0.2）
+- [x] A5 ACCEPTANCE_3_1 落盘
+- [x] A6 spec 索引 IMPLEMENTED · `3.1.0` 待发版（planned）· pin-08 ok
+- [x] A7 手册头栏 + §10 scaffold/drift/vocab · 现行 `@3.1.0`
+- [x] A8 RELEASING 台账 + 人 checklist 3.1.0（就绪预勾 · tag/push/publish 未勾）· 改后全量 npm test
+- [x] A9 MIGRATION「3.0.2 → 3.1.0」可选启用
+- [x] A10 未发版动作（无 `v3.1.0` tag · 未 push · 未 publish/deprecate）
+- [x] A11 四门：typecheck 0 · npm test **960 · 957 pass + 2 设计红 + 1 skip** · build 0 · test:lib 6/6
+- [ ] A12 关账：gate-check 本棒跑 · **task close 留给 00**
+
+#### invoke
+
+`docs/harness/invokes/by-task/3-1-w5-release/invoke_20261010_30_40_3-1-w5-release.md`
 
 | 项 | 结论 |
 |----|------|
-| GATE_VERIFY | 待填 |
-| A1–A12 | 待填 |
-| 四门 | 待填 |
-| 发布边界 | 待证：无 `v3.1.0` tag · 未 push · 未 publish |
+| GATE_VERIFY | PASS · ✅ 可 30 |
+| A1–A11 | PASS · A12 close 归 00 |
+| 四门 | typecheck/build/test:lib 绿 · npm test 仅 pin-10 族设计红 ×2 |
+| 发布边界 | 已证：无 `v3.1.0` tag · 未 push · 未 publish |
 
 ---
 

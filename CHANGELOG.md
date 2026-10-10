@@ -4,6 +4,18 @@
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-10-10
+
+> 主题：**minor** —— 技术图谱脚手架 epic（W1–W4 · PLAN [`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) · SPEC [`docs/spec/3_1-tech-graph-scaffold/`](docs/spec/3_1-tech-graph-scaffold/) · 兑现 3.0.2 延后的 F-2 漂移闸 / F-1② 仓级词表）。
+> **发布状态**：**待发版（tag/push/publish 仅人）**（bump 已落 · registry `latest` 仍为 `3.0.2` 直至人 publish · pin-10 打 tag 前设计红）。
+
+### Added
+
+- **W1（`graph scaffold`）**：生成 `docs/_tech_graph/` **可审草稿**（`00_main` · `01_struct` · full 模式 ≥1×`10_flow_*` · 协议文件 · `REVIEW_CHECKLIST.md`）· 默认 dry-run · `--yes` 写盘 · `--mode full|struct-only` · `--strict` 轻检 · 非空目录拒写 · **不是**已签收架构真值（`HG-GRAPH-MODULES` 须人签 · 禁称「自动权威图谱」）。
+- **W2（入手链 DX）**：`init` quickstart 第 4 步真实命令指向 scaffold · 手册/README 对齐「可审草稿」口径 · `TASK_graph_bootstrap` 优先 scaffold、模板仅协议回退 · 包内 skill/commands 指针对齐审核清单。
+- **W3（`graph drift` · F-2）**：模块表覆盖一级包目录 + 锚点 path 消失检测 + 可选白名单 `.spec-wave/graph-drift.yaml` · 漂移 exit 2 · **只报告不重画** · `--json` 信封只增不改。
+- **W4（仓级 `graph-vocab` · F-1②）**：加载 `.spec-wave/graph-vocab.yaml` 与内置合并 · 冲突 fail-loud · 缺省文件 = 行为与 3.0.2 一致 · 可选 `graph vocab show` · 登记扩展边型零 Warning。
+
 ## [3.0.2] - 2026-09-23
 
 > 主题：**patch** —— 消费侧（ops-desk-api）3.0.1 反馈收口（W1–W2 · PLAN [`docs/roadmap/PLAN_3_0_2_patch_v1_zh.md`](docs/roadmap/PLAN_3_0_2_patch_v1_zh.md) · 无独立 SPEC 夹 · F-2 图谱漂移闸 / F-1② 仓级词汇扩展档延 3.1.0）。

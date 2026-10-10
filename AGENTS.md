@@ -58,7 +58,7 @@
 | DSH | `.dsh/skills`（harness-* + kit-*） |
 | agents | 本 `AGENTS.md` · `.agents/skills` |
 
-刷新（钉版本）：`npx spec-wave@3.0.2 host update --yes`（有粘性后不必再抄 `--tools`；首次仍用 `host apply --tools cursor,claude,dsh,agents --yes`）
+刷新（钉版本）：`npx spec-wave@3.1.0 host update --yes`（有粘性后不必再抄 `--tools`；首次仍用 `host apply --tools cursor,claude,dsh,agents --yes`）
 
 ## Verify（本仓）
 
