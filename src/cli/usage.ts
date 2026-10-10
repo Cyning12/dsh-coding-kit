@@ -72,6 +72,7 @@ export function usage(version: string): void {
   npx spec-wave discipline show [--json]
   npx spec-wave graph yaml compile|check|export …
   npx spec-wave graph scaffold [--target PATH] [--yes] …  （可审草稿 · 非权威真值）
+  npx spec-wave graph drift [--target PATH] [--input DIR] [--json]  （漂移闸 · 只报告不重画）
   npx spec-wave graph ingest|snapshot|axioms …
   npx spec-wave sync index [--target PATH]
   npx spec-wave sync prompts [--target PATH] [--yes] [--force] [--json]

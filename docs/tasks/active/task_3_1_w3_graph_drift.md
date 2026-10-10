@@ -59,18 +59,18 @@
 
 ### 必做
 
-- [ ] **① CLI 接线**：`graph drift [--target PATH] [--input DIR] [--json]` 接入 `src/cli-graph.ts`（help 列出 · 未知子命令不再吞掉 `drift` 名）；实现可落新模块（如 `cli-graph-drift.ts`）· 30 自裁
-- [ ] **② MVP · 模块覆盖**：扫描目标仓**一级包/模块目录**（与脚手架探测候选同族或可测钉死集合 · 见 R0 `MODULE_DIR_CANDIDATES`），每个须被 `01_struct.md` 模块表某行「路径 glob / 模块根」覆盖；未覆盖 → 漂移 · **exit 2**
-- [ ] **③ MVP · 锚点消失**：从 `--input`（缺省 `docs/_tech_graph`）下 `*.graph.yaml` 收集已登记 `edges[].anchors[].path`（及实现若一并纳入的节点 path · 须测锁）；`path` 空/`TBD` **不计**失败；相对 `--target` 的 path **文件不存在** → 漂移 · **exit 2**
-- [ ] **④ 白名单**：可配置豁免一级目录（及必要时锚点 path 前缀/字面）；缺省文件 = 无豁免即全量检查；配置落点候选 **`.spec-wave/graph-drift.yaml`**（与 3.0.2 `.spec-wave/pins-consumer.yaml` / W4 `graph-vocab.yaml` 同族 · schema 由 30 钉死并测锁）
-- [ ] **⑤ `--json`**：经 `printJson` 输出差异信封；**禁止**改既有 `graph yaml` / `axioms` / `ontology` / `scaffold` 的默认 stdout/exit 语义
-- [ ] **⑥ 测试**：负向 + 正向 fixture；红测先行再实现
-- [ ] **⑦ 文档口径**：usage / README 或手册一小节「漂移闸 · 只报告不重画」；禁「自动权威图谱 / 自动重画」违纪表述
-- [ ] **⑧ 波末**：四门绿 · HG-AUDIT-R1（人签后）· `gate-check`；禁 bump/tag/push/publish；禁 `git add -A`；禁开 W4 vocab / W5 release
+- [x] **① CLI 接线**：`graph drift [--target PATH] [--input DIR] [--json]` 接入 `src/cli-graph.ts`（help 列出 · 未知子命令不再吞掉 `drift` 名）；实现可落新模块（如 `cli-graph-drift.ts`）· 30 自裁
+- [x] **② MVP · 模块覆盖**：扫描目标仓**一级包/模块目录**（与脚手架探测候选同族或可测钉死集合 · 见 R0 `MODULE_DIR_CANDIDATES`），每个须被 `01_struct.md` 模块表某行「路径 glob / 模块根」覆盖；未覆盖 → 漂移 · **exit 2**
+- [x] **③ MVP · 锚点消失**：从 `--input`（缺省 `docs/_tech_graph`）下 `*.graph.yaml` 收集已登记 `edges[].anchors[].path`（及实现若一并纳入的节点 path · 须测锁）；`path` 空/`TBD` **不计**失败；相对 `--target` 的 path **文件不存在** → 漂移 · **exit 2**
+- [x] **④ 白名单**：可配置豁免一级目录（及必要时锚点 path 前缀/字面）；缺省文件 = 无豁免即全量检查；配置落点候选 **`.spec-wave/graph-drift.yaml`**（与 3.0.2 `.spec-wave/pins-consumer.yaml` / W4 `graph-vocab.yaml` 同族 · schema 由 30 钉死并测锁）
+- [x] **⑤ `--json`**：经 `printJson` 输出差异信封；**禁止**改既有 `graph yaml` / `axioms` / `ontology` / `scaffold` 的默认 stdout/exit 语义
+- [x] **⑥ 测试**：负向 + 正向 fixture；红测先行再实现
+- [x] **⑦ 文档口径**：usage / README 或手册一小节「漂移闸 · 只报告不重画」；禁「自动权威图谱 / 自动重画」违纪表述
+- [x] **⑧ 波末**：四门绿 · HG-AUDIT-R1（人签后）· `gate-check`；禁 bump/tag/push/publish；禁 `git add -A`；禁开 W4 vocab / W5 release（**`task close` 留 00**）
 
 ### 可选（本波可交付 · 不阻塞关账）
 
-- [ ] **O1 CI 样例**：在 `assets/ci/samples/` 增或扩 example workflow **可选步骤**（如注释块 `npx spec-wave graph drift` · `package-manager-cache: false` 纪律对齐既有 tech-graph/hgm 样例）；README 矩阵标注「可选」；未做不挡 A-关账
+- [x] **O1 CI 样例**：在 `assets/ci/samples/` 增或扩 example workflow **可选步骤**（如注释块 `npx spec-wave graph drift` · `package-manager-cache: false` 纪律对齐既有 tech-graph/hgm 样例）；README 矩阵标注「可选」；未做不挡 A-关账
 
 ## 非范围
 
@@ -113,17 +113,17 @@
 
 > **必做** A1–A10 为关账硬条款；**可选** A-opt1 本波可交付，未做不挡关账。
 
-- [ ] **A1 命令面**（必做）：`graph drift --help`（或父 `graph --help`）列出 drift 与旗标；`graph` 未知子命令不再把 `drift` 当未知吞掉后无用法
-- [ ] **A2 模块覆盖红**（必做）：fixture 仓有一级候选目录（如 `src/`）但 `01_struct` 模块表无覆盖该根 → `graph drift` **exit 2** · 输出点名该目录
-- [ ] **A3 模块覆盖绿**（必做）：表内 glob/根覆盖全部应检一级目录（或目录在白名单）→ 无此类漂移项 ·（若无锚点漂移）**exit 0**
-- [ ] **A4 锚点消失红**（必做）：YAML 登记 `anchors[].path` 指向不存在文件（非 `TBD`）→ **exit 2** · 点名 path
-- [ ] **A5 锚点绿 / TBD**（必做）：path 存在 → 不报消失；`TBD` 或不计失败形态 → **不**因 TBD 咬 exit 2
-- [ ] **A6 白名单**（必做）：配置豁免某一级目录后，A2 同类 fixture → exit 0（就该规则而言）；缺省无配置文件行为可测钉死
-- [ ] **A7 `--json`**（必做）：有漂移时 JSON 经 `printJson` 可解析且含差异字段；**既有**其它 `graph * --json` / 非 json 路径测零回归（只增）
-- [ ] **A8 只读**（必做）：成功与失败路径均**零写盘**目标 `_tech_graph`（对照 dry-run 纪律 · 可用 mtime/文件列表断言）
-- [ ] **A9 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿
-- [ ] **A10 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W3): …` · 禁 `git add -A` · 未 tag/push/publish/bump
-- [ ] **A-opt1 CI 样例**（可选 · 未做不挡 A10）：`assets/ci/samples/` 存在 drift 可选步骤（独立 example 或扩 `tech-graph.yml.example` 注释步）+ samples README 标注可选
+- [x] **A1 命令面**（必做）：`graph drift --help`（或父 `graph --help`）列出 drift 与旗标；`graph` 未知子命令不再把 `drift` 当未知吞掉后无用法
+- [x] **A2 模块覆盖红**（必做）：fixture 仓有一级候选目录（如 `src/`）但 `01_struct` 模块表无覆盖该根 → `graph drift` **exit 2** · 输出点名该目录
+- [x] **A3 模块覆盖绿**（必做）：表内 glob/根覆盖全部应检一级目录（或目录在白名单）→ 无此类漂移项 ·（若无锚点漂移）**exit 0**
+- [x] **A4 锚点消失红**（必做）：YAML 登记 `anchors[].path` 指向不存在文件（非 `TBD`）→ **exit 2** · 点名 path
+- [x] **A5 锚点绿 / TBD**（必做）：path 存在 → 不报消失；`TBD` 或不计失败形态 → **不**因 TBD 咬 exit 2
+- [x] **A6 白名单**（必做）：配置豁免某一级目录后，A2 同类 fixture → exit 0（就该规则而言）；缺省无配置文件行为可测钉死
+- [x] **A7 `--json`**（必做）：有漂移时 JSON 经 `printJson` 可解析且含差异字段；**既有**其它 `graph * --json` / 非 json 路径测零回归（只增）
+- [x] **A8 只读**（必做）：成功与失败路径均**零写盘**目标 `_tech_graph`（对照 dry-run 纪律 · 可用 mtime/文件列表断言）
+- [x] **A9 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿
+- [ ] **A10 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W3): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **30/40：gate-check + commit 已就绪 · `task close` 留 00**
+- [x] **A-opt1 CI 样例**（可选 · 未做不挡 A10）：`assets/ci/samples/` 存在 drift 可选步骤（独立 example 或扩 `tech-graph.yml.example` 注释步）+ samples README 标注可选
 
 ---
 
@@ -215,17 +215,19 @@ A1–A8 临时 fixture + exit/stdout/json 断言；A9–A10 四门+gate-check；
 
 ### 自检结论（执行者）
 
-（占位 · 30/40 关账前填写）
-
 | 项 | 结论 |
 |----|------|
-| GATE_VERIFY | — |
-| A1–A10 | — |
-| A-opt1 | — |
-| 四门 | — |
-| 未 bump/tag/push/publish | — |
+| GATE_VERIFY | PASS · HG-AUDIT-R1 approved · ✅ 可 30（`node bin/specgate.js verify --task …`） |
+| A1–A9 | PASS（`test/graph-drift.test.ts` 12 测） |
+| A10 | 部分：gate-check exit 0 + 待 commit；**`task close` 留 00** |
+| A-opt1 | 已做（`tech-graph.yml.example` 注释步 + samples README） |
+| 四门 | PASS · typecheck / test / build / test:lib |
+| 未 bump/tag/push/publish | 是 |
+| N1–N6 | 空/TBD 同跳过 · dogfood 旧列形兼容测锁 · 仅 `MODULE_DIR_CANDIDATES` · 锚点豁免 schema 已支持 · 旧测零回归 · SPEC W0 勾选归 00 |
 
 Wiki: none
+
+**旧测影响面（N5）**：`test/graph-*.test.ts` · `cli-graph-yaml-*` · scaffold / axioms / ontology 套件未改语义；本波只增 `graph drift`。
 
 ### KPI（00）
 

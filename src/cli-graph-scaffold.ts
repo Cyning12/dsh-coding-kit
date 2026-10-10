@@ -17,7 +17,8 @@ export const FLOW_MAX_NODES = 16
 export const DRAFT_MARKER = 'scaffold_status: draft'
 export const CHECKLIST_NAME = 'REVIEW_CHECKLIST.md'
 
-const MODULE_DIR_CANDIDATES = [
+/** 一级包/模块目录候选（脚手架推断与 graph drift 同族 · 可测钉死） */
+export const MODULE_DIR_CANDIDATES = [
   'src',
   'app',
   'api',

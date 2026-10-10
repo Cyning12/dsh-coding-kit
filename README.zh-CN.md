@@ -231,6 +231,7 @@ npx spec-wave lifecycle dry-run --transition ID --from STATE
 npx spec-wave discipline show [--target PATH] [--json]
 npx spec-wave graph yaml compile|check|export
 npx spec-wave graph scaffold [--target PATH] [--yes] …   # 生成 docs/_tech_graph 可审草稿（非已签收真值）
+npx spec-wave graph drift [--target PATH] [--input DIR] [--json]   # 漂移闸：模块覆盖 + 锚点消失（只报告 · 不重画）
 npx spec-wave graph ingest|snapshot|axioms
 npx spec-wave graph ontology check [--file PATH] [--json]   # 另支持 --hgm：事件轨图谱实例 ⊆ 随包本体词汇校验
 npx spec-wave sync index
@@ -252,6 +253,8 @@ npx spec-wave task check --file PATH
 kit **源码仓**以 `docs/_tech_graph/` 做 `graph yaml compile|check|export` 的 dogfood（**不随 npm 包发布**；https://github.com/Cyning12/SpecWave/tree/main/docs/_tech_graph）。
 
 **技术图谱脚手架（`graph scaffold` · 规划 3.1）**：在业务仓根执行可生成 `docs/_tech_graph/` **可审草稿**（顶层图 · 模块表 · 主流程 · `REVIEW_CHECKLIST.md`）。默认 dry-run；`--yes` 写盘。产物带草稿标记，**不是**已签收架构真值——`HG-GRAPH-MODULES` 须维护者人签。勿称「自动生成权威技术图谱」。
+
+**漂移闸（`graph drift` · 3.1 W3）**：对照 `01_struct` 模块表与 `*.graph.yaml` 锚点，报告一级包目录未覆盖 / 已登记 path 消失（`TBD`/空 path 跳过）；漂移 **exit 2**。可选白名单 `.spec-wave/graph-drift.yaml`（缺省无文件=全检；坏 YAML fail-closed）。**只报告，不自动重画**图谱。
 
 **图能力与本体的边界（3.0 ONTO-OPEN 裁决）**：图能力已开放 —— `graph yaml compile|check|export` 与消费者自建图今天可用，`graph ontology check [--file PATH]` 可校验随包本体或你指定的漂移副本；但随包本体（`assets/ontology.yaml`）是 SpecWave 自用元模型，**不提供自定义本体能力**（本体层不开放 · 消费者不可自定义类/关系 · 校验器开放 ≠ 本体内容开放）。复议触发（研究文 §7.3）：真实消费者请求 · ontology-check 面稳定一个 minor 后重估 · B5 后生态拉取 —— 走 HG-SCHEMA-CHANGE 式人闸。
 

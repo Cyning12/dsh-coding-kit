@@ -25,6 +25,7 @@ import {
   writeSnapshot,
 } from './cli-graph-hgm.ts'
 import { cmdGraphScaffold } from './cli-graph-scaffold.ts'
+import { cmdGraphDrift } from './cli-graph-drift.ts'
 
 export async function cmdGraph(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
@@ -44,6 +45,8 @@ export async function cmdGraph(args: string[]): Promise<void> {
   graph axioms check [--target PATH] [--json]
   graph ontology check [--file PATH] [--json]
   graph ontology check --hgm [--target PATH] [--file PATH] [--json]
+  graph drift [--target PATH] [--input DIR] [--json]
+                 （漂移闸 · 只报告不重画 · 模块覆盖 + 锚点消失）
 `)
     return
   }
@@ -54,6 +57,10 @@ export async function cmdGraph(args: string[]): Promise<void> {
   }
   if (sub === 'scaffold') {
     await cmdGraphScaffold(subRest)
+    return
+  }
+  if (sub === 'drift') {
+    await cmdGraphDrift(subRest)
     return
   }
   if (sub === 'ingest') {
