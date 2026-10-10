@@ -186,6 +186,47 @@ DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave
   - `.spec-wave/graph-vocab.yaml` —— F-1② 仓级词表扩展（与内置合并 · 冲突 fail-loud · 缺省文件=3.0.2 行为）· 诊断可用 `graph vocab show`
 - 指针：[`README.md`](./README.md) / [`README.zh-CN.md`](./README.zh-CN.md) 图谱节 · 使用手册 §10 · CHANGELOG `[3.1.0]`。
 - `3.0.0` 的 breaking 迁移仍见「2.4.2 → 3.0.0」节。
+- **3.2 图谱保真闸（文档见下节）**：`graph ib check` / `graph indexes check`（opt-in）· 与 `graph yaml *` 分责；**不**宣称已含 AST 深闸。
+
+## 消费仓 `graph:ci` / Python yaml 工具 → SpecWave `graph yaml`（双栈 · 无强制删脚本）
+
+> **状态：可选迁移**（2026-10-11 · 3.2 W4 文档）——消费仓可继续自备 Python / `graph:ci` 脚本；本包**不**强制删除。目标是能切（或双栈并行）到 `npx spec-wave graph yaml …`，并把保真闸与编译链分清。
+
+### ① 何时需要
+
+- 业务仓已有 `graph:ci`（或等价）用 Python/`pyyaml` 编译 `docs/_tech_graph/**/*.graph.yaml`，希望与 SpecWave CLI 对齐产物与 `graph_id` / label 口径。  
+- 或希望在 CI 中逐步用 CLI 替代自备脚本，同时保留旧脚本作对照。
+
+### ② 推荐步骤（可双栈并行）
+
+1. **钉包**：`package.json` 使用 `spec-wave`（版本以仓内 `package.json` / CHANGELOG 为准；`3.2.0` bump 属 W5 · 本波不发版）。  
+2. **编译链对照**（与自备脚本同输入目录，常见 `docs/_tech_graph`）：
+
+   ```bash
+   npx --yes spec-wave graph yaml compile --all --input docs/_tech_graph
+   npx --yes spec-wave graph yaml export --input docs/_tech_graph
+   npx --yes spec-wave graph yaml check --all --input docs/_tech_graph
+   ```
+
+3. **口径注意**（与旧 Python 栈差异最常见处）：  
+   - `graph_id` 以 yaml **声明值**（`data.graph_id`）为真值写入 export / check，不再用路径命名空间 id（见 README 图谱节 · 1.7.0+）。  
+   - 边 label / 拓扑协议标记（`?>` / `~>` / `::…`）在 export 侧保留；勿假设旧脚本丢 label。  
+   - 锚点注释 emit 为 Mermaid `%%`（非 `//`）；升级后须重跑 compile 再生 `*.md`。  
+4. **保真闸另跑**（**不是** `graph yaml *` 的替代）：见使用手册 §10「保真分责」——`graph drift`（边+模块表）· `graph ib check`（点 path）· `graph indexes check`（倒排双向 · **opt-in** · 须 `.spec-wave/graph-indexes.yaml` · **不**进默认 `verify`）。  
+5. **切 CI**：可将 `graph:ci` job 改为上列 `npx` 步骤，或注释保留旧脚本作对照；样例见 [`assets/ci/samples/tech-graph.yml.example`](./assets/ci/samples/tech-graph.yml.example)（可选注释步含 `graph drift` / `graph ib check`；**indexes 默认不写硬门禁**）。  
+6. **删 Python 脚本**：非本包义务；确认产物与闸绿后再由消费仓自行决定。
+
+### ③ 禁止事项
+
+- **禁止**宣称 SpecWave「已含 AST 深闸 / 符号级实现核对」——符号层 **未交付**（另 Epic）。  
+- **禁止**把 `graph indexes check` 绑进默认 `verify` 或 Starter CI 硬门禁样例。  
+- **禁止**用本迁移节暗示 breaking：不切 CLI 时既有自备脚本行为不变。
+
+### ④ 指针
+
+- 保真分责表：[`docs/guides/使用手册-v3.0.0-zh.md`](./docs/guides/使用手册-v3.0.0-zh.md) §10  
+- 双语总览：[`README.zh-CN.md`](./README.zh-CN.md) / [`README.md`](./README.md) 图谱节  
+- SPEC：`docs/spec/3_2-graph-ib-and-indexes/`（`03` §2 · `04` W4）
 
 ---
 ## 修订记录
@@ -207,3 +248,4 @@ DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave
 | 2026-09-18 | **3.0.1 patch**：增「3.0.0 → 3.0.1 无强制动作项」（粘性向后兼容 · 无强制迁移 · 可选了解 W5 旗标 / W6 WARN） |
 | 2026-09-23 | **3.0.2 patch**：增「3.0.1 → 3.0.2 无强制动作项」（additive 能力面 · F-1 词汇登记仅减告警 · consumer pins 可选启用 · 待发版 publish 仅人） |
 | 2026-10-10 | **3.1.0 minor**：增「3.0.2 → 3.1.0 无强制动作项」（scaffold/drift/vocab 可选启用 · 待发版 tag/push/publish 仅人 · 不暗示 breaking）· 头栏包钉对齐 `3.1.0` |
+| 2026-10-11 | **3.2 W4**：增「消费仓 graph:ci / Python yaml → SpecWave graph yaml」双栈可选迁移节 · 保真分责指针 · 禁 AST 已交付宣称 · indexes 不进硬门禁 |

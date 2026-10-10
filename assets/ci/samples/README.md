@@ -8,7 +8,7 @@
 |------|------|--------|----------------|
 | [`quality.yml.example`](./quality.yml.example) | ✅ | Node/TS · Next 等 | install → lint → test → build |
 | [`pytest.yml.example`](./pytest.yml.example) | ✅ | Python · FastAPI 等 | install → pytest |
-| [`tech-graph.yml.example`](./tech-graph.yml.example) | ✅ · **可选** | 已接入 `docs/_tech_graph` + `scripts/graph-compile.sh` | graph compile（业务仓自备脚本）。含注释可选步 `graph drift`（3.1 W3 · 非硬门禁 · 只报告不重画）。kit **自身**用源码仓 `.github/workflows/tech-graph.yml` + 本仓 bin compile/check，不走本样例脚本 |
+| [`tech-graph.yml.example`](./tech-graph.yml.example) | ✅ · **可选** | 已接入 `docs/_tech_graph` + `scripts/graph-compile.sh` | graph compile（业务仓自备脚本）。含注释可选步 `graph drift`（3.1 W3）· `graph ib check`（3.2 W1 · 非硬门禁）；**indexes 不写硬门禁**。可切 `npx spec-wave graph yaml …`（见仓根 `MIGRATION.md` 双栈节）。kit **自身**用源码仓 `.github/workflows/tech-graph.yml` + 本仓 bin compile/check，不走本样例脚本 |
 | [`hgm-ingest.yml.example`](./hgm-ingest.yml.example) | ✅ · **可选** | 任意已接入 Harness 的仓 | `graph ingest`（默认 continue-on-error） |
 | [`lint-wiki-delta.yml.example`](./lint-wiki-delta.yml.example) | ✅ · **可选** | ≥2.18 须有 `wiki_delta` 的仓 | 默认硬失败；注释含 `--strict` / 读 pin |
 | [`lint-wiki-delta.pin.yml.example`](./lint-wiki-delta.pin.yml.example) | ✅ · **可选** | 有 `harness.pin.json` 的仓 | 从 pin 解析版本再 `npx`（F-220-02） |
@@ -67,6 +67,7 @@ Ink workflow 含图谱 export、跨仓 checkout 等 **业务专有** 步骤；St
 
 | 日期 | 说明 |
 |------|------|
+| 2026-10-11 | `tech-graph.yml.example` 增注释可选步 `graph ib check`（3.2 W4 · 非硬门禁 · indexes 不写硬门禁） |
 | 2026-10-10 | `tech-graph.yml.example` 增注释可选步 `graph drift`（3.1 W3 · A-opt1 · 非硬门禁） |
 | 2026-08-28 | `tech-graph.yml.example` 行旁注：kit 自身 workflow 为源码仓 `.github/workflows/tech-graph.yml`（本仓 bin）；样例仍给自备 `graph-compile.sh` 的业务仓 |
 | 2026-07-28 | `lint-wiki-delta.pin.yml.example` · 样例矩阵 / Python 交叉链（v2.21 · web+ops FEEDBACK） |

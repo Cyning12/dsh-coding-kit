@@ -203,7 +203,7 @@ index_globs:
 
   it('A8 · 裸 verify 不强制跑 indexes check', async () => {
     const r = await runCore(
-      ['verify', '--target', '.', '--task', 'docs/tasks/active/task_3_2_w3_graph_indexes.md'],
+      ['verify', '--target', '.', '--task', 'docs/tasks/done/task_3_2_w3_graph_indexes.md'],
       KIT,
     )
     assert.equal(r.status, 0, r.combined)

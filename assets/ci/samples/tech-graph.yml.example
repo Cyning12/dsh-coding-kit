@@ -55,6 +55,12 @@ jobs:
       #   run: npx --yes spec-wave graph drift --target .
       #   continue-on-error: true
 
+      # 可选（3.2 W1 · 点路径闸 · 非硬门禁）：nodes[].implementedBy.path 存在性；无 AST
+      # - name: graph ib check（可选）
+      #   run: npx --yes spec-wave graph ib check --target .
+      #   continue-on-error: true
+      # 注意：graph indexes check 为 opt-in（须 .spec-wave/graph-indexes.yaml）· 默认不写硬门禁样例
+
       - name: Graph compile
         run: ./scripts/graph-compile.sh
-        # 业务仓须自备该脚本；递归分层仓写 shared/graph.json
+        # 业务仓须自备该脚本；也可逐步切到 npx spec-wave graph yaml compile|check|export（见仓根 MIGRATION.md 双栈节）
