@@ -1,7 +1,7 @@
 # ACCEPTANCE · 3.2.0 minor（图谱 IB · struct_rel · indexes · 迁移文档 epic · W1–W4）台账
 
 > **版本**：`spec-wave@3.2.0`（**待发版** · bump 已落 · tag/push/publish **仅人** · registry `latest` 仍为 `3.1.0` 直至人 publish · task slug `3-2-w5-release`）
-> **task**：[`docs/tasks/active/task_3_2_w5_release.md`](../tasks/active/task_3_2_w5_release.md)（slug `3-2-w5-release` · epic SPEC [`../spec/3_2-graph-ib-and-indexes/`](../spec/3_2-graph-ib-and-indexes/)）
+> **task**：[`docs/tasks/done/task_3_2_w5_release.md`](../tasks/done/task_3_2_w5_release.md)（slug `3-2-w5-release` · epic SPEC [`../spec/3_2-graph-ib-and-indexes/`](../spec/3_2-graph-ib-and-indexes/)）
 > **规划**：[`PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](PLAN_3_2_graph_ib_and_indexes_v1_zh.md)（HG-NEXT-PLAN=approved · 2026-10-10）
 > **SPEC**：[`../spec/3_2-graph-ib-and-indexes/`](../spec/3_2-graph-ib-and-indexes/)（HG-SPEC-SIGNOFF=approved · 2026-10-10）
 > **依据**：W1–W4 done tasks + 各波 R1 审查文（PASS · blocking 0）+ 20 审 R1 [`../harness/reviews/task_3_2_w5_release_audit_R1_20261011.md`](../harness/reviews/task_3_2_w5_release_audit_R1_20261011.md)

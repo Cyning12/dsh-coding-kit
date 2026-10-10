@@ -55,6 +55,8 @@
 
 ## W5 · 收尾对外 + release 簿记
 
+> **00 验收**：2026-10-11 · task `3-2-w5-release` · A1–A9 · `8ab40d1` · HG-RELEASE-* pending
+
 - [x] CHANGELOG / ACCEPTANCE / `docs/spec/README.md` 本行状态（2026-10-11 · 30 簿记 · IMPLEMENTED · 待发版）  
 - [x] bump `3.2.0` · pins 对齐 · **tag/push/publish 按当次授权**（publish 默认仅人 · 本棒未执行）  
 
