@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-2-w5-release
 
 > **日期**：2026-10-11 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_2_w5_release.md`](../../tasks/active/task_3_2_w5_release.md)（slug `3-2-w5-release` · `active` 初稿）  
+> **task**：[`docs/tasks/done/task_3_2_w5_release.md`](../../tasks/done/task_3_2_w5_release.md)（slug `3-2-w5-release` · `active` 初稿）  
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`04` W5](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md)（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md) **W5 · release**（HG-NEXT-PLAN=approved）  
 > **结构模板**：[`docs/tasks/done/task_3_1_w5_release.md`](../../tasks/done/task_3_1_w5_release.md)  

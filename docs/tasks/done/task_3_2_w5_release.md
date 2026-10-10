@@ -1,6 +1,6 @@
 # Task：3.2 W5 · release 收尾（3.1.0 → 3.2.0 · W1–W4 CLOSE 后发版簿记）
 
-> **状态**：`active` · **HG-AUDIT-R1=approved**（2026-10-11 **00 签收** · 可 30 簿记）· HG-RELEASE-* **pending**  
+> **状态**：`done` · **00 验收关账** 2026-10-11（A1–A9 · `8ab40d1`）· HG-RELEASE-* **pending**（tag/push/publish 待人）  
 
 > **上游 SPEC/PLAN**：[`3_2-graph-ib-and-indexes`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`04` W5](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) · [`PLAN_3_2`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md)  
 > **结构模板**：[`task_3_1_w5_release.md`](../done/task_3_1_w5_release.md)  
@@ -95,7 +95,7 @@ W1 ib check · W2 struct_rel · W3 indexes · W4 文档均 CLOSE 后，簿记 bu
 - [x] **A6**：无假「已 published 3.2.0」表述  
 - [x] **A7**：四门绿（pin-10 设计红除外口径同 3.1）  
 - [x] **A8**：工作树无 `v3.2.0` tag · 未 publish  
-- [ ] **A9**：gate-check + close · `chore(release): bump to 3.2.0` · **00 close**（gate-check ✅ · close 留 00）
+- [x] **A9**：gate-check + close · `chore(release): bump to 3.2.0` · **00 close**（gate-check ✅ · close 留 00）
 
 ---
 
@@ -197,6 +197,12 @@ VERIFY: PASS · task_3_2_w5_release.md
 
 ---
 
+### KPI（00）
+
+Task_KPI%: 96（A1–A9 · bump 3.2.0 · 发布三动作边界守住 · 四门仅 pin-10 设计红；扣分：无）
+
+- rubric：`KPI_RUBRIC_v1_2`
+
 ## 修订记录
 
 | 日期 | 摘要 |
@@ -204,3 +210,4 @@ VERIFY: PASS · task_3_2_w5_release.md
 | 2026-10-11 | 10-task 初稿 · 00 开拆 W5 · HG-RELEASE-* pending |
 | 2026-10-11 | 20 审 R1 PASS · **00 签收** 过程闸 · 可 30 簿记 · RELEASE 仍 pending |
 | 2026-10-11 | 30/40：bump 3.2.0 簿记 · A1–A8 · A9 close 留 00 · 未 tag/push/publish |
+| 2026-10-11 | **00 验收关账** · A9 close · HG-RELEASE-* 仍 pending · 待统一 PR |

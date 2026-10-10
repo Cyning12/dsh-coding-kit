@@ -70,11 +70,11 @@
 
 ## 验收总表（epic 级）
 
-- [ ] fixture：假 IB path → ib check exit 2；真 path → exit 0；无 IB → exit 0  
-- [ ] fixture：`struct_rel` 指向分层模块表 → drift 可按新路径工作；缺省行为 = 3.1  
-- [ ] fixture：indexes 单向漂移 → exit 2（在已配置前提下）  
-- [ ] 既有 drift / yaml / scaffold 基线零回归  
-- [ ] 对外无「已含 AST 深闸」违纪表述  
+- [x] fixture：假 IB path → ib check exit 2；真 path → exit 0；无 IB → exit 0  
+- [x] fixture：`struct_rel` 指向分层模块表 → drift 可按新路径工作；缺省行为 = 3.1  
+- [x] fixture：indexes 单向漂移 → exit 2（在已配置前提下）  
+- [x] 既有 drift / yaml / scaffold 基线零回归  
+- [x] 对外无「已含 AST 深闸」违纪表述  
 
 ## 修订
 

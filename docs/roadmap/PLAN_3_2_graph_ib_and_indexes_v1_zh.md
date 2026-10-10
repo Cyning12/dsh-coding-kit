@@ -133,3 +133,4 @@
 | 2026-10-11 | **W3 00 验收关账** · `8f2ed88` · indexes check · W4–W5 未开 |
 | 2026-10-11 | **W4 00 验收关账** · `cbad4a6` · 迁移文档 · W5 未开 |
 | 2026-10-11 | **W5 30 簿记** · bump `3.2.0` · ACCEPTANCE 落盘 · tag/push/publish 待人 |
+| 2026-10-11 | **W5 00 验收关账** · `8ab40d1` · bump 3.2.0 · HG-RELEASE-* pending · 待统一 PR |
