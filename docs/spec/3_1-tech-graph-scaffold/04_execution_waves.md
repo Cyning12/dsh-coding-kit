@@ -11,7 +11,7 @@
 - [x] **HG-SPEC-SIGNOFF=approved**（2026-10-10 维护者 · 「签收，拆W1」）  
 - [x] **HG-NEXT-PLAN=approved**（同窗）  
 - [x] 00 拆 **W1** task（本棒）；W2–W5 后续按波拆  
-- [ ] W5 task（**W4 已关** · W5 未开）  
+- [x] W5 task（**已关账** · 发布三动作待人）  
 
 ## W1 · 脚手架 + 生成后轻检 + 审核清单（核心 · 轨 A + 轨 B 轻量）
 
@@ -60,10 +60,12 @@
 
 ## W5 · 收尾对外 + release 簿记
 
-- [ ] CHANGELOG / MIGRATION / 使用手册 §图谱 更新  
-- [ ] `docs/spec/README.md` 本行状态翻到 IMPLEMENTED（随发版）  
-- [ ] ACCEPTANCE 台账  
-- [ ] bump `3.1.0` · pins 对齐 · **tag/push/publish 按当次授权**（publish 默认仅人）  
+> **00 验收**：2026-10-10 · task `3-1-w5-release` · 簿记 bump `1baccd1` · **tag/push/publish 仍仅人**（HG-RELEASE-* pending）
+
+- [x] CHANGELOG / MIGRATION / 使用手册 §图谱 更新  
+- [x] `docs/spec/README.md` 本行状态翻到 IMPLEMENTED（随发版簿记 · 非 published）  
+- [x] ACCEPTANCE 台账  
+- [x] bump `3.1.0` · pins 对齐 · **tag/push/publish 按当次授权**（publish 默认仅人 · **本波未执行**）  
 
 ## 编排理由
 

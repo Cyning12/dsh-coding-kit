@@ -8,6 +8,7 @@
 ## harness
 
 | 关账日 | task | 摘要 |
+| 2026-10-10 | [`task_3_1_w5_release.md`](./task_3_1_w5_release.md) | 3.1 W5 · release 簿记：bump 3.1.0 · CHANGELOG/MIGRATION/手册/ACCEPTANCE/spec IMPLEMENTED · pins 仅 pin-10 设计红 · **未** tag/push/publish · Task_KPI%: 96 |
 | 2026-10-10 | [`task_3_1_w4_graph_vocab.md`](./task_3_1_w4_graph_vocab.md) | 3.1 W4 · 仓级 graph-vocab：`.spec-wave/graph-vocab.yaml` + 内置合并 · 冲突/坏档 exit 2 · 缺省=3.0.2 · 登记≠封闭 · `graph vocab show` · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 97 |
 | 2026-10-10 | [`task_3_1_w3_graph_drift.md`](./task_3_1_w3_graph_drift.md) | 3.1 W3 · graph drift：一级包目录∈模块表 + 锚点 path 消失 + `.spec-wave/graph-drift.yaml` 白名单 + `--json` 只增 · 零写盘 · 红测 12 · CI 样例可选步 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-10-10 | [`task_3_1_w2_graph_dx.md`](./task_3_1_w2_graph_dx.md) | 3.1 W2 · 入手链 DX：INIT_QUICKSTART 第 4 步 graph scaffold · 手册/README · TASK_graph_bootstrap 优先 scaffold · kit-graph-check POINTER→REVIEW_CHECKLIST · A-opt1 跳过 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 95 |

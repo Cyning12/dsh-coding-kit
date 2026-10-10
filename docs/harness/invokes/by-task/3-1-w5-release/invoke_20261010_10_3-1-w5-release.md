@@ -8,7 +8,7 @@
 ## 动作
 
 1. 实读 R0：`package.json:3`（version=`3.0.2`）· `CHANGELOG.md:5-11`（无 `[3.1.0]`）· `pins check` 17/17 · `RELEASING.md:13`/`:82` · `docs/spec/README.md:27`（epic 未 IMPLEMENTED）· `MIGRATION.md` 无「3.0.2 → 3.1.0」· 手册头栏+§10.1（缺 drift/vocab）· 分支 `task/specwave-3-1-w5-release`  
-2. 新建 [`docs/tasks/active/task_3_1_w5_release.md`](../../../../tasks/active/task_3_1_w5_release.md)（沿 `task_3_0_2_release_bump` · **差异**：tag/push/publish 默认仅人）  
+2. 新建 [`docs/tasks/done/task_3_1_w5_release.md`](../../../../tasks/done/task_3_1_w5_release.md)（沿 `task_3_0_2_release_bump` · **差异**：tag/push/publish 默认仅人）  
 3. `node bin/specgate.js task lint --file docs/tasks/active/task_3_1_w5_release.md` → 目标 **LINT: PASS**
 
 ## 闸态（task 表）

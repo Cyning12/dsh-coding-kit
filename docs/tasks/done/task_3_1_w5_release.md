@@ -1,6 +1,7 @@
 # Task：3.1 W5 · release 收尾（3.0.2 → 3.1.0 · W1–W4 全 CLOSE 后发版簿记）
 
-> **状态**：`in_progress` · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1（2026-10-10 · 20 审 R1 PASS）· HG-RELEASE-* 仍 pending  
+> **状态**：`done` · **00 验收关账** 2026-10-10（A1–A12 · bump `1baccd1` · HG-RELEASE-* 仍 pending · 未 tag/push/publish）  
+
 
 > **wave**：release（3.1.0 **minor** · 技术图谱脚手架 epic 收口 · 同 3.0.2 / 3.0.0 release 先例 · **本版差异：tag/push/publish 三动作默认仅人**）  
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md)（**HG-SPEC-SIGNOFF=approved** · 2026-10-10）· 波钉 [`04_execution_waves.md`](../../spec/3_1-tech-graph-scaffold/04_execution_waves.md) **W5** + **验收总表**  
@@ -129,18 +130,18 @@
 
 ## 验收标准
 
-- [ ] **A1 bump 单点**：`package.json#version`=`3.1.0`（唯一手工版本改动 + lock 同步 · 无 `npm version` 痕迹）
-- [ ] **A2 CHANGELOG**：`[3.1.0]` 节齐（主题 minor · Added 归拢 W1–W4 · 发布状态「待发版 · tag/push/publish 仅人」）· Unreleased 空壳
-- [ ] **A3 pins 打 tag 前**：偏差**仅** pin-10（`v3.1.0` 缺失 · 设计红留痕入 ACCEPTANCE）· 其余钉面与 `3.1.0` 对齐
-- [ ] **A4 叙事真值**：全仓 grep 无「3.1.0 已 published」假叙事 · 手册/RELEASING/CHANGELOG/spec 索引的 registry latest 均写 `3.0.2`（直至人 publish）
-- [ ] **A5 ACCEPTANCE 档**：`ACCEPTANCE_3_1_tech_graph_scaffold_3_1_0_zh.md` 落盘（W1–W4 台账 + SPEC 验收总表对照 + 门禁基线 + pin-10 登记 + 发布边界）
-- [ ] **A6 spec 索引**：`3_1-tech-graph-scaffold` 行 → **IMPLEMENTED** + `3.1.0` 待发版措辞（pin-08 合格 · **非** published）
-- [ ] **A7 手册钉 + §10**：头栏 `spec-wave@3.1.0`（待发版）· §10 含 scaffold / drift / vocab（可审草稿口径 · 无违纪表述）· 现行示例 `@3.1.0`
-- [ ] **A8 RELEASING**：台账更新 · 人 checklist `3.1.0` 节预勾就绪项 · tag/push/publish **未勾** · 改后全量 npm test 绿
-- [ ] **A9 MIGRATION**：「3.0.2 → 3.1.0」节在档 · 无强制 · scaffold/drift/vocab 标可选启用 · 不暗示 breaking
-- [ ] **A10 未发版动作**：工作树**无** `v3.1.0` tag · **未** push · **未** publish / deprecate（与 HG-RELEASE-* =pending 一致）
-- [ ] **A11 四门**：`npm run typecheck` · `npm test`（打 tag 前允许 pin-10 相关设计红 · **非**产品回归）· `npm run build` · `npm run test:lib`
-- [ ] **A12 关账**：`gate-check` exit 0 + `task close --yes`（或 00 close）· 提交逐文件显式 add
+- [x] **A1 bump 单点**：`package.json#version`=`3.1.0`（唯一手工版本改动 + lock 同步 · 无 `npm version` 痕迹）
+- [x] **A2 CHANGELOG**：`[3.1.0]` 节齐（主题 minor · Added 归拢 W1–W4 · 发布状态「待发版 · tag/push/publish 仅人」）· Unreleased 空壳
+- [x] **A3 pins 打 tag 前**：偏差**仅** pin-10（`v3.1.0` 缺失 · 设计红留痕入 ACCEPTANCE）· 其余钉面与 `3.1.0` 对齐
+- [x] **A4 叙事真值**：全仓 grep 无「3.1.0 已 published」假叙事 · 手册/RELEASING/CHANGELOG/spec 索引的 registry latest 均写 `3.0.2`（直至人 publish）
+- [x] **A5 ACCEPTANCE 档**：`ACCEPTANCE_3_1_tech_graph_scaffold_3_1_0_zh.md` 落盘（W1–W4 台账 + SPEC 验收总表对照 + 门禁基线 + pin-10 登记 + 发布边界）
+- [x] **A6 spec 索引**：`3_1-tech-graph-scaffold` 行 → **IMPLEMENTED** + `3.1.0` 待发版措辞（pin-08 合格 · **非** published）
+- [x] **A7 手册钉 + §10**：头栏 `spec-wave@3.1.0`（待发版）· §10 含 scaffold / drift / vocab（可审草稿口径 · 无违纪表述）· 现行示例 `@3.1.0`
+- [x] **A8 RELEASING**：台账更新 · 人 checklist `3.1.0` 节预勾就绪项 · tag/push/publish **未勾** · 改后全量 npm test 绿
+- [x] **A9 MIGRATION**：「3.0.2 → 3.1.0」节在档 · 无强制 · scaffold/drift/vocab 标可选启用 · 不暗示 breaking
+- [x] **A10 未发版动作**：工作树**无** `v3.1.0` tag · **未** push · **未** publish / deprecate（与 HG-RELEASE-* =pending 一致）
+- [x] **A11 四门**：`npm run typecheck` · `npm test`（打 tag 前允许 pin-10 相关设计红 · **非**产品回归）· `npm run build` · `npm run test:lib`
+- [x] **A12 关账**：`gate-check` exit 0 + `task close --yes`（或 00 close）· 提交逐文件显式 add · **00 本窗 close**
 
 ---
 
@@ -252,7 +253,7 @@ VERIFY: PASS · task_3_1_w5_release.md
 - [x] A9 MIGRATION「3.0.2 → 3.1.0」可选启用
 - [x] A10 未发版动作（无 `v3.1.0` tag · 未 push · 未 publish/deprecate）
 - [x] A11 四门：typecheck 0 · npm test **960 · 957 pass + 2 设计红 + 1 skip** · build 0 · test:lib 6/6
-- [ ] A12 关账：gate-check 本棒跑 · **task close 留给 00**
+- [x] A12 关账：gate-check ✅ · **00 本窗 close**
 
 #### invoke
 
@@ -265,6 +266,12 @@ VERIFY: PASS · task_3_1_w5_release.md
 | 四门 | typecheck/build/test:lib 绿 · npm test 仅 pin-10 族设计红 ×2 |
 | 发布边界 | 已证：无 `v3.1.0` tag · 未 push · 未 publish |
 
+### KPI（00）
+
+Task_KPI%: 96（A1–A12 簿记全绿 · bump 3.1.0 · 假 published 零命中 · 发布三动作边界守住 · 四门仅 pin-10 设计红；扣分：无）
+
+- rubric：`KPI_RUBRIC_v1_2` · 30/40 簿记 + 00 签闸/关账
+
 ---
 
 ## 修订记录
@@ -273,3 +280,5 @@ VERIFY: PASS · task_3_1_w5_release.md
 |------|------|
 | 2026-10-10 | 初稿 · 10-task（SPEC/PLAN W5 · 沿 3.0.2 release 模板 · tag/push/publish 默认仅人 · HG-TASK-DRAFT/HG-AUDIT-R1/HG-RELEASE-*=pending · R0 实读行号钉齐） |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · HG-RELEASE-* 仍 pending · 可 30 簿记 |
+| 2026-10-10 | 30/40：bump 3.1.0 簿记 · `1baccd1` · A1–A11 |
+| 2026-10-10 | **00 验收关账** · A12 close · HG-RELEASE-* 仍 pending · 待人 tag/push/publish |

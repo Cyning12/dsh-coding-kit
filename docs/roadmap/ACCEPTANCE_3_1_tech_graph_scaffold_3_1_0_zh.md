@@ -1,7 +1,7 @@
 # ACCEPTANCE · 3.1.0 minor（技术图谱脚手架 epic · W1–W4）台账
 
 > **版本**：`spec-wave@3.1.0`（**待发版** · bump 已落 · tag/push/publish **仅人** · registry `latest` 仍为 `3.0.2` 直至人 publish · task slug `3-1-w5-release`）
-> **task**：[`docs/tasks/active/task_3_1_w5_release.md`](../tasks/active/task_3_1_w5_release.md)（slug `3-1-w5-release` · epic SPEC [`../spec/3_1-tech-graph-scaffold/`](../spec/3_1-tech-graph-scaffold/)）
+> **task**：[`docs/tasks/done/task_3_1_w5_release.md`](../tasks/done/task_3_1_w5_release.md)（slug `3-1-w5-release` · epic SPEC [`../spec/3_1-tech-graph-scaffold/`](../spec/3_1-tech-graph-scaffold/)）
 > **规划**：[`PLAN_3_1_tech_graph_scaffold_v1_zh.md`](PLAN_3_1_tech_graph_scaffold_v1_zh.md)（HG-NEXT-PLAN=approved · 2026-10-10）
 > **SPEC**：[`../spec/3_1-tech-graph-scaffold/`](../spec/3_1-tech-graph-scaffold/)（HG-SPEC-SIGNOFF=approved · 2026-10-10）
 > **依据**：W1–W4 done tasks + 各波 R1 审查文（PASS · blocking 0）+ 20 审 R1 [`../harness/reviews/task_3_1_w5_release_audit_R1_20261010.md`](../harness/reviews/task_3_1_w5_release_audit_R1_20261010.md)

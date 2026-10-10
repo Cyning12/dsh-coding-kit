@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-1-w5-release
 
 > **日期**：2026-10-10 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_1_w5_release.md`](../../tasks/active/task_3_1_w5_release.md)（slug `3-1-w5-release` · `draft`）  
+> **task**：[`docs/tasks/done/task_3_1_w5_release.md`](../../tasks/done/task_3_1_w5_release.md)（slug `3-1-w5-release` · `draft`）  
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/04_execution_waves.md`](../../spec/3_1-tech-graph-scaffold/04_execution_waves.md) **W5** + **验收总表**（epic · HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) **W5 · release**（HG-NEXT-PLAN=approved）  
 > **10 invoke**：[`invoke_20261010_10_3-1-w5-release.md`](../invokes/by-task/3-1-w5-release/invoke_20261010_10_3-1-w5-release.md)  
