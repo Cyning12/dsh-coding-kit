@@ -50,6 +50,11 @@ jobs:
       # - name: harness graph check（示例）
       #   run: npx --yes spec-wave graph --help
 
+      # 可选（3.1 W3 · 漂移闸 · 非硬门禁）：模块表覆盖 + 锚点 path 消失；只报告不重画
+      # - name: graph drift（可选）
+      #   run: npx --yes spec-wave graph drift --target .
+      #   continue-on-error: true
+
       - name: Graph compile
         run: ./scripts/graph-compile.sh
         # 业务仓须自备该脚本；递归分层仓写 shared/graph.json

@@ -5,7 +5,7 @@
 # 定位：SpecWave 自用元模型 · 不提供自定义本体能力（3.0 ONTO-OPEN 裁决 · 复议触发见研究文 w3_ontology_graph_research_20260917 §7.3 · 走 HG-SCHEMA-CHANGE 式人闸）
 
 version: "1.3"
-product_semver: "3.0.2" # 自旧包 cyning-harness 2.0.4 迁移，对齐本包 package.json
+product_semver: "3.1.0" # 自旧包 cyning-harness 2.0.4 迁移，对齐本包 package.json
 license: MIT
 
 classes:

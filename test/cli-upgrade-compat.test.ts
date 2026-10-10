@@ -106,7 +106,7 @@ async function assertS2Unchanged(dir: string, hashes: Record<string, string>): P
 }
 
 describe('C2 CLI upgrade compat', { concurrency: 1 }, () => {
-  it('C2: from_version 单列 — 1.2.0 fixture upgrade --yes 钉 3.0.2 且 from_version=1.2.0', async () => {
+  it('C2: from_version 单列 — 1.2.0 fixture upgrade --yes 钉 3.1.0 且 from_version=1.2.0', async () => {
     await withTemp(async (dir) => {
       await writeRel(
         dir,
@@ -127,7 +127,7 @@ describe('C2 CLI upgrade compat', { concurrency: 1 }, () => {
       const r = runCli(['upgrade', '--yes'], dir)
       assert.equal(r.status, 0, r.combined)
       const mf = await readManifest(dir)
-      assert.equal(mf.version, '3.0.2')
+      assert.equal(mf.version, '3.1.0')
       assert.equal(Object.prototype.hasOwnProperty.call(mf, 'from_version'), true)
       assert.equal(mf.from_version, '1.2.0')
       assert.notEqual(mf.from_version, null)
@@ -136,14 +136,14 @@ describe('C2 CLI upgrade compat', { concurrency: 1 }, () => {
     })
   })
 
-  it('C2: 旧 manifest + S2 上 upgrade --yes 钉 3.0.2，from_version=旧号，S2 哈希不变', async () => {
+  it('C2: 旧 manifest + S2 上 upgrade --yes 钉 3.1.0，from_version=旧号，S2 哈希不变', async () => {
     await withTemp(async (dir) => {
       await seedOldManifest(dir)
       const hashes = await seedS2(dir)
       const r = runCli(['upgrade', '--yes'], dir)
       assert.equal(r.status, 0, r.combined)
       const mf = await readManifest(dir)
-      assert.equal(mf.version, '3.0.2')
+      assert.equal(mf.version, '3.1.0')
       assert.notEqual(mf.version, '1.0.0')
       assert.notEqual(mf.version, '0.1.0')
       assert.equal(Object.prototype.hasOwnProperty.call(mf, 'from_version'), true)
@@ -163,7 +163,7 @@ describe('C2 CLI upgrade compat', { concurrency: 1 }, () => {
       const second = runCli(['upgrade', '--yes'], dir)
       assert.equal(second.status, 0, second.combined)
       const mf = await readManifest(dir)
-      assert.equal(mf.version, '3.0.2')
+      assert.equal(mf.version, '3.1.0')
       assert.equal(mf.from_version, OLD_VERSION)
       assert.notEqual(mf.from_version, null)
       await assertLegacyPreserved(dir)
@@ -171,9 +171,9 @@ describe('C2 CLI upgrade compat', { concurrency: 1 }, () => {
     })
   })
 
-  it('check: 已钉 3.0.2 → 已是最新 exit 0；旧 version → 可升级', async () => {
+  it('check: 已钉 3.1.0 → 已是最新 exit 0；旧 version → 可升级', async () => {
     await withTemp(async (dir) => {
-      // DEF-013：OLD_VERSION=2.24.0 数值上高于包版本 3.0.2，三向判定后属高版本分支；
+      // DEF-013：OLD_VERSION=2.24.0 数值上高于包版本 3.1.0，三向判定后属高版本分支；
       // 本用例钉「低版本 → 可升级」语义，fixture 改用真实低版本 1.2.0（断言不变）
       await writeRel(
         dir,

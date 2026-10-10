@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md) | English
 
-**SpecWave** (`spec-wave@3.0.2`) is a **multi-host coding CLI** — one declarative adapt table lands natively on Cursor, Claude Code, optional DSH, agents, and more — with **P0 gate / Harness process commands** and IDE landing. Discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
+**SpecWave** (`spec-wave@3.1.0`) is a **multi-host coding CLI** — one declarative adapt table lands natively on Cursor, Claude Code, optional DSH, agents, and more — with **P0 gate / Harness process commands** and IDE landing. Discipline assets remain ICVO (Inform · Constrain · Verify · Orchestrate).
 
 > **Loading ≠ injecting.** Installing or loading the optional DSH plugin does **not** automatically rewrite the system prompt. `apply()` only registers tools. Only after you or the model calls `apply_coding_standards` will later turns' runtime context contain `# Coding Standards`.
 >
@@ -23,24 +23,24 @@ node -v   # expect v22.19+ or v24+
 
 ## Quick start (5 steps)
 
-Primary entry is **`npx spec-wave`** from npm **`spec-wave@3.0.2`**. Plugin surface and CLI surface do not replace each other.
+Primary entry is **`npx spec-wave`** from npm **`spec-wave@3.1.0`**. Plugin surface and CLI surface do not replace each other.
 
 ```bash
 # 1) Confirm package (pin recommended)
-npx spec-wave@3.0.2 --version
+npx spec-wave@3.1.0 --version
 
 # 2) Validate adapt table (dry)
-npx spec-wave@3.0.2 host validate
+npx spec-wave@3.1.0 host validate
 
 # 3) Materialize hosts (dry-run, then write)
-npx spec-wave@3.0.2 host apply --tools cursor,claude,dsh --profile core
-npx spec-wave@3.0.2 host apply --tools cursor,claude,dsh --profile core --yes
+npx spec-wave@3.1.0 host apply --tools cursor,claude,dsh --profile core
+npx spec-wave@3.1.0 host apply --tools cursor,claude,dsh --profile core --yes
 
 # 4) Or first-time init (process root + host select)
-npx spec-wave@3.0.2 init --preset harness-only --tools cursor,claude,dsh --yes
+npx spec-wave@3.1.0 init --preset harness-only --tools cursor,claude,dsh --yes
 
 # 5) After you have a task.md — mechanical gate (exit 2 = hard stop)
-npx spec-wave@3.0.2 verify --task docs/tasks/active/task_<slug>.md
+npx spec-wave@3.1.0 verify --task docs/tasks/active/task_<slug>.md
 ```
 
 After `--yes`, Cursor should see `kit-verify` / …; Claude Code `/kit:verify`; DSH `.dsh/skills/kit-*`. Full host matrix and Entry A/B encyclopedia: [Multi-host matrix](#multi-host-matrix) · [Entry A · DSH plugin](#entry-a--dsh-plugin) · [Entry B · CLI](#entry-b--cli-cursor--claude-code--ci). Concepts: [Core objects](#core-objects) · [GLOSSARY.md](GLOSSARY.md).
@@ -49,11 +49,11 @@ After `--yes`, Cursor should see `kit-verify` / …; Claude Code `/kit:verify`; 
 
 CLI **never** writes example tasks into your `docs/tasks/` (S2). You copy the template yourself:
 
-1. `npx spec-wave@3.0.2 sync prompts --yes` (materializes `docs/harness/templates/TASK_TEMPLATE.md` among prompts).
+1. `npx spec-wave@3.1.0 sync prompts --yes` (materializes `docs/harness/templates/TASK_TEMPLATE.md` among prompts).
 2. Copy the template → `docs/tasks/active/task_<slug>.md` (your action).
 3. If meta sets **`test_strategy=required`**: add a **failing** automated test for the critical path **before** hat 30 changes implementation; then implement until green.
 4. Human-gate table must be **4 columns**; `HG-AUDIT-R1` → `approved` before hat 30 may change code.
-5. `npx spec-wave@3.0.2 task lint --file docs/tasks/active/task_<slug>.md` then `verify --task …`.
+5. `npx spec-wave@3.1.0 task lint --file docs/tasks/active/task_<slug>.md` then `verify --task …`.
 
 Details: template path above · [Core objects](#core-objects) · [GLOSSARY.md](GLOSSARY.md).
 
@@ -101,7 +101,7 @@ One declarative table → native landing on several hosts (always_on + skills + 
 
 ```bash
 # After upgrading the package: refresh sticky hosts (no need to re-list --tools)
-npx spec-wave@3.0.2 host update --yes
+npx spec-wave@3.1.0 host update --yes
 ```
 
 Full matrix: [`assets/ide/host-adapt/README.md`](assets/ide/host-adapt/README.md) · dogfood/recording: [`docs/guides/DOGFOOD_host_adapt_cursor_claude_录屏清单_v1_zh.md`](docs/guides/DOGFOOD_host_adapt_cursor_claude_录屏清单_v1_zh.md) · plan: [`docs/roadmap/PLAN_2_1_1_host_tools_ux_v1_zh.md`](docs/roadmap/PLAN_2_1_1_host_tools_ux_v1_zh.md).
@@ -150,7 +150,7 @@ Minimal skeleton (full field list in the template):
 - **Where it comes from**: written by you or your agent (hat 10 flow) — the CLI does not materialize spec files.
 - **Where it lives**: `docs/spec/` (this repo keeps specs under `docs/spec/<topic>/`, e.g. `docs/spec/2_2-closed-loop-start/`).
 
-The same three-step chain is printed by `npx spec-wave init` (quickstart) — step 3 requires your project to be a git repository (run `git init` first if needed; `verify` checks git-root ownership). Terminology (Harness / hats / gates / S2) is collected in [GLOSSARY.md](GLOSSARY.md) (bilingual glossary — links back to this section).
+The same quickstart chain is printed by `npx spec-wave init` — step 3 requires your project to be a git repository (run `git init` first if needed; `verify` checks git-root ownership). Step 4 (optional) points to `npx spec-wave graph scaffold` for a **reviewable draft** under `docs/_tech_graph/` (not signed architecture truth; see graph section below). Terminology (Harness / hats / gates / S2) is collected in [GLOSSARY.md](GLOSSARY.md) (bilingual glossary — links back to this section).
 
 ---
 ## Entry A · DSH plugin
@@ -231,6 +231,8 @@ npx spec-wave lifecycle show [--target PATH] [--json]
 npx spec-wave lifecycle dry-run --transition ID --from STATE
 npx spec-wave discipline show [--target PATH] [--json]
 npx spec-wave graph yaml compile|check|export
+npx spec-wave graph scaffold [--target PATH] [--yes] …   # draft tech-graph under docs/_tech_graph (reviewable, not signed truth)
+npx spec-wave graph drift [--target PATH] [--input DIR] [--json]   # drift gate: module coverage + missing anchors (report only · no redraw)
 npx spec-wave graph ingest|snapshot|axioms
 npx spec-wave graph ontology check [--file PATH] [--json]   # + --hgm: instance check of the event-sourced graph against the bundled ontology
 npx spec-wave sync index
@@ -250,6 +252,12 @@ npx spec-wave task check --file PATH
 `host apply` / `host update` sniff the host-adapt table version and optional `@deepseek-ai/dsh-tools` peer (**U-01**): mismatch → exit 2 and no writes (`--json` includes `contract.status`). `--tools dsh` keeps commands=[] (no `.dsh/commands/`) and lands orchestration as `.dsh/skills/kit-*`. **`host update` without `--tools`** uses sticky `.coding-kit/host-tools.json` (else exit 1). See **Multi-host in one package** above.
 
 This **source repo** dogfoods `graph yaml compile|check|export` against `docs/_tech_graph/` (**not** shipped in the npm package; https://github.com/Cyning12/SpecWave/tree/main/docs/_tech_graph).
+
+**Tech-graph scaffold (`graph scaffold`, planned 3.1)**: from a business-repo root, generates a **reviewable draft** under `docs/_tech_graph/` (main graph · module table · primary flow · `REVIEW_CHECKLIST.md`). Default is dry-run; `--yes` writes. Output is draft-marked — **not** signed architecture truth (`HG-GRAPH-MODULES` remains for humans). Do not call it an “authoritative auto graph”.
+
+**Drift gate (`graph drift`, 3.1 W3)**: checks `01_struct` module coverage and registered `*.graph.yaml` anchor paths (skip `TBD` / empty); drift → **exit 2**. Optional whitelist `.spec-wave/graph-drift.yaml` (missing file = full check; bad YAML fail-closed). **Report only — does not redraw** graphs.
+
+**Repo vocab extension (`.spec-wave/graph-vocab.yaml`, 3.1 W4)**: optional consumer file merged with the bundled `assets/tech-graph-vocab.yaml` on `graph yaml compile|check|export`. Declare extra `edge_types` (and/or `kinds`) so custom explicit edge types stop emitting the “未在 tech-graph 词汇登记档” Warning. Missing file = 3.0.2 builtin-only behavior. Bad YAML / schema / kind `id`+`class` conflicts with builtin → **exit 2** (fail-loud, names the path/key). Registration is not a closed world: unregistered explicit types still Warning and do **not** fail the exit code. Diagnose with `graph vocab show [--target PATH] [--json]`.
 
 **Graph capability vs. ontology layer (3.0 ONTO-OPEN ruling)**: the graph surface is open — `graph yaml compile|check|export` works on consumer-authored graphs today, and `graph ontology check [--file PATH]` validates the bundled ontology file or a drifted copy you point it at. The bundled ontology (`assets/ontology.yaml`) is SpecWave's self-use meta-model, however — **不提供自定义本体能力**（the ontology layer is **not** open: no consumer-defined classes/relations; validator open ≠ ontology content open）. Re-examination triggers (research doc §7.3): a real consumer request · re-evaluation after the ontology-check surface stays stable for one minor · post-B5 ecosystem pull — via an HG-SCHEMA-CHANGE-style human gate.
 
@@ -353,15 +361,15 @@ pins:
 
 Full checklist, layout rules (F4 scheme B), and **published** EOS / deprecate calendar: see [`MIGRATION.md`](./MIGRATION.md).
 
-After pinning **spec-wave@3.0.2** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
+After pinning **spec-wave@3.1.0** you can drop `@cyning/harness`. Minimal path, three steps (required, in order):
 
-1. Replace the `devDependency` `@cyning/harness` with `spec-wave` (pin `3.0.2`; formerly `dsh-coding-kit`).
-2. Run `npx spec-wave upgrade --yes` at the repo root (reads `.coding-kit/manifest.json` if present, else legacy `.cyning-harness/manifest.json`; **writes** `.coding-kit/manifest.json` with `version` pinned at 3.0.2 and `from_version` recording the old number; **does not delete** `.cyning-harness/`).
+1. Replace the `devDependency` `@cyning/harness` with `spec-wave` (pin `3.1.0`; formerly `dsh-coding-kit`).
+2. Run `npx spec-wave upgrade --yes` at the repo root (reads `.coding-kit/manifest.json` if present, else legacy `.cyning-harness/manifest.json`; **writes** `.coding-kit/manifest.json` with `version` pinned at 3.1.0 and `from_version` recording the old number; **does not delete** `.cyning-harness/`).
 3. In CI / scripts, replace `npx @cyning/harness` / `npx dsh-coding-kit` with `npx spec-wave`.
 
 **Layout**: new kit process files land under **`.coding-kit/`**. `.cyning-harness/` remains **legacy read-only**. Do not treat `.cyning-harness` as the new standard root.
 
-Skill installation is **recommended, not required** (the minimal path does not depend on DSH scanning skills). Commands are always `npx spec-wave`. **`@cyning/harness` is deprecated** on npm (2026-09-10 · maintainer-only); pin **`spec-wave@3.0.2`** and migrate via `MIGRATION.md`.
+Skill installation is **recommended, not required** (the minimal path does not depend on DSH scanning skills). Commands are always `npx spec-wave`. **`@cyning/harness` is deprecated** on npm (2026-09-10 · maintainer-only); pin **`spec-wave@3.1.0`** and migrate via `MIGRATION.md`.
 
 ### FAQ · pnpm peer
 
@@ -372,12 +380,12 @@ If pnpm install still fails on the peer chain (e.g. resolving to an unpublished 
 Paste the whole block:
 
 ````text
-You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to spec-wave@3.0.2.
+You = the maintenance agent of this repository. Migrate this repo from @cyning/harness to spec-wave@3.1.0.
 
 Minimal path (required, in order):
-1. package.json devDependency: delete @cyning/harness, replace with spec-wave (pinned at 3.0.2; formerly dsh-coding-kit).
+1. package.json devDependency: delete @cyning/harness, replace with spec-wave (pinned at 3.1.0; formerly dsh-coding-kit).
 2. Run at the repo root: npx spec-wave upgrade --yes
-   (reads .coding-kit/manifest.json or legacy .cyning-harness/manifest.json; writes .coding-kit/manifest.json; version pinned at 3.0.2, from_version records the old number; never deletes .cyning-harness/; never overwrites docs/tasks, reviews, invokes/by-task.)
+   (reads .coding-kit/manifest.json or legacy .cyning-harness/manifest.json; writes .coding-kit/manifest.json; version pinned at 3.1.0, from_version records the old number; never deletes .cyning-harness/; never overwrites docs/tasks, reviews, invokes/by-task.)
 3. Replace every npx @cyning/harness and npx dsh-coding-kit in CI and scripts with npx spec-wave.
 Commands are always npx spec-wave. Never write npx @cyning/harness skills build again.
 See MIGRATION.md for layout (.coding-kit vs legacy) and EOS calendar (pending human gates).
@@ -441,7 +449,7 @@ Three surfaces, not interchangeable: **System/Re-anchor** = short identity; **fu
 
 ## Releasing (maintainers)
 
-**Current package**: **`spec-wave@3.0.2`** — **published** (registry `latest=3.0.2` · `time.3.0.2`=2026-09-24T00:55:45.386Z · tag `v3.0.2` ↔ tip `3d71b90` · verified 2026-09-24). Prior published: **`3.0.1`** (signal-quality patch) · **`3.0.0`** (architecture leap) · **`2.4.2`** (acceptance-fixes patch) · **`2.4.1`** (acceptance-fixes patch) · **`2.4.0`** (gate strength) · **`2.3.1`** (acceptance-fixes patch) · **`2.3.0`** (wiring completion) · **`2.2.1`** (acceptance-fixes patch) · **`2.2.0`** (closed-loop start).
+**Current package**: **`spec-wave@3.1.0`** — **pending release** (bump landed · tag/push/publish human-only · registry `latest` still **`3.0.2`** until human publish). Prior published: **`3.0.2`** (consumer-feedback patch · registry `latest=3.0.2` · `time.3.0.2`=2026-09-24T00:55:45.386Z · tag `v3.0.2` ↔ tip `3d71b90`) · **`3.0.1`** (signal-quality patch) · **`3.0.0`** (architecture leap) · **`2.4.2`** (acceptance-fixes patch) · **`2.4.1`** (acceptance-fixes patch) · **`2.4.0`** (gate strength) · **`2.3.1`** (acceptance-fixes patch) · **`2.3.0`** (wiring completion) · **`2.2.1`** (acceptance-fixes patch) · **`2.2.0`** (closed-loop start).
 
 Release process: see [RELEASING.md](RELEASING.md) — hard pre-publish checklist (commit-before-publish · four green gates · version pins · Agent may bump/tag · **human-only `npm publish`**; institutionalizes the DEF-001 lesson).
 

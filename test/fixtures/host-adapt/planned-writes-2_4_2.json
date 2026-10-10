@@ -1,9 +1,6 @@
 {
-  "note": "3.0 W1 验收 #1 compat 回归锁：2.4.2 版 mvp-hosts.yaml（test/fixtures/host-adapt/mvp-hosts_2_4_2.yaml · 与 git tag v2.4.2 逐字一致）的 planned writes 快照 · 新版 host apply 计划须与本快照逐字一致（防 v1 兼容桥/映射漂移 · 评审文 §3.3）",
   "source_fixture": "test/fixtures/host-adapt/mvp-hosts_2_4_2.yaml",
   "source_sha256": "b80f9a15e7da9051689b957daf737b4799f4a2392d6a9130dcaee770f2203894",
-  "generated_at": "2026-09-16",
-  "generated_by": "spec-wave 2.4.2 行为面（W1 阶段一改码后复跑同值 · planApply 直采）",
   "toolIds": [
     "dsh",
     "cursor",
@@ -1065,7 +1062,7 @@
           "destRel": ".cursor/commands/kit-graph-check.md",
           "sourceRel": "assets/ide/commands/cursor/kit-graph-check.md",
           "op": "write",
-          "sha256": "b7b40559a350ce632aa689b2d5ed95b5f12505b0df4a3f991bc57e35f3109df0"
+          "sha256": "424e225078fb486bb387c09b3cf5d46bcf2ac99283d0fe83deaf6fe6bcc32c26"
         },
         {
           "hostId": "cursor",
@@ -1225,7 +1222,7 @@
           "destRel": ".claude/commands/kit/graph-check.md",
           "sourceRel": "assets/ide/commands/claude/kit/graph-check.md",
           "op": "write",
-          "sha256": "3bf7104802090cf600d7da971632068949db26b30086a59a60c02559bd5f4006"
+          "sha256": "846cac72e5e5dc7069c13e5e15210844aa4118438f96a9e3f50f1534017359f7"
         },
         {
           "hostId": "claude",

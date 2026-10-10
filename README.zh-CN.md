@@ -2,7 +2,7 @@
 
 简体中文 | [English](README.md)
 
-**SpecWave**（`spec-wave@3.0.2`）是 **多宿主编码 CLI**——单一声明式适配表原生落点 Cursor · Claude Code · 可选 DSH · agents 等——带 **P0 闸 / Harness 过程命令** 与 IDE 物化。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
+**SpecWave**（`spec-wave@3.1.0`）是 **多宿主编码 CLI**——单一声明式适配表原生落点 Cursor · Claude Code · 可选 DSH · agents 等——带 **P0 闸 / Harness 过程命令** 与 IDE 物化。纪律资产仍是 ICVO（Inform · Constrain · Verify · Orchestrate）。
 
 > **加载 ≠ 注入。** 安装或加载可选 DSH 插件 **不会** 自动改写 system prompt。`apply()` 只注册工具。必须由你或模型调用 `apply_coding_standards` 之后，后续回合的 runtime context 才会含 `# Coding Standards`。
 >
@@ -23,24 +23,24 @@ node -v   # 期望 v22.19+ 或 v24+
 
 ## 最小上手（5 步）
 
-主入口是 npm 包 **`spec-wave@3.0.2`** 的 **`npx spec-wave`**。插件面与 CLI 面互不替代。
+主入口是 npm 包 **`spec-wave@3.1.0`** 的 **`npx spec-wave`**。插件面与 CLI 面互不替代。
 
 ```bash
 # 1）确认包版本（推荐钉版）
-npx spec-wave@3.0.2 --version
+npx spec-wave@3.1.0 --version
 
 # 2）校验适配表（dry）
-npx spec-wave@3.0.2 host validate
+npx spec-wave@3.1.0 host validate
 
 # 3）物化宿主（先 dry-run，再写盘）
-npx spec-wave@3.0.2 host apply --tools cursor,claude,dsh --profile core
-npx spec-wave@3.0.2 host apply --tools cursor,claude,dsh --profile core --yes
+npx spec-wave@3.1.0 host apply --tools cursor,claude,dsh --profile core
+npx spec-wave@3.1.0 host apply --tools cursor,claude,dsh --profile core --yes
 
 # 4）或首次 init（过程根 + 宿主选型）
-npx spec-wave@3.0.2 init --preset harness-only --tools cursor,claude,dsh --yes
+npx spec-wave@3.1.0 init --preset harness-only --tools cursor,claude,dsh --yes
 
 # 5）有 task.md 后跑机械闸（exit 2 = 硬停）
-npx spec-wave@3.0.2 verify --task docs/tasks/active/task_<slug>.md
+npx spec-wave@3.1.0 verify --task docs/tasks/active/task_<slug>.md
 ```
 
 `--yes` 后：Cursor 可见 `kit-verify` 等；Claude Code `/kit:verify`；DSH `.dsh/skills/kit-*`。完整宿主矩阵与入口百科见 [一包多宿主矩阵](#一包多宿主矩阵) · [入口 A · DSH 插件](#入口-a--dsh-插件) · [入口 B · CLI](#入口-b--clicursor--claude-code--ci)。概念：[核心对象](#核心对象) · [GLOSSARY.md](GLOSSARY.md)。
@@ -49,11 +49,11 @@ npx spec-wave@3.0.2 verify --task docs/tasks/active/task_<slug>.md
 
 CLI **永不**向你的 `docs/tasks/` 写入示例 task（S2）。模板须你自己复制：
 
-1. `npx spec-wave@3.0.2 sync prompts --yes`（物化含 `docs/harness/templates/TASK_TEMPLATE.md`）。
+1. `npx spec-wave@3.1.0 sync prompts --yes`（物化含 `docs/harness/templates/TASK_TEMPLATE.md`）。
 2. 复制模板 → `docs/tasks/active/task_<slug>.md`（你的显式动作）。
 3. 若元信息 **`test_strategy=required`**：帽 30 改实现**前**须先有关键路径的**可失败**自动化测试，再改实现至绿。
 4. 人工闸表须 **4 列**；`HG-AUDIT-R1` → `approved` 后帽 30 才可改码。
-5. `npx spec-wave@3.0.2 task lint --file docs/tasks/active/task_<slug>.md`，再 `verify --task …`。
+5. `npx spec-wave@3.1.0 task lint --file docs/tasks/active/task_<slug>.md`，再 `verify --task …`。
 
 详见模板路径 · [核心对象](#核心对象) · [GLOSSARY.md](GLOSSARY.md)。
 
@@ -101,7 +101,7 @@ CLI **永不**向你的 `docs/tasks/` 写入示例 task（S2）。模板须你�
 
 ```bash
 # 升包后：刷粘性已选宿主（不必再抄 --tools）
-npx spec-wave@3.0.2 host update --yes
+npx spec-wave@3.1.0 host update --yes
 ```
 
 完整矩阵见 [`assets/ide/host-adapt/README.md`](assets/ide/host-adapt/README.md)；录屏清单见 [`docs/guides/DOGFOOD_host_adapt_cursor_claude_录屏清单_v1_zh.md`](docs/guides/DOGFOOD_host_adapt_cursor_claude_录屏清单_v1_zh.md)；规划见 [`docs/roadmap/PLAN_2_1_1_host_tools_ux_v1_zh.md`](docs/roadmap/PLAN_2_1_1_host_tools_ux_v1_zh.md)。
@@ -150,8 +150,7 @@ Harness 过程围绕两个文件级对象运转。`verify --task <task.md>` / `g
 - **从哪来**：由你或你的 Agent 撰写（帽 10 流程）——CLI 不物化 spec 文件。
 - **放哪**：`docs/spec/`（本仓按主题分目录，如 `docs/spec/2_2-closed-loop-start/`）。
 
-同一条三步链由 `npx spec-wave init` 打印（quickstart）——第 3 步前提：项目须为 git 仓（先 `git init`；`verify` 有 git-root 归属校验）。术语（Harness / 帽制 / 门禁 / S2）汇总于 [GLOSSARY.md](GLOSSARY.md)（双语术语表 · 回链本节）。
-
+同一条 quickstart 链由 `npx spec-wave init` 打印——第 3 步前提：项目须为 git 仓（先 `git init`；`verify` 有 git-root 归属校验）。第 4 步（可选）指向 `npx spec-wave graph scaffold`，生成 `docs/_tech_graph/` **可审草稿**（非已签收架构真值；见下文图谱节）。术语（Harness / 帽制 / 门禁 / S2）汇总于 [GLOSSARY.md](GLOSSARY.md)（双语术语表 · 回链本节）。
 ---
 ## 入口 A · DSH 插件
 
@@ -231,6 +230,8 @@ npx spec-wave lifecycle show [--target PATH] [--json]
 npx spec-wave lifecycle dry-run --transition ID --from STATE
 npx spec-wave discipline show [--target PATH] [--json]
 npx spec-wave graph yaml compile|check|export
+npx spec-wave graph scaffold [--target PATH] [--yes] …   # 生成 docs/_tech_graph 可审草稿（非已签收真值）
+npx spec-wave graph drift [--target PATH] [--input DIR] [--json]   # 漂移闸：模块覆盖 + 锚点消失（只报告 · 不重画）
 npx spec-wave graph ingest|snapshot|axioms
 npx spec-wave graph ontology check [--file PATH] [--json]   # 另支持 --hgm：事件轨图谱实例 ⊆ 随包本体词汇校验
 npx spec-wave sync index
@@ -250,6 +251,10 @@ npx spec-wave task check --file PATH
 `host apply` / `host update` 嗅探适配表 version 与可选 `@deepseek-ai/dsh-tools` peer（**U-01**）：不匹配 → exit 2、零写入（`--json` 含 `contract.status`）。`--tools dsh` 仍 commands=[]（不建 `.dsh/commands/`），编排落在 `.dsh/skills/kit-*`。**`host update` 省略 `--tools`** 时读粘性 `.coding-kit/host-tools.json`（否则 exit 1）。落点见上方 **一包多宿主**。
 
 kit **源码仓**以 `docs/_tech_graph/` 做 `graph yaml compile|check|export` 的 dogfood（**不随 npm 包发布**；https://github.com/Cyning12/SpecWave/tree/main/docs/_tech_graph）。
+
+**技术图谱脚手架（`graph scaffold` · 规划 3.1）**：在业务仓根执行可生成 `docs/_tech_graph/` **可审草稿**（顶层图 · 模块表 · 主流程 · `REVIEW_CHECKLIST.md`）。默认 dry-run；`--yes` 写盘。产物带草稿标记，**不是**已签收架构真值——`HG-GRAPH-MODULES` 须维护者人签。勿称「自动生成权威技术图谱」。
+
+**漂移闸（`graph drift` · 3.1 W3）**：对照 `01_struct` 模块表与 `*.graph.yaml` 锚点，报告一级包目录未覆盖 / 已登记 path 消失（`TBD`/空 path 跳过）；漂移 **exit 2**。可选白名单 `.spec-wave/graph-drift.yaml`（缺省无文件=全检；坏 YAML fail-closed）。**只报告，不自动重画**图谱。
 
 **图能力与本体的边界（3.0 ONTO-OPEN 裁决）**：图能力已开放 —— `graph yaml compile|check|export` 与消费者自建图今天可用，`graph ontology check [--file PATH]` 可校验随包本体或你指定的漂移副本；但随包本体（`assets/ontology.yaml`）是 SpecWave 自用元模型，**不提供自定义本体能力**（本体层不开放 · 消费者不可自定义类/关系 · 校验器开放 ≠ 本体内容开放）。复议触发（研究文 §7.3）：真实消费者请求 · ontology-check 面稳定一个 minor 后重估 · B5 后生态拉取 —— 走 HG-SCHEMA-CHANGE 式人闸。
 
@@ -353,15 +358,15 @@ pins:
 
 完整清单、F4 方案 B 布局与 **已公布** EOS / deprecate 日历：见 [`MIGRATION.md`](./MIGRATION.md)。
 
-钉 **spec-wave@3.0.2** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
+钉 **spec-wave@3.1.0** 后可去掉 `@cyning/harness`。最小路径三步（必须，按序）：
 
-1. 把 `devDependency` `@cyning/harness` 换成 `spec-wave`（钉 `3.0.2`；曾用名 `dsh-coding-kit`）。
-2. 在仓根执行 `npx spec-wave upgrade --yes`（读优先 `.coding-kit/manifest.json`，否则 legacy `.cyning-harness/manifest.json`；**写入** `.coding-kit/manifest.json`，`version` 钉 3.0.2，`from_version` 记旧号；**不删除** `.cyning-harness/`）。
+1. 把 `devDependency` `@cyning/harness` 换成 `spec-wave`（钉 `3.1.0`；曾用名 `dsh-coding-kit`）。
+2. 在仓根执行 `npx spec-wave upgrade --yes`（读优先 `.coding-kit/manifest.json`，否则 legacy `.cyning-harness/manifest.json`；**写入** `.coding-kit/manifest.json`，`version` 钉 3.1.0，`from_version` 记旧号；**不删除** `.cyning-harness/`）。
 3. CI / 脚本里把 `npx @cyning/harness` / `npx dsh-coding-kit` 换成 `npx spec-wave`。
 
 **布局**：过程落盘现行根为 **`.coding-kit/`**；`.cyning-harness/` 为 **legacy 只读**。勿再把 `.cyning-harness` 当新标准目录。
 
-Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）。命令一律 `npx spec-wave`。旧包 **`@cyning/harness` 已在 npm deprecate**（2026-09-10 · 仅维护者可操作）；请钉 **`spec-wave@3.0.2`** 并按 `MIGRATION.md` 迁移。
+Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）。命令一律 `npx spec-wave`。旧包 **`@cyning/harness` 已在 npm deprecate**（2026-09-10 · 仅维护者可操作）；请钉 **`spec-wave@3.1.0`** 并按 `MIGRATION.md` 迁移。
 
 ### FAQ · pnpm peer
 
@@ -372,12 +377,12 @@ Skill 安装为 **推荐、非必须**（最小路径不依赖 DSH 扫 skill）�
 整段粘贴：
 
 ````text
-你 = 本仓库维护 Agent。把本仓从 @cyning/harness 迁到 spec-wave@3.0.2。
+你 = 本仓库维护 Agent。把本仓从 @cyning/harness 迁到 spec-wave@3.1.0。
 
 最小路径（必须，按序）：
-1. package.json 的 devDependency：删除 @cyning/harness，改为 spec-wave（钉 3.0.2；曾用名 dsh-coding-kit）。
+1. package.json 的 devDependency：删除 @cyning/harness，改为 spec-wave（钉 3.1.0；曾用名 dsh-coding-kit）。
 2. 在仓根执行：npx spec-wave upgrade --yes
-   （读 .coding-kit/manifest.json 或 legacy .cyning-harness/manifest.json；写入 .coding-kit/manifest.json；version 钉 3.0.2，from_version 记旧号；不删除 .cyning-harness/；不覆盖 docs/tasks、reviews、invokes/by-task。）
+   （读 .coding-kit/manifest.json 或 legacy .cyning-harness/manifest.json；写入 .coding-kit/manifest.json；version 钉 3.1.0，from_version 记旧号；不删除 .cyning-harness/；不覆盖 docs/tasks、reviews、invokes/by-task。）
 3. CI 与脚本里所有 npx @cyning/harness 与 npx dsh-coding-kit 换成 npx spec-wave。
 命令一律 npx spec-wave。禁止再写 npx @cyning/harness skills build。
 布局与 EOS 日历见 MIGRATION.md（人闸未批前不得宣称已 deprecate）。
@@ -441,7 +446,7 @@ Skills **不能**覆盖全部过程能力。Host 要嵌套 Harness 过程，须�
 
 ## 发版（维护者）
 
-**现行包**：**`spec-wave@3.0.2`** — **已发布**（registry `latest=3.0.2` · `time.3.0.2`=2026-09-24T00:55:45.386Z · tag `v3.0.2` ↔ tip `3d71b90` · 2026-09-24 实测）。前一已发：**`3.0.1`**（信号质量 patch）· **`3.0.0`**（架构跃迁）· **`2.4.2`**（验收修复 patch）· **`2.4.1`**（验收修复 patch）· **`2.4.0`**（门禁强度补全）· **`2.3.1`**（验收修复 patch）· **`2.3.0`**（接线补全）· **`2.2.1`**（验收修复 patch）· **`2.2.0`**（闭环起步）。
+**现行包**：**`spec-wave@3.1.0`** — **待发版**（bump 已落 · tag/push/publish 仅人 · registry `latest` 仍为 **`3.0.2`** 直至人 publish）。前一已发：**`3.0.2`**（消费侧反馈 patch · registry `latest=3.0.2` · `time.3.0.2`=2026-09-24T00:55:45.386Z · tag `v3.0.2` ↔ tip `3d71b90`）· **`3.0.1`**（信号质量 patch）· **`3.0.0`**（架构跃迁）· **`2.4.2`**（验收修复 patch）· **`2.4.1`**（验收修复 patch）· **`2.4.0`**（门禁强度补全）· **`2.3.1`**（验收修复 patch）· **`2.3.0`**（接线补全）· **`2.2.1`**（验收修复 patch）· **`2.2.0`**（闭环起步）。
 
 发布流程见 [RELEASING.md](RELEASING.md) —— publish 前硬步骤 checklist（先 commit 后 publish · 四门全绿 · 版本钉同步 · **Agent 可 bump/tag** · **`npm publish` 仅人**；DEF-001 教训制度化）。
 

@@ -1,10 +1,10 @@
 # Migration · `@cyning/harness` / `dsh-coding-kit` → **SpecWave**（`spec-wave`）
 
-> **⚠️ `dsh-coding-kit` 已 deprecate** —— 请**直接**安装正式包：`npm i spec-wave@3.0.2`（**patch · 待发版** · W1–W6 信号质量收口 · 粘性向后兼容 · **无强制迁移**；registry `latest` 仍为 `3.0.0` 直至人 publish。`3.0.0` 为 **major · 架构跃迁**，见下方「2.4.2 → 3.0.0」节）。**勿再**把废弃中间包当作迁移终点。  
-> **现行包**：**`spec-wave@3.0.2`**（**待发版** · 正式包名 / 正式 bin；曾用名 `dsh-coding-kit`）  
+> **⚠️ `dsh-coding-kit` 已 deprecate** —— 请**直接**安装正式包：`npm i spec-wave@3.1.0`（**minor · 待发版** · 技术图谱脚手架 · scaffold/drift/vocab **可选启用** · **无强制迁移**；registry `latest` 仍为 `3.0.2` 直至人 publish。`3.0.0` 为 **major · 架构跃迁**，见下方「2.4.2 → 3.0.0」节）。**勿再**把废弃中间包当作迁移终点。  
+> **现行包**：**`spec-wave@3.1.0`**（**待发版** · 正式包名 / 正式 bin；曾用名 `dsh-coding-kit`）  
 > **过渡 bin（同入口 · 非终点）**：`specgate` · `dsh-coding-kit`（仍可调用，**不要**再 `npm i dsh-coding-kit` 当终点）  
 > **状态**：1.12 收口 **DONE** · kit **`2.0.0` published** · `@cyning/harness` **已 deprecate**（2026-09-10）· **`dsh-coding-kit` 已 deprecate**（文案指向 `spec-wave`）  
-> **包钉**：请钉 `spec-wave@3.0.2`（**待发版** · 本文件不代替 `package.json`）  
+> **包钉**：请钉 `spec-wave@3.1.0`（**待发版** · 本文件不代替 `package.json`）  
 > **布局真值（F4 方案 B）**：新落盘根 = **`.coding-kit/`**；**`.cyning-harness/`** = legacy **只读**（探测 / 升级源；**不删除**）  
 > **人闸**：`HG-EOS-DATE` / `HG-PUBLISH` = **approved**（人实操 · 2026-09-10）· **禁止** Agent 执行 `npm deprecate` / `npm publish`  
 > **F6 归档**：[`docs/roadmap/ACCEPTANCE_2x_host_adapt_2_0_0_zh.md`](docs/roadmap/ACCEPTANCE_2x_host_adapt_2_0_0_zh.md) · 规划 [`docs/roadmap/PLAN_2x_host_adapt_v1_zh.md`](docs/roadmap/PLAN_2x_host_adapt_v1_zh.md)  
@@ -14,7 +14,7 @@
 
 ## SpecWave 最短路径（现行）
 
-1. **依赖**：`package.json` 将 `dsh-coding-kit`（或 `@cyning/harness`）改为 **`spec-wave`**（钉 `3.0.1`；CHANGELOG 见 `[3.0.1]` 节）。  
+1. **依赖**：`package.json` 将 `dsh-coding-kit`（或 `@cyning/harness`）改为 **`spec-wave`**（钉 `3.1.0`；CHANGELOG 见 `[3.1.0]` 节 · **待发版** · registry `latest` 仍 `3.0.2` 直至人 publish）。  
 2. **升级**：`npx spec-wave upgrade --yes`  
 3. **字面**：CI / 脚本 `npx dsh-coding-kit` / `npx @cyning/harness` → **`npx spec-wave`**  
 4. **推荐**：`npx spec-wave refresh-ide-blocks --yes`（默认 dry-run；含 B-REFRESH：旧 `npx dsh-coding-kit` / `npx specgate` → `npx spec-wave`）
@@ -82,7 +82,7 @@
 DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave/blob/main/MIGRATION.md — pin dsh-coding-kit@1.12.0 and run: npx spec-wave upgrade --yes
 ```
 
-> **链式风险**：上列 harness 文案仍指向已 deprecate 的 `dsh-coding-kit`。**请忽略该钉点**，直接 `npm i spec-wave@3.0.2`。registry 改文案仅人（`HG-DEPRECATE-HARNESS`）。
+> **链式风险**：上列 harness 文案仍指向已 deprecate 的 `dsh-coding-kit`。**请忽略该钉点**，直接 `npm i spec-wave@3.1.0`。registry 改文案仅人（`HG-DEPRECATE-HARNESS`）。
 
 ### 过渡窗规则
 
@@ -168,11 +168,23 @@ DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave
 
 ## 3.0.1 → 3.0.2（patch）· 无强制动作项
 
-> **状态：无强制迁移**（2026-09-23 · release bump · **待发版 · publish 仅人**）—— 3.0.2 为 patch（消费侧反馈收口）；全部改动为 **additive**（新旗标 / 新可选声明档），不带 `--consumer` 旗标时全部既有行为逐字不变。
+> **状态：无强制迁移**（2026-09-23 · release bump · **已 published** · registry `latest=3.0.2`）—— 3.0.2 为 patch（消费侧反馈收口）；全部改动为 **additive**（新旗标 / 新可选声明档），不带 `--consumer` 旗标时全部既有行为逐字不变。
 
 - **不必做**：改适配表 schema、改粘性、改 CI 既有命令、改 `pins check`（release 模式）用法。
 - **F-1（词汇登记档）**：`graph yaml check/compile` 对 `branches` / `triggers` 两类边型不再产生「未在词汇登记档」告警（LangGraph 系普适边型内置登记 · **仅减告警** · 无行为与产物变化）。
 - **可选启用**（非动作项）：F-3/F-4 `pins check/fix --consumer` —— 消费仓钉版保鲜闸（真值回退链 `devDependencies→dependencies→version` + `--truth <path#jsonpath>` + 可选声明源 `.spec-wave/pins-consumer.yaml` + 缺省 CI workflow 字面钉面 · 漂移 exit 2 · fix 默认 dry-run）。用法见 [`README.zh-CN.md`](./README.zh-CN.md)「pins consumer 模式」节（英文见 [`README.md`](./README.md) 对应节）。
+- `3.0.0` 的 breaking 迁移仍见「2.4.2 → 3.0.0」节。
+
+## 3.0.2 → 3.1.0（minor）· 无强制动作项
+
+> **状态：无强制迁移**（2026-10-10 · release bump · **待发版 · tag/push/publish 仅人**）—— 3.1.0 为 **minor**（技术图谱脚手架 epic · W1–W4）；全部能力为 **additive / 可选启用**，不启用时既有 `graph yaml *` 缺省判定与 3.0.2 一致。**不暗示 breaking**。
+
+- **不必做**：改适配表 schema、强制启用 scaffold / drift / vocab、改既有 `graph yaml *` 缺省判定、改粘性 / CI 既有 hooks 命令。
+- **可选启用**（非动作项）：
+  - `graph scaffold` —— 生成 `docs/_tech_graph/` **可审草稿**（非已签收真值 · `HG-GRAPH-MODULES` 须人签）
+  - `graph drift` —— F-2 漂移闸（只报告不重画 · 可选白名单 `.spec-wave/graph-drift.yaml`）
+  - `.spec-wave/graph-vocab.yaml` —— F-1② 仓级词表扩展（与内置合并 · 冲突 fail-loud · 缺省文件=3.0.2 行为）· 诊断可用 `graph vocab show`
+- 指针：[`README.md`](./README.md) / [`README.zh-CN.md`](./README.zh-CN.md) 图谱节 · 使用手册 §10 · CHANGELOG `[3.1.0]`。
 - `3.0.0` 的 breaking 迁移仍见「2.4.2 → 3.0.0」节。
 
 ---
@@ -194,3 +206,4 @@ DEPRECATED: use dsh-coding-kit instead. See https://github.com/Cyning12/SpecWave
 | 2026-09-18 | **3.0.1 W6**：§② 补「非映射宿主 `config-hook`：validate PASS+WARN · apply fail-closed · 自定义用 `none`」（映射键 = claude/cursor/gemini · 不扩表） |
 | 2026-09-18 | **3.0.1 patch**：增「3.0.0 → 3.0.1 无强制动作项」（粘性向后兼容 · 无强制迁移 · 可选了解 W5 旗标 / W6 WARN） |
 | 2026-09-23 | **3.0.2 patch**：增「3.0.1 → 3.0.2 无强制动作项」（additive 能力面 · F-1 词汇登记仅减告警 · consumer pins 可选启用 · 待发版 publish 仅人） |
+| 2026-10-10 | **3.1.0 minor**：增「3.0.2 → 3.1.0 无强制动作项」（scaffold/drift/vocab 可选启用 · 待发版 tag/push/publish 仅人 · 不暗示 breaking）· 头栏包钉对齐 `3.1.0` |
