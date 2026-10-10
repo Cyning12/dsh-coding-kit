@@ -127,3 +127,4 @@
 | 2026-10-10 | draft · 与 SPEC `3_2-graph-ib-and-indexes` 同棒落盘 |
 | 2026-10-10 | HG-NEXT-PLAN / HG-SPEC-SIGNOFF=approved · 开拆 W1 · 授权 00 签过程文档 |
 | 2026-10-10 | **W1 task 落盘** `task_3_2_w1_graph_ib_check` · HG-TASK-DRAFT/HG-AUDIT-R1 pending · 待 20 审 |
+| 2026-10-10 | **W1 00 验收关账** · `a78ac3c` · graph ib check · W2–W5 未开 |

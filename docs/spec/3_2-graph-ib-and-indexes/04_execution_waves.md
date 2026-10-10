@@ -15,13 +15,15 @@
 
 ## W1 · IB 契约 + 点路径闸（核心 · 反哺 P0）
 
-- [ ] 扩展 YAML 加载/校验：可选 `nodes[].implementedBy.{path,symbol?}`（透传 + 形状；无 IB 零回归）  
-- [ ] CLI：`graph ib check`（或等价 `drift --check-ib` + 文档主路径，见 03）  
-- [ ] MVP：path 存在性；空/TBD 跳过；缺文件 exit 2 · `missing_ib_path`  
-- [ ] `--json` 信封只增不改其它命令  
-- [ ] 红测：IB 指向不存在 → exit 2；全存在 → exit 0；无 IB 图 → exit 0  
-- [ ] usage / 手册一小节「点 vs 边」  
-- [ ] 四门绿 · HG-AUDIT-R1 · gate-check；禁 bump/tag/push/publish  
+> **00 验收**：2026-10-10 · task `3-2-w1-graph-ib-check` · A1–A10 · `a78ac3c`
+
+- [x] 扩展 YAML 加载/校验：可选 `nodes[].implementedBy.{path,symbol?}`（透传 + 形状；无 IB 零回归）  
+- [x] CLI：`graph ib check`（独立子命令 · 见 03）  
+- [x] MVP：path 存在性；空/TBD 跳过；缺文件 exit 2 · `missing_ib_path`  
+- [x] `--json` 信封只增不改其它命令  
+- [x] 红测：IB 指向不存在 → exit 2；全存在 → exit 0；无 IB 图 → exit 0  
+- [x] usage / 手册一小节「点 vs 边」  
+- [x] 四门绿 · HG-AUDIT-R1 · gate-check；禁 bump/tag/push/publish  
 
 ## W2 · `struct_rel` 可配置（反哺 P1）
 

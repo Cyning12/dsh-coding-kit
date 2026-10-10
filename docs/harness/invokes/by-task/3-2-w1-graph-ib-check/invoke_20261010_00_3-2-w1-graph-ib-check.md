@@ -6,7 +6,7 @@
 | **task_slug** | `3-2-w1-graph-ib-check` |
 | **日期** | 2026-10-10 |
 | **触发** | epic 双闸 approved · 维护者授权 00 签后续过程文档 |
-| **task** | [`docs/tasks/active/task_3_2_w1_graph_ib_check.md`](../../../../tasks/active/task_3_2_w1_graph_ib_check.md) |
+| **task** | [`docs/tasks/done/task_3_2_w1_graph_ib_check.md`](../../../../tasks/done/task_3_2_w1_graph_ib_check.md) |
 
 ## 已办
 

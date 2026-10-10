@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-2-w1-graph-ib-check
 
 > **日期**：2026-10-10 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_2_w1_graph_ib_check.md`](../../tasks/active/task_3_2_w1_graph_ib_check.md)  
+> **task**：[`docs/tasks/done/task_3_2_w1_graph_ib_check.md`](../../tasks/done/task_3_2_w1_graph_ib_check.md)  
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`04` W1](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) · [`02` §2](../../spec/3_2-graph-ib-and-indexes/02_product_scheme.md) · [`03` §1.1](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) · [`00` 非范围](../../spec/3_2-graph-ib-and-indexes/00_policy_and_boundaries.md)（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md) **W1 · IB + ib check**（HG-NEXT-PLAN=approved）  
 > **防回灌对照**：3.1 W3 `graph drift` 缺省（边锚点 + 模块表 · **不含** IB）· 本波**禁止**把 IB 并入 drift 缺省  

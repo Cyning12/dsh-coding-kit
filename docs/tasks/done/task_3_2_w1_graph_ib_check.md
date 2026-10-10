@@ -1,6 +1,7 @@
 # Task：3.2 W1 · graph ib check（节点 IB 点路径闸 · 核心）
 
-> **状态**：`active` · **HG-AUDIT-R1=approved**（2026-10-10 **00 签收** · 可 30）  
+> **状态**：`done` · **00 验收关账** 2026-10-10（A1–A10 · `a78ac3c`）  
+
 
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md)（**HG-SPEC-SIGNOFF=approved** · 2026-10-10 维护者签收）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md)（**HG-NEXT-PLAN=approved** · 同窗）· **W1 · IB + ib check**  
@@ -119,7 +120,8 @@
 - [x] **A7 只读**（必做）：成功/失败均零写盘目标 `_tech_graph`  
 - [x] **A8 契约兼容**（必做）：含合法 IB 的 yaml 可被既有 `graph yaml check`（或 compile）接受（形状合法）；无 IB 旧测零回归  
 - [x] **A9 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿  
-- [ ] **A10 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.2-W1): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**  
+- [x] **A10 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.2-W1): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**  
+
 - [x] **A-opt1**（可选）：N/A（独立子命令已满足）
 
 ---
@@ -214,6 +216,12 @@ A1–A8 临时 fixture + exit/stdout/json；A9–A10 四门+gate-check。红测�
 - **A10**：`task close` **留 00**；本棒不 bump/tag/push/publish
 - **advisory**：N1–N5 已吸收；O1/A-opt1=N/A
 
+### KPI（00）
+
+Task_KPI%: 96（A1–A10 全绿 · ib check 10 测 · 四门绿 · 无 IB 零打扰 · 未改 drift 缺省 · 透传 IB；扣分：无）
+
+- rubric：`KPI_RUBRIC_v1_2` · 30/40 实现 + 00 签闸/关账
+
 ---
 
 ## 修订记录
@@ -222,4 +230,5 @@ A1–A8 临时 fixture + exit/stdout/json；A9–A10 四门+gate-check。红测�
 |------|------|
 | 2026-10-10 | 10-task 初稿 · 00 开拆 W1 · HG-TASK-DRAFT / HG-AUDIT-R1 **pending** · 过程授权已记 |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
-| 2026-10-10 | 30/40：W1 实现 · A1–A8 勾选 · 自检回填 · A10 close 留 00 |
+| 2026-10-10 | 30/40：W1 实现 · A1–A9 · `a78ac3c` · A10 close 留 00 |
+| 2026-10-10 | **00 验收关账** · A10 close · SPEC04 W1 勾选 · W2 未开 |
