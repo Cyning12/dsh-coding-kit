@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-2-w4-migration-docs
 
 > **日期**：2026-10-11 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_2_w4_migration_docs.md`](../../tasks/active/task_3_2_w4_migration_docs.md)  
+> **task**：[`docs/tasks/done/task_3_2_w4_migration_docs.md`](../../tasks/done/task_3_2_w4_migration_docs.md)  
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`04` W4](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) · [`03` §2](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) 审核/手册协议（HG-SPEC-SIGNOFF=approved）  
 > **上游统筹**：[`invoke_20261011_00_orchestrate_w2_w5.md`](../invokes/by-task/3-2-graph-ib-and-indexes/invoke_20261011_00_orchestrate_w2_w5.md) **W4 · 迁移 + 分责文档**（HG-NEXT-PLAN=approved）  
 > **上游**：W1–W3 done · 同支 `task/specwave-3-2-w1-ib-check`  

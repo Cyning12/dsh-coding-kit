@@ -46,10 +46,12 @@
 
 ## W4 · yaml 双栈迁移文档（反哺 P3）
 
-- [ ] MIGRATION / 手册：消费仓 `graph:ci` 可切 `npx spec-wave graph yaml …`  
-- [ ] 保真分责表（drift / ib / indexes）写入对外路径  
-- [ ] 可选：CI 样例注释步骤加 `graph ib check`  
-- [ ] 无强制删消费仓 Python · 四门绿（若本波无码则文档+gate-check 裁量）  
+> **00 验收**：2026-10-11 · task `3-2-w4-migration-docs` · A1–A6 · `cbad4a6`
+
+- [x] MIGRATION / 手册：消费仓 `graph:ci` 可切 `npx spec-wave graph yaml …`  
+- [x] 保真分责表（drift / ib / indexes）写入对外路径  
+- [x] 可选：CI 样例注释步骤加 `graph ib check`  
+- [x] 无强制删消费仓 Python · 四门绿（若本波无码则文档+gate-check 裁量）  
 
 ## W5 · 收尾对外 + release 簿记
 

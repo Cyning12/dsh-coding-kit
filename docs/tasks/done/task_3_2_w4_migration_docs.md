@@ -1,6 +1,6 @@
 # Task：3.2 W4 · yaml 双栈迁移文档 + 保真分责（反哺 P3）
 
-> **状态**：`active` · **HG-AUDIT-R1=approved**（2026-10-11 **00 签收** · 可 30）  
+> **状态**：`done` · **00 验收关账** 2026-10-11（A1–A6 · `cbad4a6`）  
 
 > **上游 SPEC**：[`04`](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) **W4** · [`03`](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) §2  
 > **PLAN**：W4 · 统筹 [`invoke_20261011_00_orchestrate_w2_w5.md`](../../harness/invokes/by-task/3-2-graph-ib-and-indexes/invoke_20261011_00_orchestrate_w2_w5.md)  
@@ -83,7 +83,7 @@ W1–W3 命令已齐；对外须写清 **drift / ib / indexes** 分责，并给�
 - [x] **A3**：无「已含 AST 深闸」违纪表述（grep 自检）  
 - [x] **A4**：可选 CI 样例注释含 `graph ib check` 或明示跳过不挡关账  
 - [x] **A5**：四门绿  
-- [ ] **A6**：gate-check + close · `docs(3.2-W4): …` · 未 bump/tag/push/publish · **00 close**
+- [x] **A6**：gate-check + close · `docs(3.2-W4): …` · 未 bump/tag/push/publish · **00 close**
 
 ---
 
@@ -159,6 +159,12 @@ A1–A3 文件/grep；A4 可选；A5–A6 四门+close。
 
 ---
 
+### KPI（00）
+
+Task_KPI%: 95（A1–A6 · 文档波 · 四门绿 · 保真分责+迁移；扣分：无）
+
+- rubric：`KPI_RUBRIC_v1_2`
+
 ## 修订记录
 
 | 日期 | 摘要 |
@@ -166,3 +172,4 @@ A1–A3 文件/grep；A4 可选；A5–A6 四门+close。
 | 2026-10-11 | 10-task 初稿 · 00 开拆 W4 |
 | 2026-10-11 | 20 审 R1 PASS · **00 签收** 过程闸 · 可 30 |
 | 2026-10-11 | 30：MIGRATION 双栈 + 手册四行 + README 链 + CI 可选 ib · A1–A4 勾 · A6 留 00 |
+| 2026-10-11 | **00 验收关账** · A6 close · SPEC04 W4 勾选 · W5 未开 |
