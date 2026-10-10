@@ -232,7 +232,8 @@ npx spec-wave lifecycle dry-run --transition ID --from STATE
 npx spec-wave discipline show [--target PATH] [--json]
 npx spec-wave graph yaml compile|check|export
 npx spec-wave graph scaffold [--target PATH] [--yes] …   # draft tech-graph under docs/_tech_graph (reviewable, not signed truth)
-npx spec-wave graph drift [--target PATH] [--input DIR] [--json]   # drift gate: module coverage + missing anchors (report only · no redraw)
+npx spec-wave graph drift [--target PATH] [--input DIR] [--json]   # drift gate: module coverage + edge anchors (report only · no redraw)
+npx spec-wave graph ib check [--target PATH] [--input DIR] [--json]   # node IB path gate: nodes[].implementedBy.path (no AST)
 npx spec-wave graph ingest|snapshot|axioms
 npx spec-wave graph ontology check [--file PATH] [--json]   # + --hgm: instance check of the event-sourced graph against the bundled ontology
 npx spec-wave sync index
@@ -255,7 +256,9 @@ This **source repo** dogfoods `graph yaml compile|check|export` against `docs/_t
 
 **Tech-graph scaffold (`graph scaffold`, planned 3.1)**: from a business-repo root, generates a **reviewable draft** under `docs/_tech_graph/` (main graph · module table · primary flow · `REVIEW_CHECKLIST.md`). Default is dry-run; `--yes` writes. Output is draft-marked — **not** signed architecture truth (`HG-GRAPH-MODULES` remains for humans). Do not call it an “authoritative auto graph”.
 
-**Drift gate (`graph drift`, 3.1 W3)**: checks `01_struct` module coverage and registered `*.graph.yaml` anchor paths (skip `TBD` / empty); drift → **exit 2**. Optional whitelist `.spec-wave/graph-drift.yaml` (missing file = full check; bad YAML fail-closed). **Report only — does not redraw** graphs.
+**Drift gate (`graph drift`, 3.1 W3)**: checks `01_struct` module coverage and registered **edge** anchors (`edges[].anchors[].path`; skip `TBD` / empty); drift → **exit 2**. Optional whitelist `.spec-wave/graph-drift.yaml` (missing file = full check; bad YAML fail-closed). **Report only — does not redraw** graphs.
+
+**Node IB path gate (`graph ib check`, 3.2 W1)**: checks `nodes[].implementedBy.path` exists under `--target` (skip empty / `TBD` case-insensitive; missing → **exit 2** · `missing_ib_path`). Nodes without IB stay legal (checked=0 → exit 0). **No** symbol AST. Split of responsibility: drift = edges + module table · ib = nodes. Report only — no writes.
 
 **Repo vocab extension (`.spec-wave/graph-vocab.yaml`, 3.1 W4)**: optional consumer file merged with the bundled `assets/tech-graph-vocab.yaml` on `graph yaml compile|check|export`. Declare extra `edge_types` (and/or `kinds`) so custom explicit edge types stop emitting the “未在 tech-graph 词汇登记档” Warning. Missing file = 3.0.2 builtin-only behavior. Bad YAML / schema / kind `id`+`class` conflicts with builtin → **exit 2** (fail-loud, names the path/key). Registration is not a closed world: unregistered explicit types still Warning and do **not** fail the exit code. Diagnose with `graph vocab show [--target PATH] [--json]`.
 

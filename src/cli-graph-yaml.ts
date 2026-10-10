@@ -25,7 +25,13 @@ export class GraphYamlError extends Error {
   }
 }
 
-type YamlNode = { id?: string; label?: string; kind?: string }
+/** 3.2 W1：可选 IB；缺省无 IB 的旧图零回归。symbol 透传不做 AST。 */
+type YamlNode = {
+  id?: string
+  label?: string
+  kind?: string
+  implementedBy?: { path?: string; symbol?: string }
+}
 type YamlEdge = {
   from?: string
   to?: string
@@ -275,6 +281,21 @@ export function validateGraphYaml(
         if (n.kind != null && !vocabKinds.includes(n.kind)) {
           errors.push(`nodes[${i}].kind 非法: ${n.kind}`)
         }
+        // 3.2 W1：可选 implementedBy 形状校验（存在则须 object · path 为 string；symbol 可选 string）
+        if ('implementedBy' in n && n.implementedBy != null) {
+          const ib = n.implementedBy as unknown
+          if (typeof ib !== 'object' || Array.isArray(ib)) {
+            errors.push(`nodes[${i}].implementedBy 须为 object`)
+          } else {
+            const obj = ib as { path?: unknown; symbol?: unknown }
+            if (typeof obj.path !== 'string') {
+              errors.push(`nodes[${i}].implementedBy.path 须为 string`)
+            }
+            if (obj.symbol != null && typeof obj.symbol !== 'string') {
+              errors.push(`nodes[${i}].implementedBy.symbol 若存在须为 string`)
+            }
+          }
+        }
       })
     }
   }
@@ -495,7 +516,14 @@ export function buildGraphPayload(
       source_yaml_path: path.relative(inputRoot, yamlPath).replace(/\\/g, '/'),
     })
     for (const n of data.nodes || []) {
-      nodes.push({ id: n.id, label: n.label, graph_id: declaredId })
+      // 3.2 W1 · N2：合法 IB 透传进 graph.json（禁止静默丢字段）；无 IB 节点不增键
+      const nodeOut: Record<string, unknown> = { id: n.id, label: n.label, graph_id: declaredId }
+      if (n.implementedBy != null && typeof n.implementedBy === 'object' && !Array.isArray(n.implementedBy)) {
+        const ib: Record<string, unknown> = { path: n.implementedBy.path ?? '' }
+        if (n.implementedBy.symbol != null) ib.symbol = n.implementedBy.symbol
+        nodeOut.implementedBy = ib
+      }
+      nodes.push(nodeOut)
     }
     for (const e of data.edges || []) {
       const { mark, type, sync, label } = edgeToGraphV2(e)
