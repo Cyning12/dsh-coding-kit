@@ -58,15 +58,15 @@ W1 已交付 `graph scaffold`（可审草稿 CLI），但入手链仍停在「in
 
 ### 必做
 
-- [ ] **① init quickstart**：`INIT_QUICKSTART` 增加「下一步：`npx spec-wave graph scaffold`」**真实命令**（可审草稿口径；禁「自动权威图谱」等违纪表述）；联改 `test/init.test.ts`（含命令集合断言放宽/重钉）
-- [ ] **② 手册 quickstart**：`docs/guides/使用手册-v3.0.0-zh.md` 五分钟上手 / init 相关节补同一真实命令与口径（与 §10 scaffold 小节互链或并列，勿矛盾）
-- [ ] **③ bootstrap 模板**：更新 `assets/harness/templates/TASK_graph_bootstrap.md`——从「只拷模板 / 复制骨架」→「**优先** `graph scaffold` · 模板仅协议回退」；同步修正「不做全仓扫描自动生图」与脚手架草稿划界（对照 SPEC 02 §2.4）
-- [ ] **④ Agent 审核面对齐**：包内 skill 或 commands **指针**对齐 `REVIEW_CHECKLIST.md`「Agent 可跑项」（compile/check + 清单路径 + 禁代签 HG）；**不**复制脚手架业务逻辑；可扩既有 `kit-graph-check` 或新增薄 POINTER（30 自裁落点，须可机检存在）
-- [ ] **⑤ 波末**：四门绿 · HG-AUDIT-R1（人签后）· `gate-check`；禁 bump/tag/push/publish；禁 `git add -A`；禁开 W3 drift / W4 vocab
+- [x] **① init quickstart**：`INIT_QUICKSTART` 增加「下一步：`npx spec-wave graph scaffold`」**真实命令**（可审草稿口径；禁「自动权威图谱」等违纪表述）；联改 `test/init.test.ts`（含命令集合断言放宽/重钉）
+- [x] **② 手册 quickstart**：`docs/guides/使用手册-v3.0.0-zh.md` 五分钟上手 / init 相关节补同一真实命令与口径（与 §10 scaffold 小节互链或并列，勿矛盾）
+- [x] **③ bootstrap 模板**：更新 `assets/harness/templates/TASK_graph_bootstrap.md`——从「只拷模板 / 复制骨架」→「**优先** `graph scaffold` · 模板仅协议回退」；同步修正「不做全仓扫描自动生图」与脚手架草稿划界（对照 SPEC 02 §2.4）
+- [x] **④ Agent 审核面对齐**：包内 skill 或 commands **指针**对齐 `REVIEW_CHECKLIST.md`「Agent 可跑项」（compile/check + 清单路径 + 禁代签 HG）；**不**复制脚手架业务逻辑；可扩既有 `kit-graph-check` 或新增薄 POINTER（30 自裁落点，须可机检存在）
+- [x] **⑤ 波末**：四门绿 · HG-AUDIT-R1（人签后）· `gate-check`；禁 bump/tag/push/publish；禁 `git add -A`；禁开 W3 drift / W4 vocab
 
 ### 可选（本波可交付 · 不阻塞关账）
 
-- [ ] **O1 宿主薄封装**：Cursor/Claude（及既有 host 面）命令或 skill **只调** `npx spec-wave graph scaffold`（dry-run 提示 / `--yes` 纪律 · POINTER）；不复制探测/写盘逻辑
+- [ ] **O1 宿主薄封装**：Cursor/Claude（及既有 host 面）命令或 skill **只调** `npx spec-wave graph scaffold`（dry-run 提示 / `--yes` 纪律 · POINTER）；不复制探测/写盘逻辑（**本波未做** · 不挡 A8；避免牵动 host-adapt planned-writes / expanded 词表锁）
 
 ## 非范围
 
@@ -103,14 +103,14 @@ W1 已交付 `graph scaffold`（可审草稿 CLI），但入手链仍停在「in
 
 > **必做** A1–A8 为关账硬条款；**可选** A-opt1 本波可交付，未做不挡 A8。
 
-- [ ] **A1 init 命令字面**（必做）：`INIT_QUICKSTART`（`src/cli/init.ts`）含 `npx spec-wave graph scaffold`；可审草稿 / 非权威真值口径可见；**无**「自动权威」类违纪表述
-- [ ] **A2 init 双路径打印**（必做）：`--yes` 与 dry-run 成功路径 stdout 均含 scaffold 下一步（沿用既有 init 测夹具）
-- [ ] **A3 测锁联改**（必做）：`test/init.test.ts` 更新——含 scaffold 断言；原「命令集合仅 sync/verify」钉改为含 `graph scaffold`（或等价解析）；F-W4-01 usage 存在性仍绿
-- [ ] **A4 手册**（必做）：使用手册五分钟上手或 §5 init 附近出现真实 `graph scaffold` 下一步；与 §10 可审草稿口径一致
-- [ ] **A5 bootstrap 模板**（必做）：`TASK_graph_bootstrap.md` 范围首步为优先 scaffold（真实命令）；模板拷贝降级为协议/回退路径；删除或改写「只拷模板 / 仅复制骨架」为主路径的表述；「自动生图」禁令与「可审草稿」划界清晰
-- [ ] **A6 Agent 指针**（必做）：包内至少一处 skill 或 command 指针指向清单机检面（`REVIEW_CHECKLIST.md` + compile/check 类命令原文指针 + 禁代签 HG）；可用 `rg`/测断言文件存在与关键句
-- [ ] **A7 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿
-- [ ] **A8 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W2): …` · 禁 `git add -A` · 未 tag/push/publish/bump
+- [x] **A1 init 命令字面**（必做）：`INIT_QUICKSTART`（`src/cli/init.ts`）含 `npx spec-wave graph scaffold`；可审草稿 / 非权威真值口径可见；**无**「自动权威」类违纪表述
+- [x] **A2 init 双路径打印**（必做）：`--yes` 与 dry-run 成功路径 stdout 均含 scaffold 下一步（沿用既有 init 测夹具）
+- [x] **A3 测锁联改**（必做）：`test/init.test.ts` 更新——含 scaffold 断言；原「命令集合仅 sync/verify」钉改为含 `graph scaffold`（或等价解析）；F-W4-01 usage 存在性仍绿
+- [x] **A4 手册**（必做）：使用手册五分钟上手或 §5 init 附近出现真实 `graph scaffold` 下一步；与 §10 可审草稿口径一致
+- [x] **A5 bootstrap 模板**（必做）：`TASK_graph_bootstrap.md` 范围首步为优先 scaffold（真实命令）；模板拷贝降级为协议/回退路径；删除或改写「只拷模板 / 仅复制骨架」为主路径的表述；「自动生图」禁令与「可审草稿」划界清晰
+- [x] **A6 Agent 指针**（必做）：包内至少一处 skill 或 command 指针指向清单机检面（`REVIEW_CHECKLIST.md` + compile/check 类命令原文指针 + 禁代签 HG）；可用 `rg`/测断言文件存在与关键句
+- [x] **A7 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿
+- [ ] **A8 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W2): …` · 禁 `git add -A` · 未 tag/push/publish/bump（**gate-check ✅ · commit 本棒 · `task close` 留 00**）
 - [ ] **A-opt1 宿主薄封装**（可选 · 未做不挡 A8）：宿主命令/skill 薄封装存在且正文只调 CLI（对照 `kit-graph-check` 薄度）；多宿主落点与既有 host-adapt 惯例一致（30 自裁最小宿主集，至少 Cursor **或** Claude 一面）
 
 ---
@@ -196,7 +196,19 @@ A1–A3 命令/测机检；A4–A6 文件存在+关键句；A7–A8 四门+gate-
 
 ### 自检结论（执行者）
 
-（30/40 回填 · 占位）
+**30/40 · 2026-10-10 · PASS（必做 A1–A7；A8 待 00 close；A-opt1 未做）**
+
+| 项 | 结论 |
+|----|------|
+| GATE_VERIFY | HG-AUDIT-R1 approved · ✅ 可 30 |
+| A1–A3 | `INIT_QUICKSTART` 第 4 步 `graph scaffold` + 可审草稿口径；`--yes`/dry-run stdout 测锁；命令集 `graph scaffold`/`sync prompts`/`verify`；F-W4-01 绿 |
+| A4 | 手册 §3.3 / §5.1 下一步 + 互链 §10；README 双语 quickstart 同步 |
+| A5 | `TASK_graph_bootstrap` 优先 scaffold · 模板仅协议回退 |
+| A6 | **唯一落点**：扩 `kit-graph-check`（Cursor+Claude）POINTER→`REVIEW_CHECKLIST` Agent 可跑项 + compile/check + 禁代签 HG（N2） |
+| A7 | 四门绿；联改 `assets/sha256.manifest` + `planned-writes-2_4_2.json`（graph-check 内容 hash） |
+| A8 | gate-check exit 0；commit `feat(3.1-W2): …`；**未** `task close` / bump / tag / push / publish |
+| A-opt1 | **跳过**（不挡关账；免 expanded 词表/快照连锁） |
+| N1–N4 | N1 测锁面已列；N2 唯扩 kit-graph-check；N3 §3/§5/§10 口径扫过；N4 可选未做 |
 
 Wiki: none
 
@@ -212,3 +224,4 @@ Wiki: none
 |------|------|
 | 2026-10-10 | 10-task 初稿 · 00 开拆 W2 · 闸 pending |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
+| 2026-10-10 | 30/40：入手链 DX 落地 · A1–A7 ✅ · A-opt1 跳过 · 待 00 close |

@@ -150,7 +150,7 @@ Minimal skeleton (full field list in the template):
 - **Where it comes from**: written by you or your agent (hat 10 flow) — the CLI does not materialize spec files.
 - **Where it lives**: `docs/spec/` (this repo keeps specs under `docs/spec/<topic>/`, e.g. `docs/spec/2_2-closed-loop-start/`).
 
-The same three-step chain is printed by `npx spec-wave init` (quickstart) — step 3 requires your project to be a git repository (run `git init` first if needed; `verify` checks git-root ownership). Terminology (Harness / hats / gates / S2) is collected in [GLOSSARY.md](GLOSSARY.md) (bilingual glossary — links back to this section).
+The same quickstart chain is printed by `npx spec-wave init` — step 3 requires your project to be a git repository (run `git init` first if needed; `verify` checks git-root ownership). Step 4 (optional) points to `npx spec-wave graph scaffold` for a **reviewable draft** under `docs/_tech_graph/` (not signed architecture truth; see graph section below). Terminology (Harness / hats / gates / S2) is collected in [GLOSSARY.md](GLOSSARY.md) (bilingual glossary — links back to this section).
 
 ---
 ## Entry A · DSH plugin

@@ -200,7 +200,7 @@ describe('2.1.1 W3 init --tools / TTY / host-adapt', { concurrency: 1 }, () => {
     assert.equal(isInteractiveInit({ isTTY: false }, { yes: true }), false)
   })
 
-  it('2.2 W4 D1：--tools none --yes 输出含 3 步 quickstart 关键行', async () => {
+  it('2.2 W4 D1：--tools none --yes 输出含 quickstart 关键行（含 graph scaffold）', async () => {
     await withTemp(async (dir) => {
       const r = runCli([
         'init',
@@ -218,10 +218,12 @@ describe('2.1.1 W3 init --tools / TTY / host-adapt', { concurrency: 1 }, () => {
       assert.match(r.combined, /docs\/harness\/templates\/TASK_TEMPLATE\.md/)
       assert.match(r.combined, /docs\/tasks\/active\//)
       assert.match(r.combined, /npx spec-wave verify --task/)
+      assert.match(r.combined, /npx spec-wave graph scaffold/)
+      assert.match(r.combined, /reviewable draft/i)
     })
   })
 
-  it('2.2 W4 D1：dry-run（非 --yes）路径同样打印 quickstart', async () => {
+  it('2.2 W4 D1：dry-run（非 --yes）路径同样打印 quickstart（含 graph scaffold）', async () => {
     await withTemp(async (dir) => {
       const r = runCli(['init', '--preset', 'harness-only', '--tools', 'none', '--target', dir])
       assert.equal(r.status, 0, r.combined)
@@ -229,21 +231,30 @@ describe('2.1.1 W3 init --tools / TTY / host-adapt', { concurrency: 1 }, () => {
       assert.match(r.combined, /Next steps.*quickstart/)
       assert.match(r.combined, /npx spec-wave sync prompts --yes/)
       assert.match(r.combined, /npx spec-wave verify --task/)
+      assert.match(r.combined, /npx spec-wave graph scaffold/)
+      assert.match(r.combined, /reviewable draft/i)
     })
   })
 
-  it('2.3-W3 ③（[A]#9）：quickstart 含 git 前提提示 · 三步骤结构保持（F-W3-06）', () => {
+  it('2.3-W3 ③ + 3.1 W2：quickstart 含 git 前提 · 1–3 步保持 · 第 4 步 graph scaffold', () => {
     assert.match(INIT_QUICKSTART, /git init/, 'quickstart 须含 git init 前提提示')
     assert.match(INIT_QUICKSTART, /git repository/, '须明示 git 仓前提')
-    // 三步骤结构不变：1/2/3 步关键行保持（第 0 步提示行不计步骤）
+    // 1/2/3 步关键行保持；第 4 步为图谱下一步（可审草稿口径）
     assert.match(INIT_QUICKSTART, /1\. npx spec-wave sync prompts --yes/)
     assert.match(INIT_QUICKSTART, /2\. Create your first task/)
     assert.match(INIT_QUICKSTART, /3\. npx spec-wave verify --task/)
-    // F-W4-01 联防：前提行不得引入新的 npx spec-wave 命令字面（命令集合不膨胀）
+    assert.match(INIT_QUICKSTART, /4\..*npx spec-wave graph scaffold/)
+    assert.match(INIT_QUICKSTART, /reviewable draft/i)
+    assert.match(INIT_QUICKSTART, /Not signed architecture truth/)
+    // 须含禁称纪律句；不得出现「已是权威真值」式肯定宣称
+    assert.match(INIT_QUICKSTART, /do not treat as an authoritative auto graph/i)
+    assert.doesNotMatch(INIT_QUICKSTART, /is signed architecture truth/i)
+
+    // F-W4-01：命令集合含 graph scaffold（须与 usage 字面一致）
     const mentioned = [...INIT_QUICKSTART.matchAll(/npx spec-wave ([a-z][a-z-]*(?: [a-z][a-z-]*)?)/g)].map(
       (m) => m[1],
     )
-    assert.deepEqual([...new Set(mentioned)].sort(), ['sync prompts', 'verify'])
+    assert.deepEqual([...new Set(mentioned)].sort(), ['graph scaffold', 'sync prompts', 'verify'])
   })
 
   it('2.2 W4 D1：quickstart 提到的命令在 CLI usage 中真实存在（F-W4-01）', () => {
