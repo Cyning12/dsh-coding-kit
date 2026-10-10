@@ -36,11 +36,13 @@
 
 ## W3 · indexes 双向闸（反哺 P2 · opt-in）
 
-- [ ] CLI：`graph indexes check`  
-- [ ] 配置化 glob / 域列表（禁抄七域硬编码）  
-- [ ] 双向一致语义 + `--json`  
-- [ ] 未配置行为测锁 · **不**进默认 verify  
-- [ ] 四门绿 · HG-AUDIT-R1 · gate-check  
+> **00 验收**：2026-10-11 · task `3-2-w3-graph-indexes` · A1–A10 · `8f2ed88`
+
+- [x] CLI：`graph indexes check`  
+- [x] 配置化 glob / 域列表（禁抄七域硬编码）  
+- [x] 双向一致语义 + `--json`  
+- [x] 未配置行为测锁 · **不**进默认 verify  
+- [x] 四门绿 · HG-AUDIT-R1 · gate-check  
 
 ## W4 · yaml 双栈迁移文档（反哺 P3）
 

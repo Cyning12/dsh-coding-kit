@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-2-w3-graph-indexes
 
 > **日期**：2026-10-11 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_2_w3_graph_indexes.md`](../../tasks/active/task_3_2_w3_graph_indexes.md)  
+> **task**：[`docs/tasks/done/task_3_2_w3_graph_indexes.md`](../../tasks/done/task_3_2_w3_graph_indexes.md)  
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`04` W3](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) · [`02` §4](../../spec/3_2-graph-ib-and-indexes/02_product_scheme.md) · [`03` §1.3](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) · [`03` §3](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) failure_paths（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md) **W3 · indexes**（HG-NEXT-PLAN=approved）  
 > **防回灌对照**：3.1 / 3.2 W1–W2 · **不**把 indexes 绑进默认 `verify` · **不**硬编码消费仓七域 · **不**改 IB / `struct_rel` / drift 缺省  

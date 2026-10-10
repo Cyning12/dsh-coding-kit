@@ -8,6 +8,7 @@
 ## harness
 
 | 关账日 | task | 摘要 |
+| 2026-10-11 | [`task_3_2_w3_graph_indexes.md`](./task_3_2_w3_graph_indexes.md) | 3.2 W3 · graph indexes check：IB↔indexes 双向 · `.spec-wave/graph-indexes.yaml` · 未配置 exit 1 · 不进 verify · 10 测 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-10-11 | [`task_3_2_w2_struct_rel.md`](./task_3_2_w2_struct_rel.md) | 3.2 W2 · graph drift `struct_rel`：可配模块表相对 `--input` · 缺省=3.1 `01_struct.md` · 坏路径 fail-closed · drift 17 测 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-10-10 | [`task_3_2_w1_graph_ib_check.md`](./task_3_2_w1_graph_ib_check.md) | 3.2 W1 · graph ib check：可选 `nodes[].implementedBy` + 点路径存在性闸 · `--json` 只增 · 无 IB 零打扰 · 未改 3.1 drift 缺省 · 红测 10 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-10-10 | [`task_3_1_w5_release.md`](./task_3_1_w5_release.md) | 3.1 W5 · release 簿记：bump 3.1.0 · CHANGELOG/MIGRATION/手册/ACCEPTANCE/spec IMPLEMENTED · pins 仅 pin-10 设计红 · **未** tag/push/publish · Task_KPI%: 96 |

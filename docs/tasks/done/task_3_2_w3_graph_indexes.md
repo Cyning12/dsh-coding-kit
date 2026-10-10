@@ -1,6 +1,6 @@
 # Task：3.2 W3 · graph indexes check（IB ↔ indexes 双向 · opt-in）
 
-> **状态**：`active` · **HG-AUDIT-R1=approved**（2026-10-11 **00 签收** · 可 30）  
+> **状态**：`done` · **00 验收关账** 2026-10-11（A1–A10 · `8f2ed88`）  
 
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`02`](../../spec/3_2-graph-ib-and-indexes/02_product_scheme.md) §4 · [`03`](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) §1.3 · [`04`](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) **W3**  
 > **PLAN**：[`PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md) **W3**  
@@ -121,7 +121,7 @@ npx spec-wave graph indexes check [--target] [--input] [--json]
 - [x] **A7**：`--json` 可解析差异；既有命令零回归  
 - [x] **A8**：`verify`（无 indexes 步）行为不强制跑本命令（测锁）  
 - [x] **A9**：四门绿  
-- [ ] **A10**：gate-check + close · `feat(3.2-W3): …` · 未 bump/tag/push/publish · **00 close**
+- [x] **A10**：gate-check + close · `feat(3.2-W3): …` · 未 bump/tag/push/publish · **00 close**
 
 ---
 
@@ -200,6 +200,13 @@ A1–A10 fixture。
 
 ---
 
+
+### KPI（00）
+
+Task_KPI%: 96（A1–A10 · indexes 10 测 · 四门绿 · opt-in · 未绑 verify；扣分：无）
+
+- rubric：`KPI_RUBRIC_v1_2`
+
 ## 修订记录
 
 | 日期 | 摘要 |
@@ -207,3 +214,4 @@ A1–A10 fixture。
 | 2026-10-11 | 10-task 初稿 · 00 开拆 W3 |
 | 2026-10-11 | 20 审 R1 PASS · **00 签收** 过程闸 → approved · 可 30 |
 | 2026-10-11 | **30** 实现 indexes check · A1–A9 · A10 留 00 |
+| 2026-10-11 | **00 验收关账** · A10 close · SPEC04 W3 勾选 · W4 未开 |
