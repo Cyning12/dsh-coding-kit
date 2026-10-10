@@ -8,6 +8,7 @@
 ## harness
 
 | 关账日 | task | 摘要 |
+| 2026-10-10 | [`task_3_1_w3_graph_drift.md`](./task_3_1_w3_graph_drift.md) | 3.1 W3 · graph drift：一级包目录∈模块表 + 锚点 path 消失 + `.spec-wave/graph-drift.yaml` 白名单 + `--json` 只增 · 零写盘 · 红测 12 · CI 样例可选步 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-10-10 | [`task_3_1_w2_graph_dx.md`](./task_3_1_w2_graph_dx.md) | 3.1 W2 · 入手链 DX：INIT_QUICKSTART 第 4 步 graph scaffold · 手册/README · TASK_graph_bootstrap 优先 scaffold · kit-graph-check POINTER→REVIEW_CHECKLIST · A-opt1 跳过 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 95 |
 | 2026-10-10 | [`task_3_1_w1_graph_scaffold.md`](./task_3_1_w1_graph_scaffold.md) | 3.1 W1 · graph scaffold 可审草稿脚手架：探测→写盘→轻检/`--strict`→`REVIEW_CHECKLIST.md` · `--mode full\|struct-only` · 互斥 exit 1 · 浅扫 4/200/16 · 红测 10/10 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-09-24 | [`task_3_0_2_postpublish_dx.md`](./task_3_0_2_postpublish_dx.md) | 3.0.2 post-publish DX：发版文案回填已 published（RELEASING/CHANGELOG/ACCEPTANCE/手册/spec 索引/README 现行包）· README 双语 Prerequisites+最小上手+空仓 `test_strategy=required` 最小可绿（S2 未物化）· GH Releases `v3.0.0`/`v3.0.1`/`v3.0.2`（Latest=v3.0.2 · notes→CHANGELOG）· 40 重钉探针一致 · verify PASS · gate-check 0 · 未 publish/deprecate/新建 tag · Task_KPI%: 96 |

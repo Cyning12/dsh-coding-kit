@@ -11,7 +11,7 @@
 - [x] **HG-SPEC-SIGNOFF=approved**（2026-10-10 维护者 · 「签收，拆W1」）  
 - [x] **HG-NEXT-PLAN=approved**（同窗）  
 - [x] 00 拆 **W1** task（本棒）；W2–W5 后续按波拆  
-- [ ] W3–W5 task（**W2 已关** · W3–W5 未开）  
+- [ ] W4–W5 task（**W3 已关** · W4–W5 未开）  
 
 ## W1 · 脚手架 + 生成后轻检 + 审核清单（核心 · 轨 A + 轨 B 轻量）
 
@@ -40,11 +40,13 @@
 
 ## W3 · 漂移闸（轨 B 完整 · 承接 F-2）
 
-- [ ] CLI：`graph drift`  
-- [ ] MVP：模块表覆盖一级包目录 + 锚点 path 消失检测 + 白名单  
-- [ ] `--json` 信封只增不改既有其它命令  
-- [ ] CI 样例（example workflow）可选步骤  
-- [ ] 负向 fixture · 四门绿 · HG-AUDIT-R1 · gate-check  
+> **00 验收**：2026-10-10 · task `3-1-w3-graph-drift` · A1–A10 · A-opt1 · `357b31b`
+
+- [x] CLI：`graph drift`  
+- [x] MVP：模块表覆盖一级包目录 + 锚点 path 消失检测 + 白名单  
+- [x] `--json` 信封只增不改既有其它命令  
+- [x] CI 样例（example workflow）可选步骤  
+- [x] 负向 fixture · 四门绿 · HG-AUDIT-R1 · gate-check  
 
 ## W4 · 仓级词表（轨 C · 承接 F-1②）
 

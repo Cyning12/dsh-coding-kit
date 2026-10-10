@@ -1,6 +1,7 @@
 # Task：3.1 W3 · graph drift 漂移闸（轨 B 完整 · F-2）
 
-> **状态**：`in_progress` · **00 签收双闸** 2026-10-10（20 审 R1 PASS · blocking 0）  
+> **状态**：`done` · **00 验收关账** 2026-10-10（A1–A10 · `357b31b` · A-opt1 已做）  
+
 
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md)（**HG-SPEC-SIGNOFF=approved** · 2026-10-10 · epic 级已签）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md)（**HG-NEXT-PLAN=approved** · 同窗）· **W3 · 漂移（F-2）**  
@@ -122,7 +123,7 @@
 - [x] **A7 `--json`**（必做）：有漂移时 JSON 经 `printJson` 可解析且含差异字段；**既有**其它 `graph * --json` / 非 json 路径测零回归（只增）
 - [x] **A8 只读**（必做）：成功与失败路径均**零写盘**目标 `_tech_graph`（对照 dry-run 纪律 · 可用 mtime/文件列表断言）
 - [x] **A9 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿
-- [ ] **A10 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W3): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **30/40：gate-check + commit 已就绪 · `task close` 留 00**
+- [x] **A10 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W3): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**
 - [x] **A-opt1 CI 样例**（可选 · 未做不挡 A10）：`assets/ci/samples/` 存在 drift 可选步骤（独立 example 或扩 `tech-graph.yml.example` 注释步）+ samples README 标注可选
 
 ---
@@ -219,7 +220,7 @@ A1–A8 临时 fixture + exit/stdout/json 断言；A9–A10 四门+gate-check；
 |----|------|
 | GATE_VERIFY | PASS · HG-AUDIT-R1 approved · ✅ 可 30（`node bin/specgate.js verify --task …`） |
 | A1–A9 | PASS（`test/graph-drift.test.ts` 12 测） |
-| A10 | 部分：gate-check exit 0 + 待 commit；**`task close` 留 00** |
+| A10 | PASS：gate-check + commit `357b31b` · **00 close** |
 | A-opt1 | 已做（`tech-graph.yml.example` 注释步 + samples README） |
 | 四门 | PASS · typecheck / test / build / test:lib |
 | 未 bump/tag/push/publish | 是 |
@@ -231,7 +232,7 @@ Wiki: none
 
 ### KPI（00）
 
-（占位 · 00 CLOSE 时按 `KPI_RUBRIC_v1_2` 填写）
+Task_KPI%: 96（A1–A10 + A-opt1 全绿 · drift 12 测 · 四门绿 · 只读零写盘 · dogfood 列形兼容显式；扣分：无）
 
 - rubric：`KPI_RUBRIC_v1_2` · 30/40 实现 + 00 签闸/关账
 
@@ -243,3 +244,5 @@ Wiki: none
 |------|------|
 | 2026-10-10 | 10-task 初稿 · 00 开拆 W3 · HG-TASK-DRAFT / HG-AUDIT-R1 **pending** |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
+| 2026-10-10 | 30/40：`graph drift` MVP · `357b31b` · A1–A9/A-opt1 |
+| 2026-10-10 | **00 验收关账** · A10 close · SPEC04 W3 勾选 · W4 未开 |

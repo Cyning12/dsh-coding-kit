@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-1-w3-graph-drift
 
 > **日期**：2026-10-10 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_1_w3_graph_drift.md`](../../tasks/active/task_3_1_w3_graph_drift.md)  
+> **task**：[`docs/tasks/done/task_3_1_w3_graph_drift.md`](../../tasks/done/task_3_1_w3_graph_drift.md)  
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md) · [`04` W3](../../spec/3_1-tech-graph-scaffold/04_execution_waves.md) · [`02` §3.2](../../spec/3_1-tech-graph-scaffold/02_product_scheme.md) · [`03` §1.3 / failure 漂移 exit 2](../../spec/3_1-tech-graph-scaffold/03_cli_and_review.md)（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) **W3 · 漂移（F-2）**（HG-NEXT-PLAN=approved）  
 > **W1/W2 关账对照**：[`task_3_1_w1_graph_scaffold`](../../tasks/done/task_3_1_w1_graph_scaffold.md) · [`task_3_1_w2_graph_dx`](../../tasks/done/task_3_1_w2_graph_dx.md)（结构参考 · **防回灌** scaffold/DX）  

@@ -8,7 +8,7 @@
 ## 动作
 
 1. 实读 R0：`src/cli-graph.ts:30-47`/`:50-75`（无 drift）· `src/cli-graph-scaffold.ts:20-31`/`150-187`/`568-582` · `src/cli-graph-yaml.ts:29`/`:173-178`/`:336-342`/`:614+` · `src/cli-shared.ts:477-483` · `src/cli-pins.ts:20` · `assets/ci/samples/` · PLAN_3_0_2 非范围 F-2  
-2. 新建 [`docs/tasks/active/task_3_1_w3_graph_drift.md`](../../../../tasks/active/task_3_1_w3_graph_drift.md)  
+2. 新建 [`docs/tasks/done/task_3_1_w3_graph_drift.md`](../../../../tasks/done/task_3_1_w3_graph_drift.md)  
 3. `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_3_1_w3_graph_drift.md` → **LINT: PASS**
 
 ## 闸态（task 表）
