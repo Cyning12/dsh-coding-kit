@@ -1,6 +1,6 @@
 {
   "name": "spec-wave",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "SpecWave — multi-host coding CLI (Cursor / Claude Code / DSH / agents) + P0 gates & Harness process track. Spec-driven discipline: mechanical gates (exit 2), S2 audit trail, hat roles. Formerly SpecGate / dsh-coding-kit. npx spec-wave",
   "license": "MIT",
   "author": "Cyning",
@@ -21,7 +21,6 @@
     "specgate": "bin/specgate.js",
     "dsh-coding-kit": "bin/dsh-coding-kit.js"
   },
-
   "files": [
     "bin",
     "lib",

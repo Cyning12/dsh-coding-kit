@@ -1,9 +1,9 @@
 # SPEC：3.2 · 图谱点路径（IB）· 可配置模块表 · indexes 闸
 
-> **状态**：`signed` · **HG-SPEC-SIGNOFF=approved**（2026-10-10 维护者本窗签收 · 原文「签收，授权00签收后续文档」）· **HG-NEXT-PLAN=approved**（同窗）  
+> **状态**：`signed` · **IMPLEMENTED**（W1–W4 CLOSE · W5 bump 已落）· **HG-SPEC-SIGNOFF=approved**（2026-10-10 维护者本窗签收 · 原文「签收，授权00签收后续文档」）· **HG-NEXT-PLAN=approved**（同窗）  
 > **track**：`epic`  
-> **拟发版**：`spec-wave@3.2.0`（**minor** · 消费者可观察新能力：节点 IB 存在性闸 + 模块表路径可配 + 可选 indexes 双向闸）  
-> **基线**：`spec-wave@3.1.0`（3.1 epic IMPLEMENTED · publish 待人；本夹**不**回灌改写 3.1 W3 验收）  
+> **拟发版**：`spec-wave@3.2.0`（**minor** · **待发版** · tag/push/publish 仅人 · 消费者可观察新能力：节点 IB 存在性闸 + 模块表路径可配 + 可选 indexes 双向闸）  
+> **基线**：`spec-wave@3.1.0`（**已 published** · registry `latest=3.1.0`；本夹**不**回灌改写 3.1 W3 验收）  
 > **规划**：[`../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md)（**HG-NEXT-PLAN=approved** · 同窗）  
 > **布局公约**：[`../doc-health/03_spec_layout_convention.md`](../doc-health/03_spec_layout_convention.md)  
 > **反哺来源**：业务仓（kimi-code-meta）Inform 备忘 `BACKPORT_tech_graph_tools_to_specwave_v1_zh.md`（2026-10-10 · dogfood 缺口 · **勿**整包 `cp tools/tech_graph`）  

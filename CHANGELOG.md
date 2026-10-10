@@ -4,10 +4,22 @@
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-10-11
+
+> 主题：**minor** —— 图谱点路径（IB）· 可配置模块表 · indexes 闸 epic（W1–W4 · PLAN [`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md) · SPEC [`docs/spec/3_2-graph-ib-and-indexes/`](docs/spec/3_2-graph-ib-and-indexes/) · 反哺 meta `tools/tech_graph` 缺口 · 拒整包/AST/issue-sync）。
+> **发布状态**：**待发版（tag/push/publish 仅人）**（bump 已落 · registry `latest` 仍为 `3.1.0` 直至人 publish · pin-10 打 tag 前设计红）。
+
+### Added
+
+- **W1（`graph ib check`）**：可选 `nodes[].implementedBy.{path,symbol?}` · CLI `graph ib check` MVP path 存在性 · 空/TBD 跳过 · 缺文件 exit 2/`missing_ib_path` · `--json` 信封只增 · 点 vs 边文档。
+- **W2（`struct_rel`）**：`.spec-wave/graph-drift.yaml` 可选 `struct_rel` · 缺省 `01_struct.md`（与 3.1.0 一致）· 分层模块表路径可绿 · 坏路径 fail-closed。
+- **W3（`graph indexes check`）**：opt-in 双向一致闸 · 配置化 glob/域 · **不**进默认 verify · `--json`。
+- **W4（yaml 双栈迁移文档）**：MIGRATION/手册消费仓 `graph:ci` 可切 `npx spec-wave graph yaml …` · 保真分责表（drift / ib / indexes / AST 未交付）· 可选 CI 注释 `graph ib check`。
+
 ## [3.1.0] - 2026-10-10
 
 > 主题：**minor** —— 技术图谱脚手架 epic（W1–W4 · PLAN [`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) · SPEC [`docs/spec/3_1-tech-graph-scaffold/`](docs/spec/3_1-tech-graph-scaffold/) · 兑现 3.0.2 延后的 F-2 漂移闸 / F-1② 仓级词表）。
-> **发布状态**：**待发版（tag/push/publish 仅人）**（bump 已落 · registry `latest` 仍为 `3.0.2` 直至人 publish · pin-10 打 tag 前设计红）。
+> **发布状态**：**已发布 2026-10-10**（人 publish · registry `latest=3.1.0` · `time.3.1.0`=2026-10-10T09:39:57.549Z · tag `v3.1.0` ↔ `7d96c9e` · 3.2 W5 簿记棒实测回填）。
 
 ### Added
 
