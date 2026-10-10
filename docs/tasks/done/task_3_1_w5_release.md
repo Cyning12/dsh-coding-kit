@@ -1,6 +1,7 @@
 # Task：3.1 W5 · release 收尾（3.0.2 → 3.1.0 · W1–W4 全 CLOSE 后发版簿记）
 
-> **状态**：`done` · **00 验收关账** 2026-10-10（A1–A12 · bump `1baccd1` · HG-RELEASE-* 仍 pending · 未 tag/push/publish）  
+> **状态**：`done` · **00 验收关账** 2026-10-10 · **TAG-PUSH approved**（维护者授权 merge+tag · publish 交人）  
+
 
 
 > **wave**：release（3.1.0 **minor** · 技术图谱脚手架 epic 收口 · 同 3.0.2 / 3.0.0 release 先例 · **本版差异：tag/push/publish 三动作默认仅人**）  
@@ -45,8 +46,8 @@
 | HG-NEXT-PLAN | approved | — | epic 级 · 同窗签收 PLAN（继承） |
 | HG-TASK-DRAFT | approved | 20, 30 | 2026-10-10 **00 签收**（授权签收过程文档）· 依据 lint PASS + 20 审 R1 PASS |
 | HG-AUDIT-R1 | approved | 30 | 2026-10-10 **00 签收** · 依据 [`task_3_1_w5_release_audit_R1_20261010.md`](../../harness/reviews/task_3_1_w5_release_audit_R1_20261010.md)（PASS · blocking 0）· **可 30 簿记** |
-| HG-RELEASE-TAG-PUSH | pending | — | 3.1.0 `git tag` + `git push` · **默认仅人** · **不**拦 30 簿记 · **本窗未签** |
-| HG-RELEASE-PUBLISH | pending | — | 3.1.0 `npm publish` · **仅人** · Agent 永禁 · **本窗未签** |
+| HG-RELEASE-TAG-PUSH | approved | — | 2026-10-10 维护者授权「合并，打tag，交由我发版」· 00 代跑 merge main + `v3.1.0` tag + push |
+| HG-RELEASE-PUBLISH | pending | — | 3.1.0 `npm publish` · **仅人** · Agent 永禁 · **交维护者发版** |
 
 > **闸说明**：HG-RELEASE-TAG-PUSH / HG-RELEASE-PUBLISH 语义 = 发布动作，**不**把 `30` 写入 `blocks_hats`；30 可做 package.json/CHANGELOG/pins/ACCEPTANCE/RELEASING/手册/MIGRATION/spec 索引等簿记。本波默认 **不**执行 tag/push/publish（与 3.0.2「tag/push 00 代跑」不同 · 对齐 3.0.0「四动作仅人」口径）。
 
@@ -282,3 +283,4 @@ Task_KPI%: 96（A1–A12 簿记全绿 · bump 3.1.0 · 假 published 零命中 �
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · HG-RELEASE-* 仍 pending · 可 30 簿记 |
 | 2026-10-10 | 30/40：bump 3.1.0 簿记 · `1baccd1` · A1–A11 |
 | 2026-10-10 | **00 验收关账** · A12 close · HG-RELEASE-* 仍 pending · 待人 tag/push/publish |
+| 2026-10-10 | 维护者「合并，打tag，交由我发版」· HG-RELEASE-TAG-PUSH=approved · 00 代跑 ff-merge main + `v3.1.0` + push · PUBLISH 仍 pending |
