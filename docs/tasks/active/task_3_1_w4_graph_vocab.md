@@ -59,19 +59,19 @@
 
 ### 必做
 
-- [ ] **① 加载合并**：在 `loadTechGraphVocab`（或等价单源加载点）于目标仓根读取 **`.spec-wave/graph-vocab.yaml`**，与包内 `assets/tech-graph-vocab.yaml` **合并**；路径常量与 drift/pins 同族（见 R0）
-- [ ] **② 缺省一致**：目标仓**无**该文件 → 仅内置词表 · `compile|check` Warning/exit 与 **3.0.2** 可测等价（既有 `f1-unify` / 钩②钉不回退）
-- [ ] **③ 冲突 / 坏档 fail-loud**：仓级 YAML 不可解析、schema 非法、或与内置 **冲突**（至少：同 `kinds[].id` 不同 `class` · 其它冲突键由 30 钉死并测锁）→ **exit 2** · 点名路径/键（对齐 SPEC `03` §3）
-- [ ] **④ 扩展边型零 Warning**：仓级登记额外 `edge_types` 后，fixture 显式 `type:` 该扩展 → `graph yaml compile|check` stderr **无**「未在 tech-graph 词汇登记档」Warning · exit 不因 Warning 变红
-- [ ] **⑤ 未登记仍 Warning**：显式未登记 type（如 `bogus_edge`）仍 Warning · **不咬 exit**（「登记 ≠ 封闭」不回退）
-- [ ] **⑥ 加载面**：合并结果须挂在 **`graph yaml compile|check`** 加载链（`printTechVocabWarnings` / `collectTechVocabWarnings` 消费合并后词表）；**禁止**只改文档不接线
-- [ ] **⑦ 文档**：README 或 [`docs/guides/使用手册-v3.0.0-zh.md`](../../guides/使用手册-v3.0.0-zh.md) 或仓根 [`MIGRATION.md`](../../../MIGRATION.md) **最小一节**「消费仓如何声明 `.spec-wave/graph-vocab.yaml` 扩展」（路径 · 合并 · 冲突 exit 2 · 登记≠封闭）；禁「自动权威图谱」违纪表述
-- [ ] **⑧ 测试**：负向 + 正向 fixture；红测先行再实现；**勿**改 drift/scaffold 语义测锁
-- [ ] **⑨ 波末**：四门绿 · HG-AUDIT-R1（人签后）· `gate-check`；禁 bump/tag/push/publish；禁 `git add -A`；禁开 W5 release（**`task close` 留 00**）
+- [x] **① 加载合并**：在 `loadTechGraphVocab`（或等价单源加载点）于目标仓根读取 **`.spec-wave/graph-vocab.yaml`**，与包内 `assets/tech-graph-vocab.yaml` **合并**；路径常量与 drift/pins 同族（见 R0）
+- [x] **② 缺省一致**：目标仓**无**该文件 → 仅内置词表 · `compile|check` Warning/exit 与 **3.0.2** 可测等价（既有 `f1-unify` / 钩②钉不回退）
+- [x] **③ 冲突 / 坏档 fail-loud**：仓级 YAML 不可解析、schema 非法、或与内置 **冲突**（至少：同 `kinds[].id` 不同 `class` · 其它冲突键由 30 钉死并测锁）→ **exit 2** · 点名路径/键（对齐 SPEC `03` §3）
+- [x] **④ 扩展边型零 Warning**：仓级登记额外 `edge_types` 后，fixture 显式 `type:` 该扩展 → `graph yaml compile|check` stderr **无**「未在 tech-graph 词汇登记档」Warning · exit 不因 Warning 变红
+- [x] **⑤ 未登记仍 Warning**：显式未登记 type（如 `bogus_edge`）仍 Warning · **不咬 exit**（「登记 ≠ 封闭」不回退）
+- [x] **⑥ 加载面**：合并结果须挂在 **`graph yaml compile|check`** 加载链（`printTechVocabWarnings` / `collectTechVocabWarnings` 消费合并后词表）；**禁止**只改文档不接线
+- [x] **⑦ 文档**：README 或 [`docs/guides/使用手册-v3.0.0-zh.md`](../../guides/使用手册-v3.0.0-zh.md) 或仓根 [`MIGRATION.md`](../../../MIGRATION.md) **最小一节**「消费仓如何声明 `.spec-wave/graph-vocab.yaml` 扩展」（路径 · 合并 · 冲突 exit 2 · 登记≠封闭）；禁「自动权威图谱」违纪表述
+- [x] **⑧ 测试**：负向 + 正向 fixture；红测先行再实现；**勿**改 drift/scaffold 语义测锁
+- [x] **⑨ 波末**：四门绿 · HG-AUDIT-R1（人签后）· `gate-check`；禁 bump/tag/push/publish；禁 `git add -A`；禁开 W5 release（**`task close` 留 00**）
 
 ### 可选（本波可交付 · 不阻塞关账）
 
-- [ ] **O1 `graph vocab show`**：显式诊断合并后词表（`--target` / `--json` 形态 30 自裁）；**非硬门槛**（SPEC `03` §1.4）；未做不挡 A-关账
+- [x] **O1 `graph vocab show`**：显式诊断合并后词表（`--target` / `--json` 形态 30 自裁）；**非硬门槛**（SPEC `03` §1.4）；未做不挡 A-关账
 
 ## 非范围
 
@@ -111,16 +111,16 @@
 
 > **必做** A1–A9 为关账硬条款；**可选** A-opt1 本波可交付，未做不挡关账。
 
-- [ ] **A1 缺省等价**（必做）：临时 fixture **无** `.spec-wave/graph-vocab.yaml` → `graph yaml compile|check` 对已登记六条 / `bogus_edge` 行为与 3.0.2 钩②钉一致（已登记零告警 · 未登记 Warning 不咬 exit）
-- [ ] **A2 扩展零 Warning**（必做）：fixture 声明仓级 `edge_types` 含自定义串（如 `my_ext_edge`）且 YAML 显式 `type: my_ext_edge` → stderr **无**「未在 tech-graph 词汇登记档」· 相关命令 exit 不因钩②失败
-- [ ] **A3 未登记仍 Warning**（必做）：同 fixture 或对照件显式未登记 type → Warning 仍在 · exit **不**仅因该 Warning 变 2（「登记 ≠ 封闭」）
-- [ ] **A4 坏 YAML**（必做）：仓级文件存在但不可解析 → `compile|check`（或加载点）**exit 2** · 输出点名路径
-- [ ] **A5 冲突**（必做）：仓级 `kinds` 与内置同 `id` 不同 `class`（或 30 测锁的其它冲突形）→ **exit 2** · 点名键
-- [ ] **A6 加载面**（必做）：合并挂在 `graph yaml compile|check`（R0 钩②调用点）；**禁止**仅 `vocab show` 接线而 compile/check 仍只读内置
-- [ ] **A7 文档**（必做）：README / 使用手册 / `MIGRATION.md` 至少一处最小节说明仓级扩展声明与 fail-loud
-- [ ] **A8 零回归**（必做）：既有 `f1-unify` 内容钉/钩②/恒等 fixture · `graph-drift` · scaffold 相关测不因本波改语义红（只增仓级面测）
-- [ ] **A9 四门 + 关账**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿；`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W4): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**
-- [ ] **A-opt1 `graph vocab show`**（可选 · 未做不挡 A9）：help 列出 · 可展示合并后 edge_types/kinds（形态 30 自裁）
+- [x] **A1 缺省等价**（必做）：临时 fixture **无** `.spec-wave/graph-vocab.yaml` → `graph yaml compile|check` 对已登记六条 / `bogus_edge` 行为与 3.0.2 钩②钉一致（已登记零告警 · 未登记 Warning 不咬 exit）
+- [x] **A2 扩展零 Warning**（必做）：fixture 声明仓级 `edge_types` 含自定义串（如 `my_ext_edge`）且 YAML 显式 `type: my_ext_edge` → stderr **无**「未在 tech-graph 词汇登记档」· 相关命令 exit 不因钩②失败
+- [x] **A3 未登记仍 Warning**（必做）：同 fixture 或对照件显式未登记 type → Warning 仍在 · exit **不**仅因该 Warning 变 2（「登记 ≠ 封闭」）
+- [x] **A4 坏 YAML**（必做）：仓级文件存在但不可解析 → `compile|check`（或加载点）**exit 2** · 输出点名路径
+- [x] **A5 冲突**（必做）：仓级 `kinds` 与内置同 `id` 不同 `class`（或 30 测锁的其它冲突形）→ **exit 2** · 点名键
+- [x] **A6 加载面**（必做）：合并挂在 `graph yaml compile|check`（R0 钩②调用点）；**禁止**仅 `vocab show` 接线而 compile/check 仍只读内置
+- [x] **A7 文档**（必做）：README / 使用手册 / `MIGRATION.md` 至少一处最小节说明仓级扩展声明与 fail-loud
+- [x] **A8 零回归**（必做）：既有 `f1-unify` 内容钉/钩②/恒等 fixture · `graph-drift` · scaffold 相关测不因本波改语义红（只增仓级面测）
+- [x] **A9 四门 + 关账**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿；`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W4): …` · 禁 `git add -A` · 未 tag/push/publish/bump · **00 本窗 close**（四门+gate-check+commit 已齐 · **close 留 00**）
+- [x] **A-opt1 `graph vocab show`**（可选 · 未做不挡 A9）：help 列出 · 可展示合并后 edge_types/kinds（形态 30 自裁）
 
 ---
 
@@ -214,16 +214,18 @@ A1–A8 临时 fixture + exit/stderr 断言；A9 四门+gate-check；A-opt1 命�
 
 | 项 | 结论 |
 |----|------|
-| GATE_VERIFY | （占位 · 人签 HG-AUDIT-R1 前 30 拒开工） |
-| A1–A8 | （占位） |
-| A9 | （占位 · gate-check + close 留 00） |
-| A-opt1 | （占位 · 可选） |
-| 四门 | （占位） |
-| 未 bump/tag/push/publish | （占位） |
+| GATE_VERIFY | PASS · HG-AUDIT-R1 approved · ✅ 可 30（2026-10-10） |
+| A1–A8 | ✅ 全过（`test/graph-vocab.test.ts` + README 节） |
+| A9 | 四门绿 · gate-check exit 0 · commit 本波 · **`task close` 留 00** |
+| A-opt1 | ✅ `graph vocab show [--target] [--json]` |
+| 四门 | typecheck / test(959p) / build / test:lib 全绿 |
+| 未 bump/tag/push/publish | ✅ |
 
 Wiki: none
 
-**旧测影响面**：`test/f1-unify.test.ts` · `test/graph-*.test.ts` · scaffold / drift / axioms / ontology —— 本波只增仓级词表加载面，**禁止**改其默认语义断言。
+**旧测影响面（N4）**：`test/f1-unify.test.ts` · `test/graph-*.test.ts` · scaffold / drift / axioms / ontology —— 本波只增仓级词表加载面与 `graph vocab show`，**未**改其默认语义断言；冲突面钉 kinds 同 id 不同 class · edge 同名并集幂等（N1）。
+
+invoke：[`invoke_20261010_30_40_3-1-w4-graph-vocab.md`](../../harness/invokes/by-task/3-1-w4-graph-vocab/invoke_20261010_30_40_3-1-w4-graph-vocab.md)
 
 ### KPI（00）
 
@@ -239,3 +241,4 @@ Task_KPI%: （占位 · 关账时由 00 填）
 |------|------|
 | 2026-10-10 | 10-task 初稿 · 00 开拆 W4 · HG-TASK-DRAFT / HG-AUDIT-R1 **pending** |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
+| 2026-10-10 | 30/40：仓级 graph-vocab 合并加载 · A1–A9/A-opt1 · 四门绿 · gate-check · 待 00 close |
