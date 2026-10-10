@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-1-w1-graph-scaffold
 
 > **日期**：2026-10-10 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_1_w1_graph_scaffold.md`](../../tasks/active/task_3_1_w1_graph_scaffold.md)  
+> **task**：[`docs/tasks/done/task_3_1_w1_graph_scaffold.md`](../../tasks/done/task_3_1_w1_graph_scaffold.md)  
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md)（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) W1（HG-NEXT-PLAN=approved）  
 > **20-spec 审**：[`spec_3_1_tech_graph_scaffold_audit_R1_20261010.md`](./spec_3_1_tech_graph_scaffold_audit_R1_20261010.md)（conditional_pass · A1–A5 已裁决）  

@@ -8,7 +8,7 @@
 ## 动作
 
 1. 回填 SPEC / PLAN / 索引 / `04` W0 签收勾选  
-2. 新建 [`docs/tasks/active/task_3_1_w1_graph_scaffold.md`](../../../../tasks/active/task_3_1_w1_graph_scaffold.md)  
+2. 新建 [`docs/tasks/done/task_3_1_w1_graph_scaffold.md`](../../../../tasks/done/task_3_1_w1_graph_scaffold.md)  
 3. `node bin/specgate.js task lint --file docs/tasks/active/task_3_1_w1_graph_scaffold.md` → **LINT: PASS**  
 
 ## 闸态（task 表）

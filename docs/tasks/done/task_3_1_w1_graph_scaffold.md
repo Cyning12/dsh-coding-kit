@@ -1,6 +1,7 @@
 # Task：3.1 W1 · graph scaffold 可审草稿脚手架（核心）
 
-> **状态**：`ready_to_close` · **00 验收** 2026-10-10（verify/gate-check PASS · A1–A12）  
+> **状态**：`done` · **00 验收关账** 2026-10-10（verify/gate-check PASS · A1–A13 · `ec57eff`）  
+
 
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md)（**HG-SPEC-SIGNOFF=approved** · 2026-10-10 维护者签收）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md)（**HG-NEXT-PLAN=approved** · 同窗）· **W1 节**  
@@ -191,7 +192,7 @@ A1–A13 均可命令/文件存在性/exit code 机检；触顶与 strict 须负
 
 ### 自检结论（执行者）
 
-**帽**：30-execute + 40-self-check · **日期**：2026-10-10 · **未 bump / 未 tag / 未 publish**（commit 待维护者或 00）
+**帽**：30-execute + 40-self-check · **日期**：2026-10-10 · **未 bump / 未 tag / 未 publish** · commit `ec57eff`（00 关账）
 
 #### GATE_VERIFY
 
@@ -225,6 +226,12 @@ VERIFY: PASS
 `docs/harness/invokes/by-task/3-1-w1-graph-scaffold/invoke_20261010_30_40_3-1-w1-graph-scaffold.md`
 
 Wiki: none
+
+### KPI（00）
+
+Task_KPI%: 96（A1–A13 全绿 · scaffold 10/10 · 四门绿 · 可审草稿口径齐 · 未污染 dogfood · 未 bump/tag/push/publish；扣分：关账材料 KPI/Hub 初缺 · 00 补齐后 close）
+
+- rubric：`KPI_RUBRIC_v1_2` · 30/40 实现 + 00 验收关账
 
 ---
 
