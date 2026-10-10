@@ -30,6 +30,7 @@ import {
 import { cmdGraphScaffold } from './cli-graph-scaffold.ts'
 import { cmdGraphDrift } from './cli-graph-drift.ts'
 import { cmdGraphIb } from './cli-graph-ib.ts'
+import { cmdGraphIndexes } from './cli-graph-indexes.ts'
 
 export async function cmdGraph(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
@@ -53,6 +54,8 @@ export async function cmdGraph(args: string[]): Promise<void> {
                  （漂移闸 · 只报告不重画 · 模块覆盖 + 边锚点消失）
   graph ib check [--target PATH] [--input DIR] [--json]
                  （点路径闸 · nodes[].implementedBy.path 存在性 · 无 AST）
+  graph indexes check [--target PATH] [--input DIR] [--json]
+                 （opt-in · IB ↔ indexes 双向 · 须 .spec-wave/graph-indexes.yaml）
   graph vocab show [--target PATH] [--json]
                  （诊断合并后词表 · 内置 + 可选 .spec-wave/graph-vocab.yaml）
 `)
@@ -73,6 +76,10 @@ export async function cmdGraph(args: string[]): Promise<void> {
   }
   if (sub === 'ib') {
     await cmdGraphIb(subRest)
+    return
+  }
+  if (sub === 'indexes') {
+    await cmdGraphIndexes(subRest)
     return
   }
   if (sub === 'vocab') {
