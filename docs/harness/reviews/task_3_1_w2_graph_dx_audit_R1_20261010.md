@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-1-w2-graph-dx
 
 > **日期**：2026-10-10 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_1_w2_graph_dx.md`](../../tasks/active/task_3_1_w2_graph_dx.md)  
+> **task**：[`docs/tasks/done/task_3_1_w2_graph_dx.md`](../../tasks/done/task_3_1_w2_graph_dx.md)  
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md) · 尤其 [`04` W2](../../spec/3_1-tech-graph-scaffold/04_execution_waves.md)（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md) **W2 · 入手链**（HG-NEXT-PLAN=approved）  
 > **W1 关账对照**：[`docs/tasks/done/task_3_1_w1_graph_scaffold.md`](../../tasks/done/task_3_1_w1_graph_scaffold.md)（CLOSE PASS · 防范围回灌）  

@@ -8,7 +8,7 @@
 ## 动作
 
 1. 实读 R0：`src/cli/init.ts:64-73`/`268` · `test/init.test.ts:235-247` · `assets/harness/templates/TASK_graph_bootstrap.md:48/:54` · 手册 §3/§5 · `kit-graph-check` 薄命令  
-2. 新建 [`docs/tasks/active/task_3_1_w2_graph_dx.md`](../../../../tasks/active/task_3_1_w2_graph_dx.md)  
+2. 新建 [`docs/tasks/done/task_3_1_w2_graph_dx.md`](../../../../tasks/done/task_3_1_w2_graph_dx.md)  
 3. `node bin/dsh-coding-kit.js task lint --file docs/tasks/active/task_3_1_w2_graph_dx.md` → **LINT: PASS**
 
 ## 闸态（task 表）

@@ -8,6 +8,7 @@
 ## harness
 
 | 关账日 | task | 摘要 |
+| 2026-10-10 | [`task_3_1_w2_graph_dx.md`](./task_3_1_w2_graph_dx.md) | 3.1 W2 · 入手链 DX：INIT_QUICKSTART 第 4 步 graph scaffold · 手册/README · TASK_graph_bootstrap 优先 scaffold · kit-graph-check POINTER→REVIEW_CHECKLIST · A-opt1 跳过 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 95 |
 | 2026-10-10 | [`task_3_1_w1_graph_scaffold.md`](./task_3_1_w1_graph_scaffold.md) | 3.1 W1 · graph scaffold 可审草稿脚手架：探测→写盘→轻检/`--strict`→`REVIEW_CHECKLIST.md` · `--mode full\|struct-only` · 互斥 exit 1 · 浅扫 4/200/16 · 红测 10/10 · 四门绿 · 未 bump/tag/push/publish · Task_KPI%: 96 |
 | 2026-09-24 | [`task_3_0_2_postpublish_dx.md`](./task_3_0_2_postpublish_dx.md) | 3.0.2 post-publish DX：发版文案回填已 published（RELEASING/CHANGELOG/ACCEPTANCE/手册/spec 索引/README 现行包）· README 双语 Prerequisites+最小上手+空仓 `test_strategy=required` 最小可绿（S2 未物化）· GH Releases `v3.0.0`/`v3.0.1`/`v3.0.2`（Latest=v3.0.2 · notes→CHANGELOG）· 40 重钉探针一致 · verify PASS · gate-check 0 · 未 publish/deprecate/新建 tag · Task_KPI%: 96 |
 | 2026-09-23 | [`task_3_0_2_release_bump.md`](./task_3_0_2_release_bump.md) | 3.0.2 release bump 簿记（①–⑨ + ⑪–⑫ · ⑩/A10 预勾归 00）：package.json+lock → 3.0.2 · CHANGELOG [3.0.2] 节 + [3.0.1] 回填已发布（registry 实测）· pins fix 9 处打 tag 前仅 pin-10 设计红 · 叙事巡检零假 published + 测试断言联改 8 档 · ACCEPTANCE_3_0_2 档 + spec 索引行（pin-08 ok）+ 手册钉 + RELEASING 双 checklist（3.0.1 完成 · 3.0.2 tag/push 预勾 publish 待人）· 四门 929 · 926 pass+2 设计红+1 skip · 未 tag/push/publish · Task_KPI%: 96 |

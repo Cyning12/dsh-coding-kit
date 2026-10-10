@@ -1,6 +1,7 @@
 # Task：3.1 W2 · 入手链与 Agent 审核面（DX）
 
-> **状态**：`in_progress` · **00 签收双闸** 2026-10-10（20 审 R1 PASS · blocking 0）  
+> **状态**：`done` · **00 验收关账** 2026-10-10（A1–A8 · `ba9270b` · A-opt1 跳过）  
+
 
 > **上游 SPEC**：[`docs/spec/3_1-tech-graph-scaffold/`](../../spec/3_1-tech-graph-scaffold/README.md)（**HG-SPEC-SIGNOFF=approved** · 2026-10-10 · epic 级已签）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md`](../../roadmap/PLAN_3_1_tech_graph_scaffold_v1_zh.md)（**HG-NEXT-PLAN=approved** · 同窗）· **W2 · 入手链**  
@@ -110,7 +111,7 @@ W1 已交付 `graph scaffold`（可审草稿 CLI），但入手链仍停在「in
 - [x] **A5 bootstrap 模板**（必做）：`TASK_graph_bootstrap.md` 范围首步为优先 scaffold（真实命令）；模板拷贝降级为协议/回退路径；删除或改写「只拷模板 / 仅复制骨架」为主路径的表述；「自动生图」禁令与「可审草稿」划界清晰
 - [x] **A6 Agent 指针**（必做）：包内至少一处 skill 或 command 指针指向清单机检面（`REVIEW_CHECKLIST.md` + compile/check 类命令原文指针 + 禁代签 HG）；可用 `rg`/测断言文件存在与关键句
 - [x] **A7 四门**（必做）：`npm run typecheck` · `npm test` · `npm run build` · `npm run test:lib` 全绿
-- [ ] **A8 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W2): …` · 禁 `git add -A` · 未 tag/push/publish/bump（**gate-check ✅ · commit 本棒 · `task close` 留 00**）
+- [x] **A8 关账**（必做）：`gate-check` exit 0 + `task close --yes`；提交 `feat(3.1-W2): …` · 禁 `git add -A` · 未 tag/push/publish/bump（**00 本窗 close**）
 - [ ] **A-opt1 宿主薄封装**（可选 · 未做不挡 A8）：宿主命令/skill 薄封装存在且正文只调 CLI（对照 `kit-graph-check` 薄度）；多宿主落点与既有 host-adapt 惯例一致（30 自裁最小宿主集，至少 Cursor **或** Claude 一面）
 
 ---
@@ -206,7 +207,7 @@ A1–A3 命令/测机检；A4–A6 文件存在+关键句；A7–A8 四门+gate-
 | A5 | `TASK_graph_bootstrap` 优先 scaffold · 模板仅协议回退 |
 | A6 | **唯一落点**：扩 `kit-graph-check`（Cursor+Claude）POINTER→`REVIEW_CHECKLIST` Agent 可跑项 + compile/check + 禁代签 HG（N2） |
 | A7 | 四门绿；联改 `assets/sha256.manifest` + `planned-writes-2_4_2.json`（graph-check 内容 hash） |
-| A8 | gate-check exit 0；commit `feat(3.1-W2): …`；**未** `task close` / bump / tag / push / publish |
+| A8 | gate-check exit 0；commit `ba9270b`；**00 close** · 未 bump / tag / push / publish |
 | A-opt1 | **跳过**（不挡关账；免 expanded 词表/快照连锁） |
 | N1–N4 | N1 测锁面已列；N2 唯扩 kit-graph-check；N3 §3/§5/§10 口径扫过；N4 可选未做 |
 
@@ -214,7 +215,9 @@ Wiki: none
 
 ### KPI（00）
 
-（关账回填 · 占位）
+Task_KPI%: 95（A1–A8 必做全绿 · 四门绿 · 口径可审草稿 · A-opt1 明示跳过不挡；扣分：无独立宿主薄封装 · 属可选）
+
+- rubric：`KPI_RUBRIC_v1_2` · 30/40 实现 + 00 签闸/关账
 
 ---
 
@@ -225,3 +228,4 @@ Wiki: none
 | 2026-10-10 | 10-task 初稿 · 00 开拆 W2 · 闸 pending |
 | 2026-10-10 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
 | 2026-10-10 | 30/40：入手链 DX 落地 · A1–A7 ✅ · A-opt1 跳过 · 待 00 close |
+| 2026-10-10 | **00 验收关账** · A8 close · SPEC04 W2 勾选 · 下一波 W3 未开 |

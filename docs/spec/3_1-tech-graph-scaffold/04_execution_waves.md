@@ -11,7 +11,7 @@
 - [x] **HG-SPEC-SIGNOFF=approved**（2026-10-10 维护者 · 「签收，拆W1」）  
 - [x] **HG-NEXT-PLAN=approved**（同窗）  
 - [x] 00 拆 **W1** task（本棒）；W2–W5 后续按波拆  
-- [ ] W2–W5 task（**W2 本窗开拆** · W3–W5 未开）  
+- [ ] W3–W5 task（**W2 已关** · W3–W5 未开）  
 
 ## W1 · 脚手架 + 生成后轻检 + 审核清单（核心 · 轨 A + 轨 B 轻量）
 
@@ -30,11 +30,13 @@
 
 ## W2 · 入手链与 Agent 审核面（DX）
 
-- [ ] init / 手册 quickstart 增加「下一步：graph scaffold」真实命令  
-- [ ] 可选：宿主命令或 skill 薄封装（只调 CLI · 不复制业务逻辑）  
-- [ ] 审核清单机检项与 Agent 提示词对齐（包内 skill 或 commands 指针）  
-- [ ] 更新 `TASK_graph_bootstrap`：从「只拷模板」改为「优先 scaffold · 模板仅协议回退」  
-- [ ] 四门绿 · HG-AUDIT-R1 · gate-check  
+> **00 验收**：2026-10-10 · task `3-1-w2-graph-dx` · A1–A8 · A-opt1 本波跳过 · `ba9270b`
+
+- [x] init / 手册 quickstart 增加「下一步：graph scaffold」真实命令  
+- [ ] 可选：宿主命令或 skill 薄封装（只调 CLI · 不复制业务逻辑）· **本波未做 · 不挡关账**  
+- [x] 审核清单机检项与 Agent 提示词对齐（包内 skill 或 commands 指针）  
+- [x] 更新 `TASK_graph_bootstrap`：从「只拷模板」改为「优先 scaffold · 模板仅协议回退」  
+- [x] 四门绿 · HG-AUDIT-R1 · gate-check  
 
 ## W3 · 漂移闸（轨 B 完整 · 承接 F-2）
 
