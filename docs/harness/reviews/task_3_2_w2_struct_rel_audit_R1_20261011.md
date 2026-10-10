@@ -1,7 +1,7 @@
 # 审查 · 20-task-audit R1 · 3-2-w2-struct-rel
 
 > **日期**：2026-10-11 · **hat**：20-task-audit  
-> **task**：[`docs/tasks/active/task_3_2_w2_struct_rel.md`](../../tasks/active/task_3_2_w2_struct_rel.md)  
+> **task**：[`docs/tasks/done/task_3_2_w2_struct_rel.md`](../../tasks/done/task_3_2_w2_struct_rel.md)  
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md) · [`04` W2](../../spec/3_2-graph-ib-and-indexes/04_execution_waves.md) · [`02` §3](../../spec/3_2-graph-ib-and-indexes/02_product_scheme.md) · [`03` §1.2](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) · [`03` §3](../../spec/3_2-graph-ib-and-indexes/03_cli_and_review.md) failure_paths（HG-SPEC-SIGNOFF=approved）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md) **W2 · struct_rel**（HG-NEXT-PLAN=approved）  
 > **防回灌对照**：3.1 `STRUCT_REL_DEFAULT = '01_struct.md'` 硬钉 · 无配置须与 3.1.0 **完全一致**  

@@ -1,6 +1,7 @@
 # Task：3.2 W2 · graph drift `struct_rel`（可配置模块表路径）
 
-> **状态**：`active` · **HG-AUDIT-R1=approved**（2026-10-11 **00 签收** · 可 30）  
+> **状态**：`done` · **00 验收关账** 2026-10-11（A1–A8 · `3df6518`）  
+
 
 > **上游 SPEC**：[`docs/spec/3_2-graph-ib-and-indexes/`](../../spec/3_2-graph-ib-and-indexes/README.md)（**HG-SPEC-SIGNOFF=approved**）  
 > **上游 PLAN**：[`docs/roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md`](../../roadmap/PLAN_3_2_graph_ib_and_indexes_v1_zh.md)（**HG-NEXT-PLAN=approved**）· **W2 · struct_rel**  
@@ -95,7 +96,7 @@
 - [x] **A5**：`struct_rel` 非 string → exit 2  
 - [x] **A6**：既有 drift 测零回归  
 - [x] **A7**：四门绿  
-- [ ] **A8**：gate-check + `task close` · 提交 `feat(3.2-W2): …` · 未 bump/tag/push/publish · **00 close**
+- [x] **A8**：gate-check + `task close` · 提交 `feat(3.2-W2): …` · 未 bump/tag/push/publish · **00 close**
 
 ---
 
@@ -176,9 +177,15 @@ A1–A6 fixture；A7–A8 四门+close。
 | 相对 --input | W2-A2 诱饵锁（target/l1 不可解析表不被读） |
 | N1 detail 点名 | struct_missing/unparseable 用实际 `structRel` |
 | 禁区 | 未 bump/tag/push/publish · 未 `git add -A` |
-| A8 close | **留 00** |
+| A8 close | **00 本窗** |
 
 旧测影响面（K7/N2）：`test/graph-drift.test.ts` 既有 A1–A8/N2 + 零回归 scaffold help；W2 用例 additive。
+
+### KPI（00）
+
+Task_KPI%: 96（A1–A8 · drift 17 测 · 四门绿 · 缺省=3.1 · struct_rel 相对 input；扣分：无）
+
+- rubric：`KPI_RUBRIC_v1_2`
 
 ---
 
@@ -189,3 +196,4 @@ A1–A6 fixture；A7–A8 四门+close。
 | 2026-10-11 | 10-task 初稿 · 00 开拆 W2 · 过程闸 pending |
 | 2026-10-11 | 20 审 R1 PASS · **00 签收** HG-TASK-DRAFT / HG-AUDIT-R1 → approved · 可 30 |
 | 2026-10-11 | 30/40：实现 `struct_rel` · 测 17 · 四门绿 · A1–A7 勾 · A8 留 00 |
+| 2026-10-11 | **00 验收关账** · A8 close · SPEC04 W2 勾选 · W3 未开 |

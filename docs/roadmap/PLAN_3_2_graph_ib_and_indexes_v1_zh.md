@@ -128,3 +128,5 @@
 | 2026-10-10 | HG-NEXT-PLAN / HG-SPEC-SIGNOFF=approved · 开拆 W1 · 授权 00 签过程文档 |
 | 2026-10-10 | **W1 task 落盘** `task_3_2_w1_graph_ib_check` · HG-TASK-DRAFT/HG-AUDIT-R1 pending · 待 20 审 |
 | 2026-10-10 | **W1 00 验收关账** · `a78ac3c` · graph ib check · W2–W5 未开 |
+| 2026-10-11 | 维护者授权 00 统筹 W2–W5 · 适时 commit · 最后一起 PR |
+| 2026-10-11 | **W2 00 验收关账** · `3df6518` · struct_rel · W3–W5 未开 |

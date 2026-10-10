@@ -27,10 +27,12 @@
 
 ## W2 · `struct_rel` 可配置（反哺 P1）
 
-- [ ] `.spec-wave/graph-drift.yaml` 增可选 `struct_rel`  
-- [ ] 缺省 = `01_struct.md`（与 3.1.0 一致）  
-- [ ] 指向含协议列「路径 glob」的分层模块表 → drift 可绿；坏路径 fail-closed  
-- [ ] 负向 + 正向 fixture · 四门绿 · HG-AUDIT-R1 · gate-check  
+> **00 验收**：2026-10-11 · task `3-2-w2-struct-rel` · A1–A8 · `3df6518`
+
+- [x] `.spec-wave/graph-drift.yaml` 增可选 `struct_rel`  
+- [x] 缺省 = `01_struct.md`（与 3.1.0 一致）  
+- [x] 指向含协议列「路径 glob」的分层模块表 → drift 可绿；坏路径 fail-closed  
+- [x] 负向 + 正向 fixture · 四门绿 · HG-AUDIT-R1 · gate-check  
 
 ## W3 · indexes 双向闸（反哺 P2 · opt-in）
 
