@@ -24,6 +24,7 @@ import {
   loadEvents,
   writeSnapshot,
 } from './cli-graph-hgm.ts'
+import { cmdGraphScaffold } from './cli-graph-scaffold.ts'
 
 export async function cmdGraph(args: string[]): Promise<void> {
   if (args.includes('--help') || args.includes('-h')) {
@@ -34,6 +35,10 @@ export async function cmdGraph(args: string[]): Promise<void> {
   graph yaml compile --all [--target PATH] [--input DIR] [--no-recursive]
   graph yaml check --graph-id ID [--target PATH] [--input DIR] [--graph-json FILE]
   graph yaml export --input DIR [--out FILE] [--no-recursive]
+  graph scaffold [--target PATH] [--input DIR] [--stack auto|node|python]
+                 [--mode full|struct-only] [--strict] [--dry-run|--yes]
+                 [--overwrite-draft] [--no-compile]
+                 （生成 docs/_tech_graph 可审草稿 · 非已签收真值）
   graph ingest [--target PATH] [--actor ACTOR] [--dry-run]
   graph snapshot [--target PATH]
   graph axioms check [--target PATH] [--json]
@@ -45,6 +50,10 @@ export async function cmdGraph(args: string[]): Promise<void> {
   const [sub, ...subRest] = args
   if (sub === 'yaml') {
     await cmdGraphYaml(subRest)
+    return
+  }
+  if (sub === 'scaffold') {
+    await cmdGraphScaffold(subRest)
     return
   }
   if (sub === 'ingest') {

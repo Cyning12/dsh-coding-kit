@@ -231,6 +231,7 @@ npx spec-wave lifecycle show [--target PATH] [--json]
 npx spec-wave lifecycle dry-run --transition ID --from STATE
 npx spec-wave discipline show [--target PATH] [--json]
 npx spec-wave graph yaml compile|check|export
+npx spec-wave graph scaffold [--target PATH] [--yes] …   # draft tech-graph under docs/_tech_graph (reviewable, not signed truth)
 npx spec-wave graph ingest|snapshot|axioms
 npx spec-wave graph ontology check [--file PATH] [--json]   # + --hgm: instance check of the event-sourced graph against the bundled ontology
 npx spec-wave sync index
@@ -250,6 +251,8 @@ npx spec-wave task check --file PATH
 `host apply` / `host update` sniff the host-adapt table version and optional `@deepseek-ai/dsh-tools` peer (**U-01**): mismatch → exit 2 and no writes (`--json` includes `contract.status`). `--tools dsh` keeps commands=[] (no `.dsh/commands/`) and lands orchestration as `.dsh/skills/kit-*`. **`host update` without `--tools`** uses sticky `.coding-kit/host-tools.json` (else exit 1). See **Multi-host in one package** above.
 
 This **source repo** dogfoods `graph yaml compile|check|export` against `docs/_tech_graph/` (**not** shipped in the npm package; https://github.com/Cyning12/SpecWave/tree/main/docs/_tech_graph).
+
+**Tech-graph scaffold (`graph scaffold`, planned 3.1)**: from a business-repo root, generates a **reviewable draft** under `docs/_tech_graph/` (main graph · module table · primary flow · `REVIEW_CHECKLIST.md`). Default is dry-run; `--yes` writes. Output is draft-marked — **not** signed architecture truth (`HG-GRAPH-MODULES` remains for humans). Do not call it an “authoritative auto graph”.
 
 **Graph capability vs. ontology layer (3.0 ONTO-OPEN ruling)**: the graph surface is open — `graph yaml compile|check|export` works on consumer-authored graphs today, and `graph ontology check [--file PATH]` validates the bundled ontology file or a drifted copy you point it at. The bundled ontology (`assets/ontology.yaml`) is SpecWave's self-use meta-model, however — **不提供自定义本体能力**（the ontology layer is **not** open: no consumer-defined classes/relations; validator open ≠ ontology content open）. Re-examination triggers (research doc §7.3): a real consumer request · re-evaluation after the ontology-check surface stays stable for one minor · post-B5 ecosystem pull — via an HG-SCHEMA-CHANGE-style human gate.
 
